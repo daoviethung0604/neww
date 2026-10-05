@@ -1,16 +1,35 @@
-function generateSensi() {
-    const sensi = {
-        'Nhìn quanh': Math.floor(Math.random() * 20) + 80,
-        'Red Dot': Math.floor(Math.random() * 20) + 75,
-        'Ống ngắm 2x': Math.floor(Math.random() * 20) + 70,
-        'Ống ngắm 4x': Math.floor(Math.random() * 20) + 65,
-        'Ống ngắm AWM': Math.floor(Math.random() * 20) + 50
-    };
+document.addEventListener("DOMContentLoaded", function () {
+  const ua = navigator.userAgent;
+  let deviceName = "Unknown Device";
+  let osName = "Unknown OS";
 
-    let output = ">>> CẤU HÌNH GỢI Ý:\n";
-    for (let key in sensi) {
-        output += `${key}: ${sensi[key]}\n`;
-    }
+  // Nhận diện Hệ điều hành & Thiết bị
+  if (/android/i.test(ua)) {
+    osName = "Android";
+    const match = ua.match(/Build\/([a-zA-Z0-9_\.-]+)/) || ua.match(/;\s([^;]+)\sBuild/);
+    deviceName = match ? match[1].split(' ')[0] : "Android Phone";
+  } else if (/iPhone|iPad|iPod/i.test(ua)) {
+    osName = "iOS";
+    deviceName = /iPhone/i.test(ua) ? "iPhone" : "iPad";
+  } else if (/Win/i.test(ua)) {
+    osName = "Windows PC";
+    deviceName = "Desktop";
+  } else if (/Mac/i.test(ua)) {
+    osName = "macOS";
+    deviceName = "MacBook/Mac";
+  }
 
-    document.getElementById('sensiOutput').innerText = output;
+  document.getElementById("user-device").innerText = deviceName;
+  document.getElementById("user-os").innerText = osName;
+});
+
+function checkKey() {
+  const val = document.getElementById("key-input").value.trim();
+  if (val === "") {
+    alert("Vui lòng dán mã Key!");
+    return;
+  }
+  document.getElementById("key-status").innerText = "ĐÃ KÍCH HOẠT";
+  document.getElementById("key-status").style.color = "#34c759";
+  alert("Xác thực thành công Key: " + val);
 }

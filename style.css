@@ -28,20 +28,21 @@ body {
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 28px;
-  padding: 20px;
+  padding: 22px;
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
 }
 
 .header h1 {
-  font-size: 18px;
+  font-size: 20px;
   text-align: center;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   margin-bottom: 15px;
+  font-weight: 800;
 }
 
 .version {
   font-size: 11px;
-  color: #777;
+  color: #8e8e93;
   font-weight: normal;
 }
 
@@ -50,7 +51,7 @@ body {
   justify-content: space-between;
   background: rgba(255, 255, 255, 0.04);
   padding: 10px 14px;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 10px;
   color: #8e8e93;
   text-align: center;
@@ -60,7 +61,7 @@ body {
   display: block;
   font-size: 12px;
   color: #fff;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 .status-bar .active {
@@ -70,8 +71,9 @@ body {
 .section-title {
   font-size: 11px;
   color: #8e8e93;
-  margin: 15px 0 8px 4px;
+  margin: 16px 0 8px 4px;
   letter-spacing: 0.5px;
+  font-weight: 600;
 }
 
 .app-card {
@@ -92,11 +94,11 @@ body {
 }
 
 .app-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  background-size: cover;
-  background-color: #333;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .app-name {
@@ -113,53 +115,66 @@ body {
   background: rgba(255, 255, 255, 0.08);
   border: none;
   color: #0a84ff;
-  padding: 6px 12px;
+  padding: 7px 14px;
   border-radius: 20px;
   font-size: 11px;
   font-weight: bold;
   cursor: pointer;
+  transition: 0.2s;
 }
 
-.sens-box #gen-btn {
-  width: 100%;
-  padding: 12px;
-  background: #2c2c2e;
+.btn-action:hover {
+  background: rgba(10, 132, 255, 0.2);
+}
+
+/* Key box styling */
+.key-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.input-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.input-group input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #0a84ff;
-  border-radius: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 12px;
+  outline: none;
+}
+
+.input-group button {
+  background: #0a84ff;
+  border: none;
+  color: #fff;
+  padding: 0 14px;
+  border-radius: 10px;
+  font-size: 11px;
   font-weight: bold;
   cursor: pointer;
-  margin-bottom: 8px;
 }
 
-#result-box {
-  background: rgba(0, 0, 0, 0.3);
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 12px;
+.key-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
   color: #aaa;
-  text-align: center;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .footer-note {
-  margin-top: 20px;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 12px;
-  border-radius: 14px;
+  margin-top: 18px;
   font-size: 11px;
   text-align: center;
-  color: #8e8e93;
-}
-
-.key-status {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  display: flex;
-  justify-content: space-between;
-  color: #fff;
-}
-
-.sub-text {
-  color: #34c759;
+  color: #777;
 }
