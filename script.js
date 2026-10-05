@@ -11,13 +11,13 @@ function checkDeviceSupport() {
   let osVersion = 0;
   isSupportedDevice = false;
 
-  // Kiểm tra xem có phải iPhone không
+  // Kiểm tra iPhone
   const isiPhone = /iPhone/i.test(ua);
 
   if (isiPhone) {
     deviceName = "iPhone";
     
-    // Lấy phiên bản iOS từ User Agent
+    // Lấy phiên bản iOS
     const match = ua.match(/OS (\d+)_(\d+)_?(\d+)?/);
     if (match && match[1]) {
       osVersion = parseInt(match[1], 10);
@@ -95,4 +95,35 @@ function closeGameMenu() {
 // Bật/tắt các ô Proxy
 function toggleProxy(card) {
   card.classList.toggle("active");
+}
+
+// Xử lý khi nhấn nút ▶ MỞ GAME
+function launchGame() {
+  const currentApp = document.getElementById("current-app-title").innerText;
+  const activeProxies = [];
+  
+  document.querySelectorAll('.proxy-card.active .p-title').forEach(el => {
+    activeProxies.push(el.innerText);
+  });
+
+  if (activeProxies.length === 0) {
+    alert("⚠️ Vui lòng chọn ít nhất 1 Proxy trước khi mở game!");
+    return;
+  }
+
+  const isMax = currentApp.includes("Max");
+  const appNameText = isMax ? "Free Fire Max" : "Free Fire";
+  const iosScheme = isMax ? "freefiremax://" : "freefire://";
+  const androidPkg = isMax ? "com.dts.freefiremax" : "com.dts.freefireth";
+
+  alert("🚀 Đã kích hoạt " + activeProxies.length + " Proxy cho " + appNameText + "!\n\nHệ thống đang mở game...");
+
+  // Thử mở ứng dụng trên iOS / Android
+  if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    window.location.href = iosScheme;
+  } else if (/Android/i.test(navigator.userAgent)) {
+    window.location.href = "intent://#Intent;scheme=android-app;package=" + androidPkg + ";end";
+  } else {
+    window.location.href = iosScheme;
+  }
 }
