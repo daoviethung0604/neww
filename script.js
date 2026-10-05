@@ -74,10 +74,10 @@ function checkKey() {
   alert("Xác thực thành công Key: " + val);
 }
 
-// Chuyển sang giao diện Menu Game (Chỉ mở nếu thiết bị hợp lệ)
+// Chuyển sang giao diện Menu Game
 function openGameMenu(appName) {
   if (!isSupportedDevice) {
-    alert("⛔ RẤT TIẾC!\n\nHệ thống DVH HUB chỉ hỗ trợ thiết bị iPhone chạy iOS 16.0 trở lên.\n\nVui lòng sử dụng iPhone tương thích để truy cập tính năng này.");
+    alert("⛔ RẤT TIẾC!\n\nHệ thống DVH HUB chỉ hỗ trợ thiết bị iPhone chạy iOS 16.0 trở lên.");
     return;
   }
 
@@ -97,28 +97,15 @@ function toggleProxy(card) {
   card.classList.toggle("active");
 }
 
-// Xử lý khi nhấn nút ▶ MỞ GAME
+// Xử lý khi nhấn nút ▶ MỞ GAME (Mở ứng dụng ngay lập tức)
 function launchGame() {
   const currentApp = document.getElementById("current-app-title").innerText;
-  const activeProxies = [];
-  
-  document.querySelectorAll('.proxy-card.active .p-title').forEach(el => {
-    activeProxies.push(el.innerText);
-  });
-
-  if (activeProxies.length === 0) {
-    alert("⚠️ Vui lòng chọn ít nhất 1 Proxy trước khi mở game!");
-    return;
-  }
-
   const isMax = currentApp.includes("Max");
-  const appNameText = isMax ? "Free Fire Max" : "Free Fire";
+
   const iosScheme = isMax ? "freefiremax://" : "freefire://";
   const androidPkg = isMax ? "com.dts.freefiremax" : "com.dts.freefireth";
 
-  alert("🚀 Đã kích hoạt " + activeProxies.length + " Proxy cho " + appNameText + "!\n\nHệ thống đang mở game...");
-
-  // Thử mở ứng dụng trên iOS / Android
+  // Mở ứng dụng ngay lập tức không qua trung gian alert
   if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
     window.location.href = iosScheme;
   } else if (/Android/i.test(navigator.userAgent)) {
