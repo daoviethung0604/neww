@@ -178,3 +178,338 @@ body {
   text-align: center;
   color: #777;
 }
+.container {
+  /* Sửa từ 25px xuống 12px để mượt hơn */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100vw;
+  min-height: 100vh;
+  background-color: #0b0b0e;
+  background-image: 
+    radial-gradient(circle at 15% 20%, rgba(200, 130, 70, 0.12) 0%, rgba(200, 130, 70, 0) 40%),
+    radial-gradient(circle at 85% 80%, rgba(100, 140, 200, 0.12) 0%, rgba(100, 140, 200, 0) 40%);
+  background-attachment: fixed;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #f0f0f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 10px;
+}
+
+.container {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(18, 18, 22, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 18px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* Header Home */
+.header h1 {
+  font-size: 20px;
+  text-align: center;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+  font-weight: 800;
+}
+
+.version {
+  font-size: 11px;
+  color: #8e8e93;
+  font-weight: normal;
+}
+
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 10px;
+  color: #8e8e93;
+  text-align: center;
+}
+
+.status-bar strong {
+  display: block;
+  font-size: 12px;
+  color: #fff;
+  margin-top: 3px;
+}
+
+.status-bar .active {
+  color: #34c759;
+}
+
+.section-title {
+  font-size: 11px;
+  color: #8e8e93;
+  margin: 16px 0 8px 4px;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.app-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(30, 30, 36, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  border-radius: 16px;
+  margin-bottom: 10px;
+}
+
+.app-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.app-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.app-pkg {
+  font-size: 11px;
+  color: #666;
+}
+
+.btn-action {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #0a84ff;
+  padding: 7px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.key-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.input-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.input-group input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 12px;
+  outline: none;
+}
+
+.input-group button {
+  background: #0a84ff;
+  border: none;
+  color: #fff;
+  padding: 0 14px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.key-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #aaa;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-note {
+  margin-top: 16px;
+  font-size: 11px;
+  text-align: center;
+  color: #777;
+}
+
+/* --- GAME MENU (SUB VIEW) --- */
+.sub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.sub-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.proxy-card {
+  background: rgba(30, 30, 38, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.proxy-card:hover {
+  border-color: rgba(10, 132, 255, 0.4);
+}
+
+.proxy-card.active {
+  border-color: #34c759;
+  background: rgba(52, 199, 89, 0.1);
+}
+
+.p-icon {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.p-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.p-desc {
+  font-size: 10px;
+  color: #8e8e93;
+  line-height: 1.3;
+}
+
+.section-divider {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: bold;
+  color: #8e8e93;
+  margin: 14px 0 10px 4px;
+  letter-spacing: 0.5px;
+}
+
+.v-tag {
+  font-size: 9px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.video-banner {
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.25);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.v-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.play-icon {
+  color: #ff3b30;
+  font-size: 16px;
+}
+
+.v-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.v-sub {
+  font-size: 10px;
+  color: #aaa;
+}
+
+.btn-watch {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #ff3b30;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.ready-status {
+  font-size: 11px;
+  color: #8e8e93;
+  text-align: center;
+  margin: 14px 0 10px;
+}
+
+.btn-open-game {
+  width: 100%;
+  padding: 13px;
+  background: rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.4);
+  color: #0a84ff;
+  border-radius: 14px;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: 0.2s;
+}
+
+.btn-open-game:hover {
+  background: #0a84ff;
+  color: #fff;
+}

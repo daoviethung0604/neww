@@ -66,5 +66,163 @@
   </div>
 
   <script src="script.js"></script>
+</body><img src="ffmax.png" alt="FF Max" class="app-icon">
+<img src="ff.png" alt="FF" class="app-icon">
+</html><script src="script.js" defer></script>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DVH HUB</title>
+  <link rel="preload" href="style.css" as="style">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Trang chính (Home Hub) -->
+  <div id="main-view" class="container">
+    <div class="header">
+      <h1>DVH <span class="version">v1.6.0</span></h1>
+      <p class="status-bar">
+        <span>THIẾT BỊ<br><strong id="user-device">Đang quét...</strong></span>
+        <span>HỆ ĐIỀU HÀNH<br><strong id="user-os">Đang quét...</strong></span>
+        <span>TƯƠNG THÍCH<br><strong class="active">• Có Hỗ Trợ</strong></span>
+      </p>
+    </div>
+
+    <div class="section-title">ỨNG DỤNG (2)</div>
+    
+    <div class="app-list">
+      <div class="app-card">
+        <div class="app-info">
+          <img src="https://ff.garena.com/static/images/icon_ffmax.png" alt="FF Max" class="app-icon" onerror="this.src='https://via.placeholder.com/42/ff4500/ffffff?text=FFM'">
+          <div>
+            <div class="app-name">Free Fire Max</div>
+            <div class="app-pkg">com.dts.freefiremax</div>
+          </div>
+        </div>
+        <button class="btn-action" onclick="openGameMenu('Free Fire Max')">READY &gt;</button>
+      </div>
+
+      <div class="app-card">
+        <div class="app-info">
+          <img src="https://ff.garena.com/static/images/icon_ff.png" alt="FF" class="app-icon" onerror="this.src='https://via.placeholder.com/42/ff8c00/ffffff?text=FF'">
+          <div>
+            <div class="app-name">Free Fire</div>
+            <div class="app-pkg">com.dts.freefireth</div>
+          </div>
+        </div>
+        <button class="btn-action" onclick="openGameMenu('Free Fire')">READY &gt;</button>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top: 18px;">QUẢN LÝ KEY XÁC THỰC</div>
+    <div class="key-box">
+      <div class="input-group">
+        <input type="text" id="key-input" placeholder="Dán mã Key của bạn vào đây..." value="DVH-8888-9999-VIP">
+        <button onclick="checkKey()">KÍCH HOẠT</button>
+      </div>
+      <div class="key-info">
+        <span>TRẠNG THÁI KEY: <strong id="key-status" style="color: #34c759;">ĐÃ XÁC THỰC</strong></span>
+        <span class="sub-text">Hạn dùng: <strong id="key-expire">30 ngày 00 giờ</strong></span>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <p>📢 HỆ THỐNG DVH VIP - CHÚC BẠN TRẢI NGHIỆM VUI VẺ &lt;3</p>
+    </div>
+  </div>
+
+  <!-- Trang Giao diện phụ bên trong (Game Menu Proxy VIP) -->
+  <div id="game-view" class="container" style="display: none;">
+    <!-- Sub Header -->
+    <div class="sub-header">
+      <button class="back-btn" onclick="closeGameMenu()">&lt;</button>
+      <h2 id="current-app-title">Free Fire</h2>
+      <div></div>
+    </div>
+
+    <!-- Hàng trên -->
+    <div class="grid-2">
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">🎯</div>
+        <div class="p-title">Proxy Cỏ V2</div>
+        <div class="p-desc">Vùng Cỏ Màu Đỏ To Hơn, Bấm Hơn</div>
+      </div>
+
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">🪄</div>
+        <div class="p-title">Proxy Magic</div>
+        <div class="p-desc">Đạn Ma Thuật</div>
+      </div>
+    </div>
+
+    <div class="section-divider">
+      <span>PROXY DELTA VIP V2</span>
+      <span class="v-tag">v2</span>
+    </div>
+
+    <!-- Banner Video -->
+    <div class="video-banner">
+      <div class="v-info">
+        <span class="play-icon">▶</span>
+        <div>
+          <div class="v-title">Xem Video Hướng Dẫn</div>
+          <div class="v-sub">Hướng dẫn cài đặt & bật Proxy chi tiết</div>
+        </div>
+      </div>
+      <button class="btn-watch" onclick="alert('Đang mở Video hướng dẫn...')">XEM NGAY</button>
+    </div>
+
+    <!-- Danh sách Proxy VIP Grid -->
+    <div class="grid-2">
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">🌀</div>
+        <div class="p-title">Proxy Drag V1</div>
+        <div class="p-desc">Kéo Nhẹ Tâm Lên Đỉnh Đầu</div>
+      </div>
+
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">🎯</div>
+        <div class="p-title">Cố Định Tật</div>
+        <div class="p-desc">Tâm Súng Được Ghim Thẳng</div>
+      </div>
+
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">✨</div>
+        <div class="p-title">Proxy Drag V3 + Antenna</div>
+        <div class="p-desc">Kéo Nhẹ Tâm Lên Đỉnh Đầu + Antenna</div>
+      </div>
+
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">✳️</div>
+        <div class="p-title">Proxy Cố Định Tật + Antenna</div>
+        <div class="p-desc">Tâm Súng Được Ghim Thẳng Vào Cổ + Antenna</div>
+      </div>
+
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">🧍</div>
+        <div class="p-title">Proxy Bụng</div>
+        <div class="p-desc">Full Đỏ Ở Vùng Bụng</div>
+      </div>
+
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">⚡</div>
+        <div class="p-title">Proxy Bụng + Antenna</div>
+        <div class="p-desc">Full Đỏ Ở Vùng Bụng + Antenna</div>
+      </div>
+    </div>
+
+    <div class="ready-status">
+      Đã Sẵn Sàng - Bạn Đã Có Thể Bắt Đầu Kích Hoạt Proxy
+    </div>
+
+    <button class="btn-open-game" onclick="alert('Đang khởi chạy Game...')">
+      ▶ MỞ GAME
+    </button>
+  </div>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
