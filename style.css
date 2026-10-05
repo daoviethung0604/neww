@@ -338,3 +338,10 @@ body {
   background: #0a84ff;
   color: #fff;
 }
+.status-bar .active {
+  color: #34c759; /* Màu xanh lá cho iPhone iOS >= 16 */
+}
+
+.status-bar .inactive {
+  color: #ff3b30; /* Màu đỏ cảnh báo cho thiết bị không hỗ trợ */
+}
