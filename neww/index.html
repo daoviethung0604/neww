@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fire Tactical Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="terminal-container">
+        <header>
+            <h1>[FREE FIRE TACTICAL HUB v1.0]</h1>
+            <p class="status">> SYSTEM STATUS: ONLINE | DATABASE: LOADED</p>
+        </header>
+
+        <main>
+            <section class="card">
+                <h2>CẨM NANG VŨ KHÍ</h2>
+                <div class="weapon-list">
+                    <div class="weapon-item">
+                        <span class="weapon-name">AK47</span>
+                        <span class="weapon-stat">Sát thương: High | Tầm xa: Mid</span>
+                    </div>
+                    <div class="weapon-item">
+                        <span class="weapon-name">MP40</span>
+                        <span class="weapon-stat">Tốc độ bắn: Extreme | Tầm xa: Close</span>
+                    </div>
+                    <div class="weapon-item">
+                        <span class="weapon-name">AWM</span>
+                        <span class="weapon-stat">Sát thương: One-shot | Tầm xa: Snipe</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>CẤU HÌNH ĐỘ NHẠY GỢI Ý</h2>
+                <button id="btnSensi" onclick="generateSensi()">Tạo Độ Nhạy Chuẩn</button>
+                <div id="sensiOutput" class="sensi-box">Nhấn nút trên để lấy thông số...</div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2026 Free Fire Tactical Companion Project</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
