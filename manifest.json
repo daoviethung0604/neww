@@ -10,9 +10,9 @@
   "description": "DVH HUB iOS Tool for Free Fire",
   "icons": [
     {
-      "src": "./icon.png",
+      "src": "./icon.png.jpg",
       "sizes": "192x192 512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ]
