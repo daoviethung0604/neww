@@ -1,15 +1,11 @@
 {
-  "name": "DVH HUB",
-  "short_name": "DVH",
-  "start_url": "./index.html",
+  "background_color": "#ffffff",
+  "dir": "ltr",
   "display": "standalone",
-  "background_color": "#111111",
-  "theme_color": "#111111",
-  "icons": [
-    {
-      "src": "https://via.placeholder.com/512",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "name": "DVH HUB",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "DVH",
+  "start_url": "/",
+  "theme_color": "#ffffff"
 }
