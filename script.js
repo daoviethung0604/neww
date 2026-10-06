@@ -1,116 +1,153 @@
-document.addEventListener("DOMContentLoaded", function () {
-  checkDeviceSupport();
-});
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DVH HUB</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
 
-let isSupportedDevice = false;
+  <!-- Trang chính (Home Hub) -->
+  <div id="main-view" class="container">
+    <div class="header">
+      <h1>DVH <span class="version">v1.6.0</span></h1>
+      <div class="status-bar">
+        <div>THIẾT BỊ<br><strong id="user-device">Đang quét...</strong></div>
+        <div>HỆ ĐIỀU HÀNH<br><strong id="user-os">Đang quét...</strong></div>
+        <div>TƯƠNG THÍCH<br><strong id="user-support">• Đang kiểm tra</strong></div>
+      </div>
+    </div>
 
-function checkDeviceSupport() {
-  const ua = navigator.userAgent;
-  let deviceName = "Thiết bị không rõ";
-  let osName = "Không xác định";
-  let osVersion = 0;
-  isSupportedDevice = false;
-
-  // Kiểm tra iPhone
-  const isiPhone = /iPhone/i.test(ua);
-
-  if (isiPhone) {
-    deviceName = "iPhone";
+    <div class="section-title">ỨNG DỤNG (2)</div>
     
-    // Lấy phiên bản iOS
-    const match = ua.match(/OS (\d+)_(\d+)_?(\d+)?/);
-    if (match && match[1]) {
-      osVersion = parseInt(match[1], 10);
-      osName = "iOS " + osVersion + "." + (match[2] || "0");
-    } else {
-      osName = "iOS";
-    }
+    <div class="app-list">
+      <div class="app-card">
+        <div class="app-info">
+          <div class="app-icon-placeholder">FF</div>
+          <div>
+            <div class="app-name">Free Fire Max</div>
+            <div class="app-pkg">com.dts.freefiremax</div>
+          </div>
+        </div>
+        <button class="btn-action" onclick="openGameMenu('Free Fire Max')">READY &gt;</button>
+      </div>
 
-    // Kiểm tra iOS >= 16
-    if (osVersion >= 16) {
-      isSupportedDevice = true;
-    }
-  } else if (/iPad/i.test(ua)) {
-    deviceName = "iPad";
-    osName = "iPadOS";
-  } else if (/Android/i.test(ua)) {
-    deviceName = "Android Phone";
-    osName = "Android";
-  } else if (/Win/i.test(ua)) {
-    deviceName = "Desktop";
-    osName = "Windows PC";
-  } else if (/Mac/i.test(ua)) {
-    deviceName = "MacBook/Mac";
-    osName = "macOS";
-  }
+      <div class="app-card">
+        <div class="app-info">
+          <div class="app-icon-placeholder">FF</div>
+          <div>
+            <div class="app-name">Free Fire</div>
+            <div class="app-pkg">com.dts.freefireth</div>
+          </div>
+        </div>
+        <button class="btn-action" onclick="openGameMenu('Free Fire')">READY &gt;</button>
+      </div>
+    </div>
 
-  // Cập nhật giao diện thông tin
-  document.getElementById("user-device").innerText = deviceName;
-  document.getElementById("user-os").innerText = osName;
+    <div class="section-title" style="margin-top: 18px;">QUẢN LÝ KEY XÁC THỰC</div>
+    <div class="key-box">
+      <div class="input-group">
+        <input type="text" id="key-input" placeholder="Dán mã Key của bạn vào đây..." value="DVH-8888-9999-VIP">
+        <button onclick="checkKey()">KÍCH HOẠT</button>
+      </div>
+      <div class="key-info">
+        <span>TRẠNG THÁI KEY: <strong id="key-status" style="color: #34c759;">ĐÃ XÁC THỰC</strong></span>
+        <span class="sub-text">Hạn dùng: <strong id="key-expire">30 ngày 00 giờ</strong></span>
+      </div>
+    </div>
 
-  const supportEl = document.getElementById("user-support");
-  if (isSupportedDevice) {
-    supportEl.innerHTML = "• Có Hỗ Trợ";
-    supportEl.className = "active";
-  } else {
-    supportEl.innerHTML = "• Không Hỗ Trợ";
-    supportEl.className = "inactive";
-  }
-}
+    <div class="footer-note">
+      <p>📢 HỆ THỐNG CHỈ HỖ TRỢ IPHONE (iOS 16.0+) &lt;3</p>
+    </div>
+  </div>
 
-function checkKey() {
-  if (!isSupportedDevice) {
-    alert("❌ Thiết bị của bạn không được hỗ trợ! Chỉ dành riêng cho iPhone chạy iOS 16.0 trở lên.");
-    return;
-  }
+  <!-- Trang Giao diện phụ (Game Menu Proxy VIP) -->
+  <div id="game-view" class="container">
+    <div class="sub-header">
+      <button class="back-btn" onclick="closeGameMenu()">&lt;</button>
+      <h2 id="current-app-title">Free Fire</h2>
+      <div style="width: 32px;"></div>
+    </div>
 
-  const val = document.getElementById("key-input").value.trim();
-  if (val === "") {
-    alert("Vui lòng dán mã Key!");
-    return;
-  }
-  document.getElementById("key-status").innerText = "ĐÃ KÍCH HOẠT";
-  document.getElementById("key-status").style.color = "#34c759";
-  alert("Xác thực thành công Key: " + val);
-}
+    <div class="grid-2">
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">🎯</div>
+        <div class="p-title">Proxy Cỏ V2</div>
+        <div class="p-desc">Vùng Cỏ Màu Đỏ To Hơn, Bấm Hơn</div>
+      </div>
 
-// Chuyển sang giao diện Menu Game
-function openGameMenu(appName) {
-  if (!isSupportedDevice) {
-    alert("⛔ RẤT TIẾC!\n\nHệ thống DVH HUB chỉ hỗ trợ thiết bị iPhone chạy iOS 16.0 trở lên.");
-    return;
-  }
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">🪄</div>
+        <div class="p-title">Proxy Magic</div>
+        <div class="p-desc">Đạn Ma Thuật</div>
+      </div>
+    </div>
 
-  document.getElementById("current-app-title").innerText = appName;
-  document.getElementById("main-view").style.display = "none";
-  document.getElementById("game-view").style.display = "block";
-}
+    <div class="section-divider">
+      <span>PROXY DELTA VIP V2</span>
+      <span class="v-tag">v2</span>
+    </div>
 
-// Quay lại trang chính
-function closeGameMenu() {
-  document.getElementById("game-view").style.display = "none";
-  document.getElementById("main-view").style.display = "block";
-}
+    <div class="video-banner">
+      <div class="v-info">
+        <span class="play-icon">▶</span>
+        <div>
+          <div class="v-title">Xem Video Hướng Dẫn</div>
+          <div class="v-sub">Hướng dẫn cài đặt & bật Proxy chi tiết</div>
+        </div>
+      </div>
+      <button class="btn-watch" onclick="alert('Đang mở Video hướng dẫn...')">XEM NGAY</button>
+    </div>
 
-// Bật/tắt các ô Proxy
-function toggleProxy(card) {
-  card.classList.toggle("active");
-}
+    <div class="grid-2">
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">🌀</div>
+        <div class="p-title">Proxy Drag V1</div>
+        <div class="p-desc">Kéo Nhẹ Tâm Lên Đỉnh Đầu</div>
+      </div>
 
-// Xử lý khi nhấn nút ▶ MỞ GAME (Mở ứng dụng ngay lập tức)
-function launchGame() {
-  const currentApp = document.getElementById("current-app-title").innerText;
-  const isMax = currentApp.includes("Max");
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">🎯</div>
+        <div class="p-title">Cố Định Tật</div>
+        <div class="p-desc">Tâm Súng Được Ghim Thẳng</div>
+      </div>
 
-  const iosScheme = isMax ? "freefiremax://" : "freefire://";
-  const androidPkg = isMax ? "com.dts.freefiremax" : "com.dts.freefireth";
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">✨</div>
+        <div class="p-title">Proxy Drag V3 + Antenna</div>
+        <div class="p-desc">Kéo Nhẹ Tâm Lên Đỉnh Đầu + Antenna</div>
+      </div>
 
-  // Mở ứng dụng ngay lập tức không qua trung gian alert
-  if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-    window.location.href = iosScheme;
-  } else if (/Android/i.test(navigator.userAgent)) {
-    window.location.href = "intent://#Intent;scheme=android-app;package=" + androidPkg + ";end";
-  } else {
-    window.location.href = iosScheme;
-  }
-}
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">✳️</div>
+        <div class="p-title">Proxy Cố Định Tật + Antenna</div>
+        <div class="p-desc">Tâm Súng Được Ghim Thẳng Vào Cổ + Antenna</div>
+      </div>
+
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">🧍</div>
+        <div class="p-title">Proxy Bụng</div>
+        <div class="p-desc">Full Đỏ Ở Vùng Bụng</div>
+      </div>
+
+      <div class="proxy-card" onclick="toggleProxy(this)">
+        <div class="p-icon">⚡</div>
+        <div class="p-title">Proxy Bụng + Antenna</div>
+        <div class="p-desc">Full Đỏ Ở Vùng Bụng + Antenna</div>
+      </div>
+    </div>
+
+    <div class="ready-status">
+      Đã Sẵn Sàng - Bạn Đã Có Thể Bắt Đầu Kích Hoạt Proxy
+    </div>
+
+    <button class="btn-open-game" onclick="launchGame()">
+      ▶ MỞ GAME
+    </button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
