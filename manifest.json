@@ -1,14 +1,16 @@
 {
+  "id": "com.dvh.hub",
   "name": "DVH HUB",
   "short_name": "DVH HUB",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#000000",
   "description": "DVH HUB iOS Tool for Free Fire",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "./icon.png",
       "sizes": "192x192 512x512",
       "type": "image/png",
       "purpose": "any maskable"
