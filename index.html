@@ -66,7 +66,6 @@
         .tag-category { background-color: #eff6ff; color: var(--primary-blue); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
         .stock-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
         .stock-badge.in-stock { background-color: var(--badge-green-bg); color: var(--badge-green-text); }
-        .stock-badge.out-stock { background-color: var(--badge-red-bg); color: var(--badge-red-text); }
         .product-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; }
         .product-desc { font-size: 0.85rem; color: var(--text-sub); margin-bottom: 15px; }
         .card-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; }
@@ -106,7 +105,7 @@
                     <div id="userEmail" style="font-size: 0.75rem; color: #94a3b8;"></div>
                 </div>
             </div>
-            <button class="btn-blue" id="sidebarAuthBtn" onclick="handleAuthAction()" style="width: 100%;">Đăng Nhập</button>
+            <button class="btn-blue auth-trigger-btn" id="sidebarAuthBtn" style="width: 100%;">Đăng Nhập</button>
         </div>
     </aside>
 
@@ -119,7 +118,7 @@
             </div>
             <div class="header-actions">
                 <div class="balance-box">Số dư: <span>0đ</span> <button class="btn-add">+</button></div>
-                <button class="btn-blue" id="headerAuthBtn" onclick="handleAuthAction()">Đăng Nhập</button>
+                <button class="btn-blue auth-trigger-btn" id="headerAuthBtn">Đăng Nhập</button>
             </div>
         </header>
 
@@ -144,7 +143,7 @@
                     </div>
                     <div class="card-bottom">
                         <div class="price-amount">20.000đ</div>
-                        <button class="btn-blue" onclick="handleAuthAction()"><i class="fa-solid fa-cart-shopping"></i> MUA NGAY</button>
+                        <button class="btn-blue auth-trigger-btn"><i class="fa-solid fa-cart-shopping"></i> MUA NGAY</button>
                     </div>
                 </div>
             </div>
@@ -154,7 +153,7 @@
     <!-- MODAL POPUP -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-card">
-            <button class="close-modal" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
+            <button class="close-modal" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
             <h2>Đăng Nhập</h2>
             <p style="color: var(--text-sub); font-size: 0.9rem; margin-top: 5px;">Sử dụng tài khoản Google để truy cập</p>
             
@@ -172,4 +171,86 @@
 
     <!-- FIREBASE AUTH SCRIPT -->
     <script type="module">
-        import { initializeApp } from "
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // CẤU HÌNH FIREBASE CỦA BẠN
+        const firebaseConfig = {
+            apiKey: "AIzaSyB2uSm-06dZe9Lj2tXXpOy1kU2oKWN2GHw",
+            authDomain: "delta-client-ce1cc.firebaseapp.com",
+            projectId: "delta-client-ce1cc",
+            storageBucket: "delta-client-ce1cc.firebasestorage.app",
+            messagingSenderId: "308243265700",
+            appId: "1:308243265700:web:b4a697b39e5e18cffe8e31",
+            measurementId: "G-D7MF810537"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        let currentUser = null;
+        const modal = document.getElementById('loginModal');
+
+        function openModal() {
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+        window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+        document.querySelectorAll('.auth-trigger-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentUser) {
+                    signOut(auth).then(() => { alert("Đã đăng xuất thành công!"); });
+                } else {
+                    openModal();
+                }
+            });
+        });
+
+        document.getElementById('googleLoginBtn').addEventListener('click', () => {
+            signInWithPopup(auth, provider)
+                .then(() => { closeModal(); })
+                .catch((error) => {
+                    console.error("Lỗi:", error);
+                    alert("Đăng nhập thất bại: " + error.message);
+                });
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const sidebarStatus = document.getElementById('sidebarUserStatus');
+            const userEmail = document.getElementById('userEmail');
+            const avatar = document.getElementById('userAvatar');
+            const sidebarBtn = document.getElementById('sidebarAuthBtn');
+            const headerBtn = document.getElementById('headerAuthBtn');
+
+            if (user) {
+                sidebarStatus.innerHTML = `<b>${user.displayName}</b>`;
+                userEmail.innerText = user.email;
+                avatar.src = user.photoURL;
+                avatar.style.display = 'block';
+
+                sidebarBtn.innerText = 'Đăng Xuất';
+                sidebarBtn.className = 'btn-red auth-trigger-btn';
+                headerBtn.innerText = 'Đăng Xuất';
+                headerBtn.className = 'btn-red auth-trigger-btn';
+            } else {
+                sidebarStatus.innerHTML = 'Trạng thái: <b>Khách</b>';
+                userEmail.innerText = '';
+                avatar.style.display = 'none';
+
+                sidebarBtn.innerText = 'Đăng Nhập';
+                sidebarBtn.className = 'btn-blue auth-trigger-btn';
+                headerBtn.innerText = 'Đăng Nhập';
+                headerBtn.className = 'btn-blue auth-trigger-btn';
+            }
+        });
+    </script>
+</body>
+</html>
