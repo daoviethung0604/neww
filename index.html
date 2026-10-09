@@ -90,6 +90,10 @@
         
         .btn-approve { background-color: #16a34a; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; margin-top: 8px; display: inline-flex; align-items: center; gap: 4px; }
 
+        /* ADMIN PANEL STYLES */
+        .admin-box { background: white; border: 2px dashed #3b52d4; border-radius: 16px; padding: 20px; margin-top: 15px; }
+        .admin-order-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+
         /* VIEW SWITCHING */
         .page-view { display: none; }
         .page-view.active { display: block; }
@@ -212,6 +216,25 @@
             <div class="order-list" id="orderContainer"></div>
         </div>
 
+        <!-- TRANG ADMIN PANEL ẨN -->
+        <div id="view-admin" class="page-view">
+            <div class="section-title"><i class="fa-solid fa-shield-halved"></i> Bảng Quản Trị Admin</div>
+            <div id="adminLoginSection" class="admin-box" style="text-align: center;">
+                <p style="margin-bottom: 12px; font-weight: 600;">Nhập mã PIN Admin để truy cập</p>
+                <input type="password" id="adminPinInput" class="input-deposit" placeholder="Nhập mã PIN (vd: 0604)">
+                <button class="btn-action btn-action-primary" onclick="verifyAdminPin()">Đăng Nhập Admin</button>
+            </div>
+
+            <div id="adminDashboardSection" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span style="font-weight: 700; color: #16a34a;"><i class="fa-solid fa-circle-check"></i> Đã xác thực Admin</span>
+                    <button onclick="logoutAdmin()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Đăng xuất</button>
+                </div>
+                <div class="section-title" style="font-size: 1.1rem; margin-top: 15px;">Danh sách đơn nạp tiền của khách</div>
+                <div id="adminOrdersList"></div>
+            </div>
+        </div>
+
     </div>
 
     <!-- FLOATING BUTTONS -->
@@ -317,6 +340,7 @@
                 document.getElementById(`nav-${tabName}`).classList.add('active');
             }
             if (tabName === 'orders') renderOrders();
+            if (tabName === 'admin') checkAdminSession();
         };
 
         window.openDepositModal = function() {
@@ -344,6 +368,8 @@
             
             const newOrder = {
                 id: orderId,
+                uid: currentUser.uid,
+                userName: currentUser.displayName || 'Khách hàng',
                 name: `Nạp tiền qua QR (${amount.toLocaleString('vi-VN')}đ)`,
                 rawAmount: amount,
                 price: amount.toLocaleString('vi-VN') + 'đ',
@@ -352,24 +378,22 @@
                 status: 'pending'
             };
 
+            // Lưu vào kho đơn hàng cá nhân
             let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
             orders.unshift(newOrder);
             localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
-            // Tạo link duyệt trực tiếp trên Telegram kèm nút bấm
-            const currentSiteUrl = window.location.href.split('#')[0];
-            const approveLink = `${currentSiteUrl}?approve=${orderId}&uid=${currentUser.uid}`;
+            // Lưu chung vào danh sách admin để quản lý toàn hệ thống
+            let allAdminOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
+            allAdminOrders.unshift(newOrder);
+            localStorage.setItem('admin_all_orders', JSON.stringify(allAdminOrders));
 
+            // Gửi thông báo về Telegram
             const message = `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n` +
                             `👤 *Khách:* ${currentUser.displayName}\n` +
                             `💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n` +
+                            `🆔 *Mã đơn:* \`${orderId}\`\n` +
                             `⏰ *Thời gian:* ${timeNow}`;
-
-            const replyMarkup = {
-                inline_keyboard: [
-                    [{ text: "✅ Bấm Vào Đây Để Duyệt Tiền", url: approveLink }]
-                ]
-            };
 
             fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
                 method: 'POST',
@@ -377,62 +401,95 @@
                 body: JSON.stringify({
                     chat_id: TELEGRAM_CHAT_ID,
                     text: message,
-                    parse_mode: 'Markdown',
-                    reply_markup: replyMarkup
+                    parse_mode: 'Markdown'
                 })
             }).catch(err => console.error("Lỗi gửi Telegram:", err));
 
-            alert(`Đã gửi yêu cầu nạp ${amount.toLocaleString('vi-VN')}đ!\nKiểm tra thông báo Telegram để duyệt nhanh.`);
+            alert(`Đã gửi yêu cầu nạp ${amount.toLocaleString('vi-VN')}đ thành công!\nHệ thống đang chờ admin duyệt.`);
             closeModal('depositModal');
             switchTab('orders');
         };
 
-        // HÀM TỰ ĐỘNG KIỂM TRA ĐỂ DUYỆT QUA LINK TELEGRAM
-        function checkAutoApproveFromUrl() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const approveId = urlParams.get('approve');
-            const targetUid = urlParams.get('uid');
+        // ADMIN FUNCTIONS
+        window.verifyAdminPin = function() {
+            const pin = document.getElementById('adminPinInput').value;
+            if (pin === '0604') { // Mã PIN của bạn
+                localStorage.setItem('delta_admin_logged', 'true');
+                checkAdminSession();
+            } else {
+                alert("Mã PIN không chính xác!");
+            }
+        };
 
-            if (approveId && targetUid) {
-                let orders = JSON.parse(localStorage.getItem(`orders_${targetUid}`) || '[]');
-                const index = orders.findIndex(o => o.id === approveId);
+        window.logoutAdmin = function() {
+            localStorage.removeItem('delta_admin_logged');
+            checkAdminSession();
+        };
 
-                if (index !== -1 && orders[index].status === 'pending') {
-                    const addAmount = orders[index].rawAmount;
-                    
-                    orders[index].status = 'success';
-                    orders[index].key = 'Đã duyệt cộng tiền thành công qua Telegram!';
-                    localStorage.setItem(`orders_${targetUid}`, JSON.stringify(orders));
-
-                    let currentBal = parseInt(localStorage.getItem(`balance_${targetUid}`)) || 0;
-                    currentBal += addAmount;
-                    localStorage.setItem(`balance_${targetUid}`, currentBal);
-
-                    alert(`🎉 ĐÃ DUYỆT THÀNH CÔNG!\nCộng thành công ${addAmount.toLocaleString('vi-VN')}đ vào tài khoản.`);
-                    window.location.href = window.location.pathname; // Xóa param trên URL
-                }
+        function checkAdminSession() {
+            const isLogged = localStorage.getItem('delta_admin_logged') === 'true';
+            if (isLogged) {
+                document.getElementById('adminLoginSection').style.display = 'none';
+                document.getElementById('adminDashboardSection').style.display = 'block';
+                renderAdminOrders();
+            } else {
+                document.getElementById('adminLoginSection').style.display = 'block';
+                document.getElementById('adminDashboardSection').style.display = 'none';
             }
         }
 
-        window.approveDeposit = function(orderId) {
-            let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
-            const index = orders.findIndex(o => o.id === orderId);
-            
-            if (index !== -1 && orders[index].status === 'pending') {
-                const addAmount = orders[index].rawAmount;
-                
-                orders[index].status = 'success';
-                orders[index].key = 'Đã duyệt cộng tiền thành công!';
-                localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
-
-                userBalance += addAmount;
-                saveUserData();
-                updateBalanceUI();
-
-                alert(`Đã duyệt thành công! Đã cộng ${addAmount.toLocaleString('vi-VN')}đ vào số dư.`);
-                renderOrders();
+        window.adminApproveOrder = function(orderId, targetUid, rawAmount) {
+            // Duyệt trong kho đơn hàng của user
+            let userOrders = JSON.parse(localStorage.getItem(`orders_${targetUid}`) || '[]');
+            const uIndex = userOrders.findIndex(o => o.id === orderId);
+            if (uIndex !== -1) {
+                userOrders[uIndex].status = 'success';
+                userOrders[uIndex].key = 'Đã duyệt cộng tiền thành công bởi Admin!';
+                localStorage.setItem(`orders_${targetUid}`, JSON.stringify(userOrders));
             }
+
+            // Cộng tiền vào số dư của user đó
+            let currentBal = parseInt(localStorage.getItem(`balance_${targetUid}`)) || 0;
+            currentBal += rawAmount;
+            localStorage.setItem(`balance_${targetUid}`, currentBal);
+
+            // Cập nhật trong danh sách admin chung
+            let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
+            const aIndex = allOrders.findIndex(o => o.id === orderId);
+            if (aIndex !== -1) {
+                allOrders[aIndex].status = 'success';
+                localStorage.setItem('admin_all_orders', JSON.stringify(allOrders));
+            }
+
+            alert(`Đã duyệt thành công đơn ${orderId} (+${rawAmount.toLocaleString('vi-VN')}đ)!`);
+            renderAdminOrders();
         };
+
+        function renderAdminOrders() {
+            const container = document.getElementById('adminOrdersList');
+            let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
+            
+            if (allOrders.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 20px; color: #64748b;">Chưa có đơn nạp tiền nào trong hệ thống!</div>`;
+                return;
+            }
+
+            container.innerHTML = allOrders.map(ord => `
+                <div class="admin-order-item">
+                    <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px;">
+                        <span>${ord.userName || 'Khách'} - ${ord.price}</span>
+                        <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">
+                            ${ord.status === 'pending' ? 'Chờ duyệt' : 'Đã duyệt'}
+                        </span>
+                    </div>
+                    <div style="font-size: 0.82rem; color: #64748b;">Mã đơn: <b>${ord.id}</b> | Thời gian: ${ord.date}</div>
+                    ${ord.status === 'pending' ? `
+                        <button class="btn-approve" onclick="adminApproveOrder('${ord.id}', '${ord.uid}',${ord.rawAmount})">
+                            <i class="fa-solid fa-check"></i> Duyệt cộng ${ord.price}
+                        </button>` : ''}
+                </div>
+            `).join('');
+        }
 
         window.buyProduct = function(name, price) {
             if (!currentUser) {
@@ -482,7 +539,6 @@
             if (currentUser) {
                 userBalance = parseInt(localStorage.getItem(`balance_${currentUser.uid}`)) || 0;
                 updateBalanceUI();
-                checkAutoApproveFromUrl(); // Kiểm tra duyệt tự động khi đăng nhập
             }
         }
 
@@ -509,7 +565,6 @@
                     </div>
                     <div style="font-size: 0.85rem; color: #64748b;">Thời gian: ${ord.date}</div>
                     <div class="order-key">${ord.key}</div>
-                    ${ord.status === 'pending' ? `<button class="btn-approve" onclick="approveDeposit('${ord.id}')"><i class="fa-solid fa-check"></i> Duyệt cộng tiền</button>` : ''}
                 </div>
             `).join('');
         }
@@ -554,9 +609,11 @@
             }
         });
 
-        // Kiểm tra ngay khi tải trang nếu có param approve trên URL
+        // Tự động kiểm tra nếu URL có #admin thì mở tab quản trị luôn
         window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(checkAutoApproveFromUrl, 500);
+            if (window.location.hash === '#admin') {
+                switchTab('admin');
+            }
         });
     </script>
 </body>
