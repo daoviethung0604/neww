@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeltaProxyVN.IO - Cổng Dịch Vụ</title>
+    <title>DeltaClient.io - Cổng Dịch Vụ</title>
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
+            --sidebar-bg: #0b1329;
             --main-bg: #f4f7fe;
             --card-bg: #ffffff;
             --primary-blue: #3b52d4;
@@ -24,122 +25,133 @@
 
         /* HEADER */
         header {
-            height: 65px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+            height: 60px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
             position: sticky; top: 0; z-index: 100;
         }
-        .header-left { display: flex; align-items: center; gap: 20px; }
-        .logo-text { font-size: 1.25rem; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; cursor: pointer; }
-        
-        .search-box {
-            display: flex; align-items: center; background: #f8fafc; border: 1px solid var(--border-color);
-            border-radius: 20px; padding: 6px 14px; width: 300px; gap: 8px;
-        }
-        .search-box input { border: none; background: none; outline: none; font-size: 0.88rem; width: 100%; color: var(--text-main); }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .menu-toggle { font-size: 1.2rem; cursor: pointer; color: var(--text-main); }
+        .logo-text { font-size: 1.2rem; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; }
 
         .header-right { display: flex; align-items: center; gap: 12px; }
-        .balance-pill { background-color: #eff6ff; color: #1e40af; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1px solid #bfdbfe; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-        .balance-pill .add-btn { width: 20px; height: 20px; background: #3b52d4; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
-        
+        .balance-pill { background-color: #eff6ff; color: #1e40af; padding: 6px 12px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; border: 1px solid #bfdbfe; cursor: pointer; }
         .icon-btn {
-            width: 38px; height: 38px; border-radius: 50%; background-color: #f1f5f9;
+            width: 36px; height: 36px; border-radius: 50%; background-color: #f1f5f9;
             display: flex; align-items: center; justify-content: center; color: var(--text-main);
-            cursor: pointer; border: none; font-size: 0.95rem; overflow: hidden;
+            position: relative; cursor: pointer; border: none; overflow: hidden;
         }
         .user-avatar-head { width: 100%; height: 100%; object-fit: cover; display: none; }
 
-        .content-container { padding: 24px; max-width: 1200px; margin: 0 auto; }
+        .content-container { padding: 16px; max-width: 650px; margin: 0 auto; }
 
-        /* DASHBOARD LAYOUT */
-        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 25px; }
-        @media(max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } .search-box { display: none; } }
-
-        .panel-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-weight: 800; font-size: 1.1rem; }
-        .panel-header span:last-child { font-size: 0.82rem; color: var(--primary-blue); font-weight: 700; cursor: pointer; }
-
-        /* LIVE ORDER FEED */
-        .live-order-item {
-            display: flex; justify-content: space-between; align-items: center; padding: 12px 14px;
-            background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 12px; margin-bottom: 10px;
-        }
-        .live-order-left { display: flex; align-items: center; gap: 12px; }
-        .live-icon { width: 36px; height: 36px; background: #eff6ff; color: var(--primary-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-        .live-info .user-mask { font-weight: 700; font-size: 0.92rem; color: #0f172a; }
-        .live-info .prod-name { font-size: 0.8rem; color: var(--text-sub); margin-top: 2px; }
-        .live-right { text-align: right; }
-        .live-right .price { font-weight: 800; color: var(--primary-blue); font-size: 0.95rem; }
-        .live-right .time { font-size: 0.75rem; color: var(--text-sub); margin-top: 2px; }
-
-        /* VÍ CỦA TÔI & NÚT TOP NẠP */
-        .wallet-box { display: flex; flex-direction: column; gap: 14px; }
-        .wallet-balance-title { font-size: 0.8rem; color: var(--text-sub); font-weight: 600; text-transform: uppercase; }
-        .wallet-balance-val { font-size: 1.8rem; font-weight: 800; color: #0f172a; }
-        .wallet-stat-row { display: flex; justify-content: space-between; font-size: 0.88rem; border-top: 1px solid var(--border-color); padding-top: 10px; }
-        .wallet-stat-row span:last-child { font-weight: 800; color: #0f172a; }
-        
-        .btn-deposit-main {
-            background-color: #3b52d4; color: white; border: none; padding: 12px; border-radius: 12px;
-            font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(59, 82, 212, 0.2); width: 100%;
-        }
-        .btn-top-modal {
-            background-color: #ffffff; color: var(--primary-blue); border: 1px solid var(--primary-blue); padding: 11px; border-radius: 12px;
-            font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; width: 100%; margin-top: 10px;
-        }
-
-        /* HERO BANNER TRANG CHỦ & SẢN PHẨM */
+        /* HERO BANNER TRANG CHỦ */
         .hero-card {
             background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
             border: 1px solid #e0f2fe; border-radius: 20px; padding: 24px 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         }
-        .badge-tag { display: inline-block; background-color: #e0e7ff; color: #3730a3; font-size: 0.72rem; font-weight: 800; padding: 6px 14px; border-radius: 20px; letter-spacing: 0.5px; margin-bottom: 12px; text-transform: uppercase; }
-        .hero-card h1 { font-size: 1.5rem; font-weight: 800; line-height: 1.25; color: #0f172a; margin-bottom: 10px; }
-        .hero-card p { color: #64748b; font-size: 0.92rem; line-height: 1.5; margin-bottom: 16px; }
+        .badge-tag { display: inline-block; background-color: #e0e7ff; color: #3730a3; font-size: 0.72rem; font-weight: 800; padding: 6px 14px; border-radius: 20px; letter-spacing: 0.5px; margin-bottom: 16px; text-transform: uppercase; }
+        .hero-card h1 { font-size: 1.65rem; font-weight: 800; line-height: 1.25; color: #0f172a; margin-bottom: 14px; }
+        .hero-card p { color: #64748b; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px; }
 
-        .product-grid-main { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-        .product-card { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
-        .product-card-top { display: flex; justify-content: space-between; align-items: center; }
-        .product-title { font-size: 1.05rem; font-weight: 800; color: #0f172a; }
-        .product-desc { font-size: 0.82rem; color: var(--text-sub); }
-        .product-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 4px; }
-        .product-price { font-size: 1.15rem; font-weight: 800; color: var(--primary-blue); }
-        .btn-buy-now { background: var(--primary-blue); color: white; border: none; padding: 7px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+        .btn-stack { display: flex; flex-direction: column; gap: 10px; }
+        .btn-action {
+            width: 100%; padding: 12px 20px; border-radius: 25px; font-weight: 700; font-size: 0.95rem;
+            display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; border: none; transition: 0.2s;
+        }
+        .btn-action-primary { background-color: #3b52d4; color: #ffffff; box-shadow: 0 4px 12px rgba(59, 82, 212, 0.25); }
+        .btn-action-secondary { background-color: #ffffff; color: #0f172a; border: 1px solid #e2e8f0; }
+        .btn-action-pill { background-color: #ffffff; color: #1e293b; border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.88rem; justify-content: flex-start; padding-left: 16px; }
+        .btn-action-pill i { width: 28px; height: 28px; border-radius: 50%; background-color: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #3b82f6; }
 
-        /* PASSWORD STYLES */
+        /* SẢN PHẨM */
+        .section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 15px; }
+        .product-grid { display: flex; flex-direction: column; gap: 15px; }
+        .product-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+        .card-top { display: flex; justify-content: space-between; align-items: center; }
+        .tag-category { background-color: #eff6ff; color: var(--primary-blue); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .stock-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background-color: var(--badge-green-bg); color: var(--badge-green-text); }
+        .product-name { font-size: 1.1rem; font-weight: 800; color: #0f172a; }
+        .product-desc { font-size: 0.85rem; color: var(--text-sub); }
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 4px; }
+        .price-amount { font-size: 1.2rem; font-weight: 800; color: #3b52d4; }
+        .btn-buy { background-color: #3b52d4; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; cursor: pointer; }
+
+        /* ĐƠN HÀNG */
+        .order-list { display: flex; flex-direction: column; gap: 12px; }
+        .order-card { background: white; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; }
+        .order-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; align-items: center; }
+        .order-status { padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .status-success { color: #166534; background: #dcfce7; }
+        .status-pending { color: #854d0e; background: #fef9c3; }
+        .order-key { background: #f1f5f9; padding: 8px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 8px; word-break: break-all; }
+        
+        .btn-approve { background-color: #16a34a; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; margin-top: 8px; display: inline-flex; align-items: center; gap: 4px; }
+
+        /* TRANG PROFILE */
+        .profile-container { display: flex; flex-direction: column; gap: 15px; }
+        .profile-card-top { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
+        .profile-user-info { display: flex; align-items: center; gap: 15px; }
+        .profile-avatar { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid #3b52d4; }
+        .profile-name { font-size: 1.2rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 6px; }
+        .profile-username { font-size: 0.85rem; color: var(--text-sub); margin-top: 2px; }
+        
+        .profile-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .stat-box { background: white; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; }
+        .stat-box-main { background: linear-gradient(135deg, #3b52d4 0%, #2563eb 100%); color: white; border: none; }
+        .stat-title { font-size: 0.82rem; font-weight: 600; opacity: 0.9; margin-bottom: 6px; }
+        .stat-value { font-size: 1.3rem; font-weight: 800; }
+
+        .profile-details-card { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; }
+        .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; align-items: center; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { color: var(--text-sub); font-weight: 600; }
+        .detail-val { font-weight: 700; color: #0f172a; }
+
+        /* PASSWORD INPUT STYLES WITH EYE ICON */
         .password-wrapper { position: relative; display: flex; align-items: center; }
-        .password-wrapper input { padding-right: 35px; width: 100%; }
-        .toggle-password { position: absolute; right: 12px; cursor: pointer; color: var(--text-sub); font-size: 0.9rem; }
+        .password-wrapper input { padding-right: 35px; }
+        .toggle-password { position: absolute; right: 10px; cursor: pointer; color: var(--text-sub); font-size: 0.9rem; }
+
         .input-custom { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; outline: none; }
 
-        /* FOOTER CONTACT */
-        .footer-contact { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px 20px; margin-top: 30px; text-align: center; color: var(--text-sub); font-size: 0.88rem; }
+        /* FOOTER CONTACT STYLES */
+        .footer-contact {
+            background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px 20px;
+            margin-top: 25px; text-align: center; color: var(--text-sub); font-size: 0.88rem;
+        }
         .footer-contact b { color: #0f172a; }
+
+        /* ADMIN PANEL STYLES */
+        .admin-box { background: white; border: 2px dashed #3b52d4; border-radius: 16px; padding: 20px; margin-top: 15px; text-align: center; }
+        .admin-order-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; text-align: left; }
 
         /* VIEW SWITCHING */
         .page-view { display: none; }
         .page-view.active { display: block; }
-
-        /* MODAL */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 2000; }
-        .modal-card { background: #ffffff; width: 90%; max-width: 400px; padding: 24px; border-radius: 20px; position: relative; text-align: center; max-height: 90vh; overflow-y: auto; }
-        .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.2rem; color: var(--text-sub); cursor: pointer; }
-
-        /* TOP RANK LIST */
-        .top-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
-        .top-item:last-child { border-bottom: none; }
-        .rank-badge { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; color: white; }
-        .rank-1 { background: #eab308; }
-        .rank-2 { background: #94a3b8; }
-        .rank-3 { background: #b45309; }
-        .rank-other { background: #cbd5e1; color: #1e293b; }
 
         /* BOTTOM NAVBAR */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background-color: #ffffff; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; font-size: 0.7rem; font-weight: 600; text-decoration: none; gap: 4px; cursor: pointer; }
         .nav-item i { font-size: 1.1rem; }
         .nav-item.active { color: #3b52d4; }
+
+        /* FLOATING BUTTONS */
+        .floating-btns { position: fixed; right: 16px; bottom: 80px; display: flex; flex-direction: column; gap: 10px; z-index: 99; }
+        .float-btn { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; border: none; }
+        .btn-zalo { background-color: #0068ff; }
+        .btn-scroll { background-color: #0f172a; }
+
+        /* MODAL POPUP CHUNG */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .modal-card { background: #ffffff; width: 90%; max-width: 360px; padding: 25px; border-radius: 20px; position: relative; text-align: center; }
+        .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.2rem; color: var(--text-sub); cursor: pointer; }
+        .btn-google-login { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: #ffffff; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; margin-top: 20px; }
+        
+        /* QR STYLES */
+        .qr-box { background: #f8fafc; border: 1px dashed var(--border-color); padding: 15px; border-radius: 12px; margin: 15px 0; }
+        .qr-box img { width: 190px; height: 190px; object-fit: contain; margin-bottom: 8px; }
+        .input-deposit { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px; font-size: 0.95rem; outline: none; text-align: center; font-weight: 700; color: #3b52d4; }
     </style>
 </head>
 <body>
@@ -147,19 +159,12 @@
     <!-- HEADER -->
     <header>
         <div class="header-left">
-            <span class="logo-text" onclick="switchTab('home')">DeltaProxyVN.LOL</span>
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-sub);"></i>
-                <input type="text" placeholder="Tìm kiếm sản phẩm...">
-            </div>
+            <i class="fa-solid fa-bars menu-toggle" onclick="switchTab('products')"></i>
+            <span class="logo-text" onclick="switchTab('home')" style="cursor:pointer;">DeltaClient.io</span>
         </div>
         <div class="header-right">
-            <div class="balance-pill" onclick="openDepositModal()">
-                <span>Số dư: <span id="userBalanceHead">0đ</span></span>
-                <div class="add-btn"><i class="fa-solid fa-plus"></i></div>
-            </div>
-            <button class="icon-btn" onclick="openDepositModal()" title="Thông báo"><i class="fa-regular fa-bell"></i></button>
-            <button class="icon-btn" id="headAuthBtn" title="Tài khoản">
+            <div class="balance-pill" onclick="openDepositModal()">Số dư: <span id="userBalance">0đ</span></div>
+            <button class="icon-btn" id="headAuthBtn" title="Xem tài khoản">
                 <img id="userHeadAvatar" class="user-avatar-head" src="" alt="Avatar">
                 <i class="fa-regular fa-user" id="userHeadIcon"></i>
             </button>
@@ -167,134 +172,107 @@
     </header>
 
     <div class="content-container">
-
-        <!-- TRANG CHỦ / GIỚI THIỆU & DASHBOARD -->
+        
+        <!-- TRANG CHỦ -->
         <div id="view-home" class="page-view active">
-            
-            <!-- Phần Giới thiệu hệ thống -->
             <div class="hero-card">
-                <span class="badge-tag">● HẠ TẦNG PROXY FREE FIRE & iOS</span>
+                <span class="badge-tag">● HẠ TẦNG PROXY FREE FIRE</span>
                 <h1>Hệ thống Proxy Free Fire & Digital Keys Doanh Nghiệp</h1>
-                <p>Cung cấp IPA Proxy Delta độc quyền, key tốc độ cao, tự động giao key tức thì 100%. Tối ưu ping cực tốt cho game thủ chuyên nghiệp.</p>
-            </div>
-
-            <!-- Dashboard 2 cột -->
-            <div class="dashboard-grid">
-                <!-- Cột trái: Đơn hàng gần đây -->
-                <div class="panel-card">
-                    <div class="panel-header">
-                        <span><i class="fa-solid fa-circle" style="color: #22c55e; font-size: 0.6rem;"></i> Đơn hàng gần đây</span>
-                        <span onclick="switchTab('orders')">Cập nhật trực tiếp</span>
-                    </div>
-                    <div id="liveOrderFeed"></div>
-                </div>
-
-                <!-- Cột phải: Ví & Nút Top Đại Gia -->
-                <div style="display: flex; flex-direction: column; gap: 20px;">
-                    <div class="panel-card wallet-box">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-weight: 800; font-size: 1.05rem;">Ví của tôi</span>
-                            <span id="profileMiniUsername" style="background: #f1f5f9; padding: 4px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 700;">Khách</span>
-                        </div>
-                        <div>
-                            <div class="wallet-balance-title">Số dư khả dụng</div>
-                            <div class="wallet-balance-val" id="userBalanceVal">0đ</div>
-                        </div>
-                        <div class="wallet-stat-row">
-                            <span style="color: var(--text-sub);">Tổng nạp</span>
-                            <span id="profileTotalDeposit" style="color: #16a34a;">0đ</span>
-                        </div>
-                        <div class="wallet-stat-row">
-                            <span style="color: var(--text-sub);">Chiết khấu</span>
-                            <span>0%</span>
-                        </div>
-                        <button class="btn-deposit-main" onclick="openDepositModal()">
-                            <i class="fa-solid fa-bolt"></i> Nạp tiền ngay
-                        </button>
-                    </div>
-
-                    <div class="panel-card" style="padding: 16px; text-align: center;">
-                        <button class="btn-top-modal" onclick="openTopModal()">
-                            <i class="fa-solid fa-trophy" style="color: #eab308;"></i> XEM TOP NẠP ĐẠI GIA
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Danh mục sản phẩm -->
-            <div style="margin-top: 30px;">
-                <div style="font-size: 1.25rem; font-weight: 800; margin-bottom: 4px;">Danh Mục Sản Phẩm</div>
-                <div style="font-size: 0.88rem; color: var(--text-sub); margin-bottom: 14px;">Chọn gói Proxy tốc độ cao phù hợp với nhu cầu của bạn</div>
+                <p>Cung cấp IPA Proxy Delta độc quyền, key tốc độ cao, tự động giao key tức thì 100%. Tối ưu ping cho game thủ chuyên nghiệp.</p>
                 
-                <div class="product-grid-main">
-                    <div class="product-card">
-                        <div class="product-card-top">
-                            <span style="background: #eff6ff; color: var(--primary-blue); padding: 3px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;">IPA Proxy</span>
-                            <span style="font-size: 0.75rem; color: #16a34a; font-weight: 700;">Kho: 30</span>
-                        </div>
-                        <div class="product-title">IPA Proxy Delta 1 Ngày</div>
-                        <div class="product-desc">Hỗ trợ iOS 16 đến iOS 18+ (24 giờ sử dụng liên tục)</div>
-                        <div class="product-footer">
-                            <div class="product-price">20.000đ</div>
-                            <button class="btn-buy-now" onclick="buyProduct('IPA Proxy Delta 1 Ngày', 20000)">MUA NGAY</button>
-                        </div>
-                    </div>
-
-                    <div class="product-card">
-                        <div class="product-card-top">
-                            <span style="background: #eff6ff; color: var(--primary-blue); padding: 3px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;">IPA Proxy</span>
-                            <span style="font-size: 0.75rem; color: #16a34a; font-weight: 700;">Kho: 50</span>
-                        </div>
-                        <div class="product-title">IPA Proxy Delta 1 Tuần</div>
-                        <div class="product-desc">Hỗ trợ iOS 16 đến iOS 18+ (7 ngày tối ưu ping)</div>
-                        <div class="product-footer">
-                            <div class="product-price">50.000đ</div>
-                            <button class="btn-buy-now" onclick="buyProduct('IPA Proxy Delta 1 Tuần', 50000)">MUA NGAY</button>
-                        </div>
-                    </div>
-
-                    <div class="product-card">
-                        <div class="product-card-top">
-                            <span style="background: #eff6ff; color: var(--primary-blue); padding: 3px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;">IPA Proxy</span>
-                            <span style="font-size: 0.75rem; color: #16a34a; font-weight: 700;">Kho: 100</span>
-                        </div>
-                        <div class="product-title">IPA Proxy Delta 1 Tháng</div>
-                        <div class="product-desc">Hỗ trợ iOS 16 đến iOS 18+ (30 ngày VIP không giới hạn)</div>
-                        <div class="product-footer">
-                            <div class="product-price">120.000đ</div>
-                            <button class="btn-buy-now" onclick="buyProduct('IPA Proxy Delta 1 Tháng', 120000)">MUA NGAY</button>
-                        </div>
-                    </div>
+                <div class="btn-stack">
+                    <button class="btn-action btn-action-primary" onclick="switchTab('products')">
+                        Xem sản phẩm <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button class="btn-action btn-action-secondary" onclick="openDepositModal()">
+                        <i class="fa-regular fa-credit-card"></i> Nạp tiền ngay
+                    </button>
+                    
+                    <div class="btn-action btn-action-pill"><i class="fa-solid fa-bolt"></i> Kích hoạt trong 3s</div>
+                    <div class="btn-action btn-action-pill"><i class="fa-regular fa-shield-check"></i> Bảo hành uy tín</div>
+                    <div class="btn-action btn-action-pill"><i class="fa-solid fa-globe"></i> Uptime ổn định</div>
                 </div>
             </div>
-
         </div>
 
-        <!-- TRANG ĐƠN HÀNG CÁ NHÂN -->
+        <!-- TRANG SẢN PHẨM -->
+        <div id="view-products" class="page-view">
+            <div class="section-title">Danh mục IPA Delta Client</div>
+            <div class="product-grid">
+                
+                <div class="product-card">
+                    <div class="card-top">
+                        <span class="tag-category">IPA Delta Client</span>
+                        <span class="stock-badge">Kho: 30</span>
+                    </div>
+                    <div class="product-name">IPA Delta Client 1 Ngày</div>
+                    <div class="product-desc">Hỗ Trợ Các Dòng Máy Từ iOS 16 Đến iOS 18+ (24 Giờ)</div>
+                    <div class="card-bottom">
+                        <div class="price-amount">20.000đ</div>
+                        <button class="btn-buy" onclick="buyProduct('IPA Delta Client 1 Ngày', 20000)">MUA NGAY</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="card-top">
+                        <span class="tag-category">IPA Delta Client</span>
+                        <span class="stock-badge">Kho: 50</span>
+                    </div>
+                    <div class="product-name">IPA Delta Client 1 Tuần</div>
+                    <div class="product-desc">Hỗ Trợ Các Dòng Máy Từ iOS 16 Đến iOS 18+ (7 Ngày)</div>
+                    <div class="card-bottom">
+                        <div class="price-amount">50.000đ</div>
+                        <button class="btn-buy" onclick="buyProduct('IPA Delta Client 1 Tuần', 50000)">MUA NGAY</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="card-top">
+                        <span class="tag-category">IPA Delta Client</span>
+                        <span class="stock-badge">Kho: 100</span>
+                    </div>
+                    <div class="product-name">IPA Delta Client 1 Tháng</div>
+                    <div class="product-desc">Hỗ Trợ Các Dòng Máy Từ iOS 16 Đến iOS 18+ (30 Ngày)</div>
+                    <div class="card-bottom">
+                        <div class="price-amount">120.000đ</div>
+                        <button class="btn-buy" onclick="buyProduct('IPA Delta Client 1 Tháng', 120000)">MUA NGAY</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TRANG ĐƠN HÀNG -->
         <div id="view-orders" class="page-view">
-            <div style="font-size: 1.3rem; font-weight: 800; margin-bottom: 15px;">Lịch Sử Giao Dịch Của Tôi</div>
-            <div id="myOrderContainer" style="display: flex; flex-direction: column; gap: 12px;"></div>
+            <div class="section-title">Lịch Sử Giao Dịch & Đơn Hàng</div>
+            <div class="order-list" id="orderContainer"></div>
         </div>
 
-        <!-- TRANG TÀI KHOẢN & ĐỔI MẬT KHẨU -->
+        <!-- TRANG TÀI KHOẢN & CÀI ĐẶT (PROFILE) -->
         <div id="view-profile" class="page-view">
-            <div style="font-size: 1.3rem; font-weight: 800; margin-bottom: 15px;">Cài Đặt Tài Khoản & Bảo Mật</div>
-            <div id="profileContentBox" style="display: flex; flex-direction: column; gap: 15px;"></div>
+            <div class="section-title">Tài Khoản & Cài Đặt</div>
+            <div class="profile-container" id="profileContentBox">
+                <!-- Nội dung được render tự động qua JS -->
+            </div>
         </div>
 
-        <!-- TRANG ADMIN -->
+        <!-- TRANG ADMIN PANEL BẢO MẬT BẰNG GOOGLE -->
         <div id="view-admin" class="page-view">
-            <div style="font-size: 1.3rem; font-weight: 800; margin-bottom: 15px;"><i class="fa-solid fa-shield-halved"></i> Quản Trị Hệ Thống</div>
-            <div id="adminLoginPrompt" style="background: white; border: 2px dashed var(--primary-blue); border-radius: 16px; padding: 30px; text-align: center;">
-                <p style="margin-bottom: 15px; font-weight: 600; color: var(--text-sub);">Khu vực giới hạn dành riêng cho Admin.</p>
-                <button class="btn-buy-now" style="padding: 12px 24px; font-size: 1rem;" onclick="triggerAdminLogin()">Đăng nhập Google Admin</button>
+            <div class="section-title"><i class="fa-solid fa-shield-halved"></i> Bảng Quản Trị Admin</div>
+            
+            <div id="adminLoginPrompt" class="admin-box">
+                <p style="margin-bottom: 12px; font-weight: 600; color: var(--text-sub);">Khu vực giới hạn chỉ dành riêng cho Admin.</p>
+                <button class="btn-action btn-action-primary" onclick="triggerAdminLogin()">
+                    <i class="fa-brands fa-google"></i> Đăng nhập bằng Google Admin
+                </button>
             </div>
+
             <div id="adminDashboardSection" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <span style="font-weight: 700; color: #16a34a;"><i class="fa-solid fa-circle-check"></i> <span id="adminEmailDisplay"></span></span>
-                    <button onclick="adminLogout()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Đăng xuất</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span style="font-weight: 700; color: #16a34a;"><i class="fa-solid fa-circle-check"></i> Admin: <span id="adminEmailDisplay"></span></span>
+                    <button onclick="adminLogout()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Đăng xuất Admin</button>
                 </div>
-                <div style="font-weight: 800; margin-bottom: 10px;">Duyệt Đơn Nạp Tiền</div>
+                <div class="section-title" style="font-size: 1.1rem; margin-top: 15px;">Danh sách đơn nạp tiền (Khớp Mã Nạp & Số Tiền)</div>
                 <div id="adminOrdersList"></div>
             </div>
         </div>
@@ -307,41 +285,10 @@
 
     </div>
 
-    <!-- MODAL NẠP TIỀN QR -->
-    <div class="modal-overlay" id="depositModal">
-        <div class="modal-card">
-            <button class="close-modal" onclick="closeModal('depositModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2>Nạp Tiền Qua QR</h2>
-            <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 4px;">Quét mã QR MBBank của DAO VIET HUNG</p>
-            <div style="background: #f8fafc; border: 1px dashed var(--border-color); padding: 15px; border-radius: 12px; margin: 15px 0;">
-                <img src="https://img.vietqr.io/image/MB-0348876411-compact2.png" alt="QR" style="width: 180px; height: 180px; object-fit: contain;">
-                <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a; margin-top: 6px;">DAO VIET HUNG - 0348876411</div>
-            </div>
-            <input type="text" id="depositAmountInput" placeholder="Nhập số tiền (VNĐ)" value="50.000" oninput="formatCurrencyInput(this)" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px; font-size: 1rem; text-align: center; font-weight: 700; color: var(--primary-blue); outline: none;">
-            <button class="btn-deposit-main" onclick="requestDeposit()">Xác Nhận Đã Chuyển Khoản</button>
-        </div>
-    </div>
-
-    <!-- MODAL TOP ĐẠI GIA -->
-    <div class="modal-overlay" id="topModal">
-        <div class="modal-card" style="max-width: 450px;">
-            <button class="close-modal" onclick="closeModal('topModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2><i class="fa-solid fa-trophy" style="color: #eab308;"></i> Top Nạp Đại Gia</h2>
-            <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 4px; margin-bottom: 15px;">Bảng vinh danh các nhà đầu tư hào phóng nhất hệ thống</p>
-            <div id="topRankList" style="text-align: left;"></div>
-        </div>
-    </div>
-
-    <!-- MODAL ĐĂNG NHẬP -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-card">
-            <button class="close-modal" onclick="closeModal('loginModal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2>Đăng Nhập</h2>
-            <p style="color: var(--text-sub); font-size: 0.88rem; margin-top: 5px;">Sử dụng tài khoản Google để tiếp tục</p>
-            <button class="btn-deposit-main" id="googleLoginBtn" style="background: white; color: #1e293b; border: 1px solid var(--border-color); margin-top: 20px;">
-                <i class="fa-brands fa-google" style="color: #ea4335;"></i> Đăng nhập với Google
-            </button>
-        </div>
+    <!-- FLOATING BUTTONS -->
+    <div class="floating-btns">
+        <button class="float-btn btn-zalo"><i class="fa-solid fa-comment-dots"></i></button>
+        <button class="float-btn btn-scroll" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
     </div>
 
     <!-- BOTTOM NAVBAR -->
@@ -349,16 +296,54 @@
         <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
             <i class="fa-solid fa-house"></i><span>Trang chủ</span>
         </div>
+        <div class="nav-item" id="nav-products" onclick="switchTab('products')">
+            <i class="fa-solid fa-cubes"></i><span>Sản phẩm</span>
+        </div>
         <div class="nav-item" onclick="openDepositModal()">
             <i class="fa-solid fa-wallet"></i><span>Nạp tiền</span>
         </div>
         <div class="nav-item" id="nav-orders" onclick="switchTab('orders')">
             <i class="fa-solid fa-receipt"></i><span>Đơn hàng</span>
         </div>
-        <div class="nav-item" id="nav-profile" onclick="handleAuthAction()">
+        <div class="nav-item" id="bottomNavAuth" onclick="handleAuthAction()">
             <i class="fa-regular fa-user"></i><span id="bottomNavUserText">Tôi</span>
         </div>
     </nav>
+
+    <!-- MODAL ĐĂNG NHẬP -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <button class="close-modal" onclick="closeModal('loginModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>Đăng Nhập</h2>
+            <p style="color: var(--text-sub); font-size: 0.88rem; margin-top: 5px;">Sử dụng tài khoản Google để truy cập</p>
+            <button class="btn-google-login" id="googleLoginBtn">
+                <svg width="18" height="18" viewBox="0 0 18 18">
+                    <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.259h2.908c1.702-1.567 2.684-3.874 2.684-6.617z"/>
+                    <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+                    <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+                    <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+                </svg>
+                Đăng nhập với Google
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL NẠP TIỀN QR -->
+    <div class="modal-overlay" id="depositModal">
+        <div class="modal-card">
+            <button class="close-modal" onclick="closeModal('depositModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>Nạp Tiền Qua QR</h2>
+            <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 4px;">Quét mã QR MBBank của DAO VIET HUNG</p>
+            
+            <div class="qr-box">
+                <img src="https://img.vietqr.io/image/MB-0348876411-compact2.png" alt="QR Code">
+                <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a;">DAO VIET HUNG - 0348876411</div>
+            </div>
+
+            <input type="text" id="depositAmountInput" class="input-deposit" placeholder="Nhập số tiền (VNĐ)" value="50.000" oninput="formatCurrencyInput(this)">
+            <button class="btn-action btn-action-primary" onclick="requestDeposit()">Xác Nhận Đã Chuyển Khoản</button>
+        </div>
+    </div>
 
     <!-- SCRIPT -->
     <script type="module">
@@ -381,196 +366,239 @@
 
         let currentUser = null;
         let userBalance = 0;
-        const ADMIN_EMAIL = "daoh80602@gmail.com";
+
+        const ADMIN_EMAIL = "daoh80602@gmail.com"; 
         const TELEGRAM_TOKEN = "8572193249:AAFSnoEWhC3eVrcSfGQsRS6XEds-DKFpdko";
         const TELEGRAM_CHAT_ID = "8697704932";
 
         window.formatCurrencyInput = function(input) {
             let value = input.value.replace(/\D/g, '');
-            input.value = value === '' ? '' : Number(value).toLocaleString('vi-VN');
+            if (value === '') {
+                input.value = '';
+                return;
+            }
+            input.value = Number(value).toLocaleString('vi-VN');
         };
 
         window.switchTab = function(tabName) {
-            document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
             document.getElementById(`view-${tabName}`).classList.add('active');
-            if(document.getElementById(`nav-${tabName}`)) document.getElementById(`nav-${tabName}`).classList.add('active');
-            
-            if(tabName === 'orders') renderMyOrders();
-            if(tabName === 'profile') renderProfilePage();
-            if(tabName === 'admin') checkAdminAccess();
+            if(document.getElementById(`nav-${tabName}`)) {
+                document.getElementById(`nav-${tabName}`).classList.add('active');
+            }
+            if (tabName === 'orders') renderOrders();
+            if (tabName === 'profile') renderProfileData();
+            if (tabName === 'admin') checkAdminAccess();
         };
 
         window.openDepositModal = function() {
-            if(!currentUser) { document.getElementById('loginModal').style.display = 'flex'; return; }
+            if (!currentUser) {
+                document.getElementById('loginModal').style.display = 'flex';
+                return;
+            }
             document.getElementById('depositModal').style.display = 'flex';
         };
 
-        window.openTopModal = function() {
-            renderTopRanks();
-            document.getElementById('topModal').style.display = 'flex';
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).style.display = 'none';
         };
 
-        window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
-
         window.requestDeposit = function() {
-            const raw = document.getElementById('depositAmountInput').value.replace(/\./g, '');
-            const amount = parseInt(raw) || 0;
-            if(amount <= 0) { alert("Vui lòng nhập số tiền hợp lệ!"); return; }
+            const rawValue = document.getElementById('depositAmountInput').value.replace(/\./g, '');
+            const amount = parseInt(rawValue) || 0;
+            if (amount <= 0) {
+                alert("Vui lòng nhập số tiền hợp lệ!");
+                return;
+            }
 
             const timeNow = new Date().toLocaleString('vi-VN');
-            const code = Math.floor(1000 + Math.random() * 9000).toString();
+            const depositCode = Math.floor(1000 + Math.random() * 9000).toString();
             
             const newOrder = {
-                id: code,
+                id: depositCode,
                 uid: currentUser.uid,
-                userName: currentUser.displayName || 'Khách',
+                userName: currentUser.displayName || 'Khách hàng',
                 name: `Nạp tiền qua QR (${amount.toLocaleString('vi-VN')}đ)`,
                 rawAmount: amount,
                 price: amount.toLocaleString('vi-VN') + 'đ',
                 date: timeNow,
+                key: `Mã nội dung CK: ${depositCode} | Số tiền: ${amount.toLocaleString('vi-VN')}đ`,
                 status: 'pending',
                 type: 'deposit'
             };
 
-            let uOrders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
-            uOrders.unshift(newOrder);
-            localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(uOrders));
+            let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
+            orders.unshift(newOrder);
+            localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
-            let all = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
-            all.unshift(newOrder);
-            localStorage.setItem('admin_all_orders', JSON.stringify(all));
+            let allAdminOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
+            allAdminOrders.unshift(newOrder);
+            localStorage.setItem('admin_all_orders', JSON.stringify(allAdminOrders));
 
-            alert(`Tạo yêu cầu nạp thành công!\nVui lòng chuyển khoản số tiền ${amount.toLocaleString('vi-VN')}đ với nội dung: ${code}`);
+            const message = `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n` +
+                            `👤 *Khách:* ${currentUser.displayName}\n` +
+                            `💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n` +
+                            `🔑 *Mã nội dung CK:* \`${depositCode}\`\n` +
+                            `⏰ *Thời gian:* ${timeNow}`;
+
+            fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            }).catch(err => console.error("Lỗi gửi Telegram:", err));
+
+            alert(`Tạo yêu cầu nạp thành công!\nVui lòng chuyển khoản số tiền ${amount.toLocaleString('vi-VN')}đ với nội dung: ${depositCode}`);
             closeModal('depositModal');
             switchTab('orders');
         };
 
+        window.triggerAdminLogin = function() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const loggedUser = result.user;
+                    if (loggedUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                        localStorage.setItem('delta_admin_auth', loggedUser.email);
+                        alert("Đăng nhập quyền Admin thành công!");
+                        checkAdminAccess();
+                    } else {
+                        alert("Tài khoản Google này không có quyền truy cập trang quản trị!");
+                        signOut(auth);
+                    }
+                })
+                .catch((error) => {
+                    alert("Đăng nhập thất bại: " + error.message);
+                });
+        };
+
+        window.adminLogout = function() {
+            localStorage.removeItem('delta_admin_auth');
+            checkAdminAccess();
+            alert("Đã đăng xuất khỏi trang quản trị!");
+            switchTab('home');
+        };
+
+        function checkAdminAccess() {
+            const savedAdminEmail = localStorage.getItem('delta_admin_auth');
+            if (savedAdminEmail && savedAdminEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                document.getElementById('adminLoginPrompt').style.display = 'none';
+                document.getElementById('adminDashboardSection').style.display = 'block';
+                document.getElementById('adminEmailDisplay').innerText = savedAdminEmail;
+                renderAdminOrders();
+            } else {
+                document.getElementById('adminLoginPrompt').style.display = 'block';
+                document.getElementById('adminDashboardSection').style.display = 'none';
+            }
+        }
+
+        window.adminApproveOrder = function(orderId, targetUid, rawAmount) {
+            let userOrders = JSON.parse(localStorage.getItem(`orders_${targetUid}`) || '[]');
+            const uIndex = userOrders.findIndex(o => o.id === orderId && o.status === 'pending');
+            if (uIndex !== -1) {
+                userOrders[uIndex].status = 'success';
+                userOrders[uIndex].key = 'Đã duyệt cộng tiền thành công bởi Admin!';
+                localStorage.setItem(`orders_${targetUid}`, JSON.stringify(userOrders));
+            }
+
+            let currentBal = parseInt(localStorage.getItem(`balance_${targetUid}`)) || 0;
+            currentBal += rawAmount;
+            localStorage.setItem(`balance_${targetUid}`, currentBal);
+
+            let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
+            const aIndex = allOrders.findIndex(o => o.id === orderId && o.status === 'pending');
+            if (aIndex !== -1) {
+                allOrders[aIndex].status = 'success';
+                localStorage.setItem('admin_all_orders', JSON.stringify(allOrders));
+            }
+
+            alert(`Đã duyệt đơn hàng với mã nội dung ${orderId} (+${rawAmount.toLocaleString('vi-VN')}đ)!`);
+            renderAdminOrders();
+        };
+
+        function renderAdminOrders() {
+            const container = document.getElementById('adminOrdersList');
+            let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
+            
+            if (allOrders.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 20px; color: #64748b;">Chưa có đơn nạp tiền nào trong hệ thống!</div>`;
+                return;
+            }
+
+            container.innerHTML = allOrders.map(ord => `
+                <div class="admin-order-item">
+                    <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px;">
+                        <span>Khách: ${ord.userName || 'Khách'}</span>
+                        <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">
+                            ${ord.status === 'pending' ? 'Chờ duyệt' : 'Đã duyệt'}
+                        </span>
+                    </div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: #3b52d4; margin: 4px 0;">Mã nội dung CK: [ ${ord.id} ] - Số tiền: ${ord.price}</div>
+                    <div style="font-size: 0.82rem; color: #64748b; margin-bottom: 6px;">Thời gian: ${ord.date}</div>
+                    ${ord.status === 'pending' ? `
+                        <button class="btn-approve" onclick="adminApproveOrder('${ord.id}', '${ord.uid}',${ord.rawAmount})">
+                            <i class="fa-solid fa-check"></i> Khớp mã ${ord.id} & Duyệt ngay
+                        </button>` : ''}
+                </div>
+            `).join('');
+        }
+
         window.buyProduct = function(name, price) {
-            if(!currentUser) { document.getElementById('loginModal').style.display = 'flex'; return; }
-            if(userBalance < price) { alert("Số dư không đủ! Vui lòng nạp thêm tiền."); openDepositModal(); return; }
+            if (!currentUser) {
+                document.getElementById('loginModal').style.display = 'flex';
+                return;
+            }
+
+            if (userBalance < price) {
+                alert("Số dư của bạn không đủ để mua sản phẩm này! Vui lòng nạp thêm tiền.");
+                openDepositModal();
+                return;
+            }
 
             userBalance -= price;
-            localStorage.setItem(`balance_${currentUser.uid}`, userBalance);
+            saveUserData();
             updateBalanceUI();
 
             const newOrder = {
                 id: 'DH' + Date.now().toString().slice(-6),
-                uid: currentUser.uid,
-                userName: currentUser.displayName || 'Khách',
                 name: name,
                 rawAmount: price,
                 price: price.toLocaleString('vi-VN') + 'đ',
                 date: new Date().toLocaleString('vi-VN'),
+                key: 'Giao dịch thành công',
                 status: 'success',
                 type: 'purchase'
             };
 
-            let uOrders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
-            uOrders.unshift(newOrder);
-            localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(uOrders));
+            let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
+            orders.unshift(newOrder);
+            localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
-            let globalPub = JSON.parse(localStorage.getItem('public_recent_orders') || '[]');
-            globalPub.unshift({
-                mask: '***' + currentUser.uid.slice(-3),
-                name: name,
-                price: price.toLocaleString('vi-VN') + 'đ',
-                time: 'Vừa xong'
-            });
-            if(globalPub.length > 10) globalPub.pop();
-            localStorage.setItem('public_recent_orders', JSON.stringify(globalPub));
-
-            renderLiveOrders();
             alert("Vì bảo mật vui lòng liên hệ sdt 0348876411 để nhận key.");
+            switchTab('orders');
         };
 
         function updateBalanceUI() {
-            document.getElementById('userBalanceHead').innerText = userBalance.toLocaleString('vi-VN') + 'đ';
-            document.getElementById('userBalanceVal').innerText = userBalance.toLocaleString('vi-VN') + 'đ';
+            document.getElementById('userBalance').innerText = userBalance.toLocaleString('vi-VN') + 'đ';
         }
 
-        function renderLiveOrders() {
-            const container = document.getElementById('liveOrderFeed');
-            let data = JSON.parse(localStorage.getItem('public_recent_orders') || 'null');
-            if(!data) {
-                data = [
-                    {mask: '***923', name: 'IPA Proxy Delta 1 Ngày', price: '20.000đ', time: '1 phút trước'},
-                    {mask: '***795', name: 'IPA Proxy Delta 1 Ngày', price: '20.000đ', time: '2 phút trước'},
-                    {mask: '***268', name: 'IPA Proxy Delta 1 Ngày', price: '20.000đ', time: '17 phút trước'},
-                    {mask: '***789', name: 'IPA Proxy Delta 1 Ngày', price: '20.000đ', time: '49 phút trước'},
-                    {mask: '***741', name: 'IPA Proxy Delta 1 Tháng', price: '120.000đ', time: '2 giờ trước'}
-                ];
-                localStorage.setItem('public_recent_orders', JSON.stringify(data));
+        function saveUserData() {
+            if (currentUser) {
+                localStorage.setItem(`balance_${currentUser.uid}`, userBalance);
             }
-
-            container.innerHTML = data.map(item => `
-                <div class="live-order-item">
-                    <div class="live-order-left">
-                        <div class="live-icon"><i class="fa-solid fa-bag-shopping"></i></div>
-                        <div class="live-info">
-                            <div class="user-mask">${item.mask}</div>
-                            <div class="prod-name">${item.name}</div>
-                        </div>
-                    </div>
-                    <div class="live-right">
-                        <div class="price">${item.price}</div>
-                        <div class="time">${item.time}</div>
-                    </div>
-                </div>
-            `).join('');
         }
 
-        function renderTopRanks() {
-            const container = document.getElementById('topRankList');
-            let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
-            let userMap = {};
-            allOrders.forEach(o => {
-                if(o.status === 'success' && o.type === 'deposit') {
-                    userMap[o.userName] = (userMap[o.userName] || 0) + o.rawAmount;
-                }
-            });
-
-            let ranks = Object.keys(userMap).map(k => ({name: k, total: userMap[k]}));
-            if(ranks.length === 0) {
-                ranks = [
-                    {name: 'Đoàn Việt Hùng', total: 180000},
-                    {name: 'Nguyễn Văn A', total: 120000},
-                    {name: 'Trần Văn B', total: 50000}
-                ];
-            } else {
-                ranks.sort((a,b) => b.total - a.total);
+        function loadUserData() {
+            if (currentUser) {
+                userBalance = parseInt(localStorage.getItem(`balance_${currentUser.uid}`)) || 0;
+                updateBalanceUI();
             }
-
-            container.innerHTML = ranks.map((r, idx) => `
-                <div class="top-item">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="rank-badge ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':'rank-other'}">${idx+1}</div>
-                        <span style="font-weight: 700; color: #0f172a;">${r.name}</span>
-                    </div>
-                    <span style="font-weight: 800; color: #16a34a;">${r.total.toLocaleString('vi-VN')}đ</span>
-                </div>
-            `).join('');
         }
 
-        window.renderMyOrders = function() {
-            const container = document.getElementById('myOrderContainer');
-            if(!currentUser) { container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-sub);">Vui lòng đăng nhập để xem lịch sử!</div>`; return; }
-            let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
-            if(orders.length === 0) { container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-sub);">Chưa có giao dịch nào!</div>`; return; }
-            
-            container.innerHTML = orders.map(o => `
-                <div style="background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 15px;">
-                    <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 6px;">
-                        <span>${o.name}</span>
-                        <span style="color: ${o.status==='success'?'#16a34a':'#ca8a04'}">${o.status==='success'?'Thành công':'Đang chờ duyệt'}</span>
-                    </div>
-                    <div style="font-size: 0.85rem; color: var(--text-sub);">Thời gian: ${o.date}</div>
-                    <div style="font-size: 0.9rem; font-weight: 800; color: var(--primary-blue); margin-top: 4px;">Số tiền: ${o.price}</div>
-                </div>
-            `).join('');
-        }
-
-        // TÍNH NĂNG ẨN/HIỆN MẬT KHẨU & ĐỔI MẬT KHẨU
         window.togglePasswordVisibility = function(inputId, iconId) {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
@@ -594,10 +622,12 @@
                 alert("Vui lòng điền đầy đủ thông tin mật khẩu!");
                 return;
             }
+
             if (newPass.length < 6) {
                 alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
                 return;
             }
+
             if (newPass !== confirmPass) {
                 alert("Mật khẩu mới và xác nhận mật khẩu không khớp!");
                 return;
@@ -610,46 +640,73 @@
             document.getElementById('confirmPassword').value = '';
         };
 
-        window.renderProfilePage = function() {
+        function renderProfileData() {
             const container = document.getElementById('profileContentBox');
-            if(!currentUser) { container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-sub);">Vui lòng đăng nhập!</div>`; return; }
+            if (!currentUser) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Vui lòng đăng nhập để xem thông tin tài khoản!</div>`;
+                return;
+            }
+
             let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
-            let totalDep = 0;
-            let totalSpent = 0;
-            orders.forEach(o => { 
-                if(o.status==='success') {
-                    if(o.type==='deposit') totalDep += o.rawAmount;
-                    if(o.type==='purchase') totalSpent += o.rawAmount;
+            let calculatedTotalDeposit = 0;
+            let calculatedTotalSpent = 0;
+
+            orders.forEach(ord => {
+                if (ord.status === 'success') {
+                    if (ord.type === 'deposit') {
+                        calculatedTotalDeposit += (ord.rawAmount || 0);
+                    } else if (ord.type === 'purchase') {
+                        calculatedTotalSpent += (ord.rawAmount || 0);
+                    }
                 }
             });
 
             container.innerHTML = `
-                <div style="background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 15px;">
-                    <img src="${currentUser.photoURL}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
-                    <div>
-                        <div style="font-size: 1.1rem; font-weight: 800;">${currentUser.displayName}</div>
-                        <div style="font-size: 0.85rem; color: var(--text-sub);">${currentUser.email}</div>
+                <div class="profile-card-top">
+                    <div class="profile-user-info">
+                        <img src="${currentUser.photoURL}" class="profile-avatar" alt="Avatar">
+                        <div>
+                            <div class="profile-name">${currentUser.displayName} <i class="fa-solid fa-circle-check" style="color: #3b52d4; font-size: 0.9rem;"></i></div>
+                            <div class="profile-username">@${currentUser.email.split('@')[0]} • Chiết khấu 0%</div>
+                        </div>
+                    </div>
+                    <button class="btn-action btn-action-primary" style="width: auto; padding: 8px 16px; font-size: 0.85rem;" onclick="openDepositModal()">
+                        <i class="fa-solid fa-wallet"></i> Nạp ví
+                    </button>
+                </div>
+
+                <div class="profile-stats-grid">
+                    <div class="stat-box stat-box-main">
+                        <div class="stat-title">SỐ DƯ HIỆN TẠI</div>
+                        <div class="stat-value">${userBalance.toLocaleString('vi-VN')}đ</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title" style="color: var(--text-sub);">TỔNG TIỀN NẠP</div>
+                        <div class="stat-value" style="color: #16a34a;">${calculatedTotalDeposit.toLocaleString('vi-VN')}đ</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title" style="color: var(--text-sub);">ĐÃ SỬ DỤNG</div>
+                        <div class="stat-value" style="color: #ef4444;">${calculatedTotalSpent.toLocaleString('vi-VN')}đ</div>
                     </div>
                 </div>
 
-                <div style="background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 20px;">
-                    <div style="font-weight: 800; margin-bottom: 12px;">Thống kê tài khoản</div>
-                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
-                        <span style="color: var(--text-sub);">Tổng tiền nạp</span>
-                        <span style="font-weight: 800; color: #16a34a;">${totalDep.toLocaleString('vi-VN')}đ</span>
+                <div class="profile-details-card">
+                    <div style="font-weight: 800; font-size: 1.05rem; margin-bottom: 12px; color: #0f172a;">Hồ sơ của bạn</div>
+                    <div class="detail-row">
+                        <span class="detail-label">Tên đăng nhập</span>
+                        <span class="detail-val">${currentUser.displayName}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
-                        <span style="color: var(--text-sub);">Đã sử dụng</span>
-                        <span style="font-weight: 800; color: #ef4444;">${totalSpent.toLocaleString('vi-VN')}đ</span>
+                    <div class="detail-row">
+                        <span class="detail-label">Địa chỉ Email</span>
+                        <span class="detail-val">${currentUser.email}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; padding: 8px 0;">
-                        <span style="color: var(--text-sub);">Số dư ví</span>
-                        <span style="font-weight: 800; color: var(--primary-blue);">${userBalance.toLocaleString('vi-VN')}đ</span>
+                    <div class="detail-row">
+                        <span class="detail-label">UID hệ thống</span>
+                        <span class="detail-val" style="font-family: monospace; font-size: 0.8rem;">${currentUser.uid}</span>
                     </div>
                 </div>
 
-                <!-- Đổi Mật Khẩu -->
-                <div style="background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 20px;">
+                <div class="profile-details-card" style="margin-top: 5px;">
                     <div style="font-weight: 800; font-size: 1.05rem; margin-bottom: 15px; color: #0f172a;">Đổi Mật Khẩu Bảo Mật</div>
                     
                     <div style="margin-bottom: 12px;">
@@ -663,7 +720,7 @@
                     <div style="margin-bottom: 12px;">
                         <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-sub); display: block; margin-bottom: 5px;">Mật khẩu mới</label>
                         <div class="password-wrapper">
-                            <input type="password" id="newPassword" class="input-custom" placeholder="Mật khẩu mới (ít nhất 6 ký tự)">
+                            <input type="password" id="newPassword" class="input-custom" placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)">
                             <i class="fa-solid fa-eye toggle-password" id="toggleNew" onclick="togglePasswordVisibility('newPassword', 'toggleNew')"></i>
                         </div>
                     </div>
@@ -676,86 +733,86 @@
                         </div>
                     </div>
 
-                    <button class="btn-deposit-main" onclick="changeUserPassword()">Cập Nhật Mật Khẩu</button>
+                    <button class="btn-action btn-action-primary" onclick="changeUserPassword()">Cập Nhật Mật Khẩu</button>
                 </div>
-
-                <button class="btn-deposit-main" style="background: #ef4444;" onclick="logoutApp()">Đăng xuất tài khoản</button>
             `;
         }
 
-        window.logoutApp = function() {
-            signOut(auth).then(() => { switchTab('home'); });
-        };
-
-        window.triggerAdminLogin = function() {
-            signInWithPopup(auth, provider).then(res => {
-                if(res.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                    localStorage.setItem('delta_admin_auth', res.user.email);
-                    checkAdminAccess();
-                } else {
-                    alert("Tài khoản không có quyền Admin!");
-                    signOut(auth);
-                }
-            });
-        };
-
-        window.adminLogout = function() {
-            localStorage.removeItem('delta_admin_auth');
-            checkAdminAccess();
-        };
-
-        function checkAdminAccess() {
-            const saved = localStorage.getItem('delta_admin_auth');
-            if(saved && saved.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                document.getElementById('adminLoginPrompt').style.display = 'none';
-                document.getElementById('adminDashboardSection').style.display = 'block';
-                document.getElementById('adminEmailDisplay').innerText = saved;
-                renderAdminOrders();
-            } else {
-                document.getElementById('adminLoginPrompt').style.display = 'block';
-                document.getElementById('adminDashboardSection').style.display = 'none';
+        function renderOrders() {
+            const container = document.getElementById('orderContainer');
+            if (!currentUser) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Vui lòng đăng nhập để xem đơn hàng!</div>`;
+                return;
             }
-        }
 
-        window.adminApproveOrder = function(id, uid, amount) {
-            let uOrders = JSON.parse(localStorage.getItem(`orders_${uid}`) || '[]');
-            let idx = uOrders.findIndex(o => o.id === id);
-            if(idx !== -1) { uOrders[idx].status = 'success'; localStorage.setItem(`orders_${uid}`, JSON.stringify(uOrders)); }
+            let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
+            if (orders.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Bạn chưa có giao dịch nào!</div>`;
+                return;
+            }
 
-            let bal = parseInt(localStorage.getItem(`balance_${uid}`)) || 0;
-            bal += amount;
-            localStorage.setItem(`balance_${uid}`, bal);
-
-            let all = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
-            let aIdx = all.findIndex(o => o.id === id);
-            if(aIdx !== -1) { all[aIdx].status = 'success'; localStorage.setItem('admin_all_orders', JSON.stringify(all)); }
-
-            alert("Đã duyệt đơn và cộng tiền thành công!");
-            renderAdminOrders();
-        };
-
-        function renderAdminOrders() {
-            const container = document.getElementById('adminOrdersList');
-            let all = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
-            if(all.length === 0) { container.innerHTML = "Chưa có đơn nạp nào."; return; }
-            container.innerHTML = all.map(o => `
-                <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
-                    <div><b>Khách:</b> ${o.userName} - <b>Số tiền:</b> ${o.price}</div>
-                    <div><b>Mã nội dung:</b> ${o.id} - <b>Trạng thái:</b> ${o.status}</div>
-                    ${o.status === 'pending' ? `<button class="btn-buy-now" style="margin-top: 6px; background: #16a34a;" onclick="adminApproveOrder('${o.id}', '${o.uid}',${o.rawAmount})">Duyệt ngay</button>` : ''}
+            container.innerHTML = orders.map(ord => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span>${ord.name}</span>
+                        <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">
+                            ${ord.status === 'pending' ? 'Đang chờ duyệt' : 'Thành công'}
+                        </span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #64748b;">Thời gian: ${ord.date}</div>
+                    <div class="order-key">${ord.key}</div>
                 </div>
             `).join('');
         }
 
         window.handleAuthAction = function() {
-            if(currentUser) switchTab('profile');
-            else document.getElementById('loginModal').style.display = 'flex';
+            if (currentUser) {
+                switchTab('profile');
+            } else {
+                document.getElementById('loginModal').style.display = 'flex';
+            }
         };
 
         document.getElementById('headAuthBtn').addEventListener('click', () => {
-            if(currentUser) switchTab('profile');
-            else document.getElementById('loginModal').style.display = 'flex';
+            if (currentUser) {
+                switchTab('profile');
+            } else {
+                document.getElementById('loginModal').style.display = 'flex';
+            }
         });
 
         document.getElementById('googleLoginBtn').addEventListener('click', () => {
-            signInWithPopup(auth, provider).then
+            signInWithPopup(auth, provider)
+                .then(() => { closeModal('loginModal'); })
+                .catch((error) => { alert("Đăng nhập thất bại: " + error.message); });
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const headAvatar = document.getElementById('userHeadAvatar');
+            const headIcon = document.getElementById('userHeadIcon');
+            const bottomNavText = document.getElementById('bottomNavUserText');
+
+            if (user) {
+                headAvatar.src = user.photoURL;
+                headAvatar.style.display = 'block';
+                headIcon.style.display = 'none';
+                bottomNavText.innerText = user.displayName.split(' ')[0];
+                loadUserData();
+            } else {
+                headAvatar.style.display = 'none';
+                headIcon.style.display = 'block';
+                bottomNavText.innerText = 'Tôi';
+                userBalance = 0;
+                updateBalanceUI();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.location.hash === '#admin') {
+                switchTab('admin');
+            }
+        });
+    </script>
+</body>
+</html>
