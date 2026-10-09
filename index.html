@@ -88,7 +88,7 @@
         
         .btn-approve { background-color: #16a34a; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; margin-top: 8px; display: inline-flex; align-items: center; gap: 4px; }
 
-        /* TRANG PROFILE (TÀI KHOẢN & CÀI ĐẶT) STYLES */
+        /* TRANG PROFILE */
         .profile-container { display: flex; flex-direction: column; gap: 15px; }
         .profile-card-top { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
         .profile-user-info { display: flex; align-items: center; gap: 15px; }
@@ -100,7 +100,7 @@
         .stat-box { background: white; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; }
         .stat-box-main { background: linear-gradient(135deg, #3b52d4 0%, #2563eb 100%); color: white; border: none; }
         .stat-title { font-size: 0.82rem; font-weight: 600; opacity: 0.9; margin-bottom: 6px; }
-        .stat-value { font-size: 1.4rem; font-weight: 800; }
+        .stat-value { font-size: 1.3rem; font-weight: 800; }
 
         .profile-details-card { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; }
         .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
@@ -346,8 +346,8 @@
 
         let currentUser = null;
         let userBalance = 0;
-        let totalDeposited = 0;
 
+        // Cập nhật đúng email admin của bạn tại đây
         const ADMIN_EMAIL = "daoh80602@gmail.com"; 
         const TELEGRAM_TOKEN = "8572193249:AAFSnoEWhC3eVrcSfGQsRS6XEds-DKFpdko";
         const TELEGRAM_CHAT_ID = "8697704932";
@@ -406,7 +406,8 @@
                 price: amount.toLocaleString('vi-VN') + 'đ',
                 date: timeNow,
                 key: `Mã nội dung CK: ${depositCode} | Số tiền: ${amount.toLocaleString('vi-VN')}đ`,
-                status: 'pending'
+                status: 'pending',
+                type: 'deposit'
             };
 
             let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
@@ -485,15 +486,9 @@
                 localStorage.setItem(`orders_${targetUid}`, JSON.stringify(userOrders));
             }
 
-            // Cộng vào số dư hiện tại
             let currentBal = parseInt(localStorage.getItem(`balance_${targetUid}`)) || 0;
             currentBal += rawAmount;
             localStorage.setItem(`balance_${targetUid}`, currentBal);
-
-            // Cộng dồn tổng tiền nạp của user đó
-            let totalDep = parseInt(localStorage.getItem(`total_dep_${targetUid}`)) || 0;
-            totalDep += rawAmount;
-            localStorage.setItem(`total_dep_${targetUid}`, totalDep);
 
             let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
             const aIndex = allOrders.findIndex(o => o.id === orderId && o.status === 'pending');
@@ -553,10 +548,12 @@
             const newOrder = {
                 id: 'DH' + Date.now().toString().slice(-6),
                 name: name,
+                rawAmount: price,
                 price: price.toLocaleString('vi-VN') + 'đ',
                 date: new Date().toLocaleString('vi-VN'),
                 key: 'Key: ' + key,
-                status: 'success'
+                status: 'success',
+                type: 'purchase'
             };
 
             let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
@@ -580,7 +577,6 @@
         function loadUserData() {
             if (currentUser) {
                 userBalance = parseInt(localStorage.getItem(`balance_${currentUser.uid}`)) || 0;
-                totalDeposited = parseInt(localStorage.getItem(`total_dep_${currentUser.uid}`)) || 0;
                 updateBalanceUI();
             }
         }
@@ -591,6 +587,20 @@
                 container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Vui lòng đăng nhập để xem thông tin tài khoản!</div>`;
                 return;
             }
+
+            let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
+            let calculatedTotalDeposit = 0;
+            let calculatedTotalSpent = 0;
+
+            orders.forEach(ord => {
+                if (ord.status === 'success') {
+                    if (ord.type === 'deposit') {
+                        calculatedTotalDeposit += (ord.rawAmount || 0);
+                    } else if (ord.type === 'purchase') {
+                        calculatedTotalSpent += (ord.rawAmount || 0);
+                    }
+                }
+            });
 
             container.innerHTML = `
                 <div class="profile-card-top">
@@ -613,11 +623,11 @@
                     </div>
                     <div class="stat-box">
                         <div class="stat-title" style="color: var(--text-sub);">TỔNG TIỀN NẠP</div>
-                        <div class="stat-value" style="color: #16a34a;">${totalDeposited.toLocaleString('vi-VN')}đ</div>
+                        <div class="stat-value" style="color: #16a34a;">${calculatedTotalDeposit.toLocaleString('vi-VN')}đ</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-title" style="color: var(--text-sub);">CHIẾT KHẤU</div>
-                        <div class="stat-value" style="color: #3b52d4;">0%</div>
+                        <div class="stat-title" style="color: var(--text-sub);">ĐÃ SỬ DỤNG</div>
+                        <div class="stat-value" style="color: #ef4444;">${calculatedTotalSpent.toLocaleString('vi-VN')}đ</div>
                     </div>
                 </div>
 
@@ -705,7 +715,6 @@
                 headIcon.style.display = 'block';
                 bottomNavText.innerText = 'Tôi';
                 userBalance = 0;
-                totalDeposited = 0;
                 updateBalanceUI();
             }
         });
