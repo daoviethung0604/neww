@@ -116,7 +116,7 @@
 
         .input-custom { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; outline: none; }
 
-        /* THÊM GIAO DIỆN MỚI CHO ĐƠN HÀNG GẦN ĐÂY VÀ TOP ĐẠI GIA */
+        /* LIVE ORDER FEED VÀ NÚT TOP */
         .live-order-box { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; margin-top: 15px; }
         .live-order-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
         .live-order-item:last-child { border-bottom: none; }
@@ -144,7 +144,7 @@
 
         /* ADMIN PANEL STYLES */
         .admin-box { background: white; border: 2px dashed #3b52d4; border-radius: 16px; padding: 20px; margin-top: 15px; text-align: center; }
-        .admin-order-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; text-align: left; }
+        .admin-order-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 12px; text-align: left; }
 
         /* VIEW SWITCHING */
         .page-view { display: none; }
@@ -214,18 +214,16 @@
                 </div>
             </div>
 
-            <!-- THÊM: BẢNG ĐƠN HÀNG GẦN ĐÂY NGOÀI TRANG CHỦ -->
+            <!-- BẢNG ĐƠN HÀNG GẦN ĐÂY -->
             <div class="live-order-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 800;">
                     <span><i class="fa-solid fa-circle" style="color: #22c55e; font-size: 0.6rem;"></i> Đơn hàng gần đây</span>
                     <span style="font-size: 0.8rem; color: var(--primary-blue); cursor: pointer;" onclick="switchTab('orders')">Xem tất cả</span>
                 </div>
-                <div id="liveOrderFeed">
-                    <!-- Render tự động -->
-                </div>
+                <div id="liveOrderFeed"></div>
             </div>
 
-            <!-- THÊM: NÚT XEM TOP NẠP ĐẠI GIA -->
+            <!-- NÚT XEM TOP NẠP ĐẠI GIA -->
             <button class="btn-top-ranking" onclick="openTopModal()">
                 <i class="fa-solid fa-trophy" style="color: #eab308;"></i> XEM TOP NẠP ĐẠI GIA
             </button>
@@ -287,9 +285,7 @@
         <!-- TRANG TÀI KHOẢN & CÀI ĐẶT (PROFILE) -->
         <div id="view-profile" class="page-view">
             <div class="section-title">Tài Khoản & Cài Đặt</div>
-            <div class="profile-container" id="profileContentBox">
-                <!-- Nội dung được render tự động qua JS -->
-            </div>
+            <div class="profile-container" id="profileContentBox"></div>
         </div>
 
         <!-- TRANG ADMIN PANEL BẢO MẬT BẰNG GOOGLE -->
@@ -308,7 +304,7 @@
                     <span style="font-weight: 700; color: #16a34a;"><i class="fa-solid fa-circle-check"></i> Admin: <span id="adminEmailDisplay"></span></span>
                     <button onclick="adminLogout()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Đăng xuất Admin</button>
                 </div>
-                <div class="section-title" style="font-size: 1.1rem; margin-top: 15px;">Danh sách đơn nạp tiền (Khớp Mã Nạp & Số Tiền)</div>
+                <div class="section-title" style="font-size: 1.1rem; margin-top: 15px;">Danh Sách Tất Cả Đơn Nạp Tiền Cần Duyệt</div>
                 <div id="adminOrdersList"></div>
             </div>
         </div>
@@ -456,6 +452,7 @@
             document.getElementById(modalId).style.display = 'none';
         };
 
+        // KHI KHÁCH NẠP TIỀN -> ĐƯA LÊN TRANG ADMIN TẤT CẢ NGƯỜI DÙNG CHUNG
         window.requestDeposit = function() {
             const rawValue = document.getElementById('depositAmountInput').value.replace(/\./g, '');
             const amount = parseInt(rawValue) || 0;
@@ -471,6 +468,7 @@
                 id: depositCode,
                 uid: currentUser.uid,
                 userName: currentUser.displayName || 'Khách hàng',
+                userEmail: currentUser.email || '',
                 name: `Nạp tiền qua QR (${amount.toLocaleString('vi-VN')}đ)`,
                 rawAmount: amount,
                 price: amount.toLocaleString('vi-VN') + 'đ',
@@ -479,16 +477,19 @@
                 type: 'deposit'
             };
 
+            // Lưu vào đơn hàng cá nhân của user
             let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
             orders.unshift(newOrder);
             localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
+            // Đưa vào danh sách chung cho Admin duyệt
             let allAdminOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
             allAdminOrders.unshift(newOrder);
             localStorage.setItem('admin_all_orders', JSON.stringify(allAdminOrders));
 
+            // Gửi thông báo Telegram
             const message = `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n` +
-                            `👤 *Khách:* ${currentUser.displayName}\n` +
+                            `👤 *Khách:* ${currentUser.displayName} (${currentUser.email})\n` +
                             `💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n` +
                             `🔑 *Mã nội dung CK:* \`${depositCode}\`\n` +
                             `⏰ *Thời gian:* ${timeNow}`;
@@ -546,7 +547,9 @@
             }
         }
 
+        // ADMIN DUYỆT ĐƠN CHO TẤT CẢ USER
         window.adminApproveOrder = function(orderId, targetUid, rawAmount) {
+            // Cập nhật đơn hàng trong giỏ của user đó
             let userOrders = JSON.parse(localStorage.getItem(`orders_${targetUid}`) || '[]');
             const uIndex = userOrders.findIndex(o => o.id === orderId && o.status === 'pending');
             if (uIndex !== -1) {
@@ -555,10 +558,12 @@
                 localStorage.setItem(`orders_${targetUid}`, JSON.stringify(userOrders));
             }
 
+            // Cộng tiền vào số dư của user đó
             let currentBal = parseInt(localStorage.getItem(`balance_${targetUid}`)) || 0;
             currentBal += rawAmount;
             localStorage.setItem(`balance_${targetUid}`, currentBal);
 
+            // Cập nhật trong danh sách quản trị chung của admin
             let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
             const aIndex = allOrders.findIndex(o => o.id === orderId && o.status === 'pending');
             if (aIndex !== -1) {
@@ -566,7 +571,7 @@
                 localStorage.setItem('admin_all_orders', JSON.stringify(allOrders));
             }
 
-            alert(`Đã duyệt đơn hàng với mã nội dung ${orderId} (+${rawAmount.toLocaleString('vi-VN')}đ)!`);
+            alert(`Đã duyệt thành công đơn nạp tiền (${rawAmount.toLocaleString('vi-VN')}đ) cho thành viên!`);
             renderAdminOrders();
         };
 
@@ -575,23 +580,23 @@
             let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
             
             if (allOrders.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 20px; color: #64748b;">Chưa có đơn nạp tiền nào trong hệ thống!</div>`;
+                container.innerHTML = `<div style="text-align:center; padding: 20px; color: #64748b;">Chưa có đơn nạp tiền nào từ người dùng!</div>`;
                 return;
             }
 
             container.innerHTML = allOrders.map(ord => `
                 <div class="admin-order-item">
                     <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px;">
-                        <span>Khách: ${ord.userName || 'Khách'}</span>
+                        <span>Khách: ${ord.userName} (${ord.userEmail || 'N/A'})</span>
                         <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">
                             ${ord.status === 'pending' ? 'Chờ duyệt' : 'Đã duyệt'}
                         </span>
                     </div>
-                    <div style="font-size: 1.1rem; font-weight: 800; color: #3b52d4; margin: 4px 0;">Mã nội dung CK: [ ${ord.id} ] - Số tiền: ${ord.price}</div>
+                    <div style="font-size: 1.05rem; font-weight: 800; color: #3b52d4; margin: 4px 0;">Mã nội dung: [ ${ord.id} ] - Số tiền: ${ord.price}</div>
                     <div style="font-size: 0.82rem; color: #64748b; margin-bottom: 6px;">Thời gian: ${ord.date}</div>
                     ${ord.status === 'pending' ? `
                         <button class="btn-approve" onclick="adminApproveOrder('${ord.id}', '${ord.uid}',${ord.rawAmount})">
-                            <i class="fa-solid fa-check"></i> Khớp mã ${ord.id} & Duyệt ngay
+                            <i class="fa-solid fa-check"></i> Duyệt cộng ${ord.price} cho khách
                         </button>` : ''}
                 </div>
             `).join('');
@@ -630,7 +635,6 @@
             orders.unshift(newOrder);
             localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
-            // Thêm vào đơn hàng gần đây công khai (dạng ẩn danh)
             let publicFeed = JSON.parse(localStorage.getItem('public_recent_orders') || '[]');
             publicFeed.unshift({
                 mask: '***' + currentUser.uid.slice(-3),
@@ -663,7 +667,6 @@
             }
         }
 
-        // Render danh sách đơn hàng gần đây ngoài trang chủ
         function renderLiveOrders() {
             const container = document.getElementById('liveOrderFeed');
             if(!container) return;
@@ -691,7 +694,6 @@
             `).join('');
         }
 
-        // Render bảng Top nạp đại gia
         function renderTopRanks() {
             const container = document.getElementById('topRankList');
             let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
