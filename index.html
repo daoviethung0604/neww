@@ -230,7 +230,7 @@
             <div id="adminDashboardSection" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <span style="font-weight: 700; color: #16a34a;"><i class="fa-solid fa-circle-check"></i> Admin: <span id="adminEmailDisplay"></span></span>
-                    <button onclick="switchTab('home')" style="background: none; border: none; color: #3b52d4; font-weight: 700; cursor: pointer;">Thoát</button>
+                    <button onclick="adminLogout()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Đăng xuất Admin</button>
                 </div>
                 <div class="section-title" style="font-size: 1.1rem; margin-top: 15px;">Danh sách đơn nạp tiền (Khớp Mã Nạp & Số Tiền)</div>
                 <div id="adminOrdersList"></div>
@@ -321,7 +321,7 @@
         let currentUser = null;
         let userBalance = 0;
 
-        const ADMIN_EMAIL = "daoh80602@gmail.com"; 
+        const ADMIN_EMAIL = "daoh8602@gmail.com"; 
         const TELEGRAM_TOKEN = "8572193249:AAFSnoEWhC3eVrcSfGQsRS6XEds-DKFpdko";
         const TELEGRAM_CHAT_ID = "8697704932";
 
@@ -367,7 +367,6 @@
             }
 
             const timeNow = new Date().toLocaleString('vi-VN');
-            // Tạo mã nạp ngẫu nhiên 4 chữ số (ví dụ: 4821) để khách ghi vào nội dung chuyển khoản
             const depositCode = Math.floor(1000 + Math.random() * 9000).toString();
             
             const newOrder = {
@@ -416,6 +415,8 @@
                 .then((result) => {
                     const loggedUser = result.user;
                     if (loggedUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                        // Lưu trạng thái đăng nhập admin vào localStorage để F5 không bị mất
+                        localStorage.setItem('delta_admin_auth', loggedUser.email);
                         alert("Đăng nhập quyền Admin thành công!");
                         checkAdminAccess();
                     } else {
@@ -428,11 +429,19 @@
                 });
         };
 
+        window.adminLogout = function() {
+            localStorage.removeItem('delta_admin_auth');
+            checkAdminAccess();
+            alert("Đã đăng xuất khỏi trang quản trị!");
+            switchTab('home');
+        };
+
         function checkAdminAccess() {
-            if (currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+            const savedAdminEmail = localStorage.getItem('delta_admin_auth');
+            if (savedAdminEmail && savedAdminEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                 document.getElementById('adminLoginPrompt').style.display = 'none';
                 document.getElementById('adminDashboardSection').style.display = 'block';
-                document.getElementById('adminEmailDisplay').innerText = currentUser.email;
+                document.getElementById('adminEmailDisplay').innerText = savedAdminEmail;
                 renderAdminOrders();
             } else {
                 document.getElementById('adminLoginPrompt').style.display = 'block';
@@ -572,7 +581,7 @@
         const handleAuthAction = () => {
             if (currentUser) {
                 if (confirm(`Đăng xuất khỏi tài khoản ${currentUser.displayName}?`)) {
-                    signOut(auth).then(() => { alert("Đăng xuất!"); });
+                    signOut(auth).then(() => { alert("Đã đăng xuất!"); });
                 }
             } else {
                 document.getElementById('loginModal').style.display = 'flex';
