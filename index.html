@@ -387,7 +387,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT CHUẨN XÁC THỜI GIAN THỰC -->
+    <!-- SCRIPT TỰ ĐỘNG ĐỒNG BỘ SỐ DƯ TỪ FIRESTORE KHI VÀO WEB -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -430,8 +430,8 @@
                 if(document.getElementById(`nav-${tabName}`)) {
                     document.getElementById(`nav-${tabName}`).classList.add('active');
                 }
-                if (tabName === 'orders') renderOrders();
-                if (tabName === 'profile') renderProfileData();
+                if (tabName === 'orders') syncAndRenderOrders();
+                if (tabName === 'profile') syncAndRenderOrders().then(() => renderProfileData());
                 if (tabName === 'admin') checkAdminAccess();
             });
         };
@@ -453,7 +453,6 @@
             document.getElementById(modalId).style.display = 'none';
         };
 
-        // HÀM LẤY ĐỊNH DẠNG THỜI GIAN THỰC CHUẨN XÁC VIỆT NAM
         function getRealTimeFormatted() {
             const now = new Date();
             const timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -484,7 +483,7 @@
             };
 
             try {
-                const cloudPromise = addDoc(collection(db, "global_orders"), newOrder);
+                await addDoc(collection(db, "global_orders"), newOrder);
                 
                 let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
                 orders.unshift(newOrder);
@@ -499,8 +498,6 @@
                         parse_mode: 'Markdown'
                     })
                 }).catch(() => {});
-
-                await cloudPromise;
 
                 alert(`Tạo yêu cầu nạp thành công!\nVui lòng chuyển khoản số tiền ${amount.toLocaleString('vi-VN')}đ với nội dung: ${depositCode}`);
                 closeModal('depositModal');
@@ -592,6 +589,44 @@
             } catch (e) {
                 container.innerHTML = `<div style="text-align:center; padding: 15px; color: #ef4444;">Lỗi tải dữ liệu.</div>`;
             }
+        }
+
+        // ĐỒNG BỘ TRẠNG THÁI ĐƠN VÀ SỐ DƯ TỪ CLOUD KHI VÀO TRANG ĐƠN HÀNG HOẶC PROFILE
+        async function syncAndRenderOrders() {
+            if (!currentUser) return;
+            try {
+                const querySnapshot = await getDocs(collection(db, "global_orders"));
+                let cloudOrders = [];
+                querySnapshot.forEach(docSnap => {
+                    let d = docSnap.data();
+                    if (d.uid === currentUser.uid) {
+                        cloudOrders.push(d);
+                    }
+                });
+
+                if (cloudOrders.length > 0) {
+                    // Sắp xếp đơn mới lên đầu
+                    cloudOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                    localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(cloudOrders));
+
+                    // Tính lại số dư dựa trên các đơn nạp đã thành công trên đám mây
+                    let totalDep = 0, totalSpent = 0;
+                    cloudOrders.forEach(ord => {
+                        if (ord.status === 'success') {
+                            if (ord.type === 'deposit') totalDep += (ord.rawAmount || 0);
+                            if (ord.type === 'purchase') totalSpent += (ord.rawAmount || 0);
+                        }
+                    });
+                    
+                    let calculatedBal = Math.max(0, totalDep - totalSpent);
+                    userBalance = calculatedBal;
+                    localStorage.setItem(`balance_${currentUser.uid}`, userBalance);
+                    updateBalanceUI();
+                }
+            } catch (e) {
+                console.error("Lỗi đồng bộ:", e);
+            }
+            renderOrders();
         }
 
         window.buyProduct = function(name, price) {
@@ -837,8 +872,7 @@
                 headAvatar.style.display = 'block';
                 headIcon.style.display = 'none';
                 bottomNavText.innerText = user.displayName.split(' ')[0];
-                userBalance = parseInt(localStorage.getItem(`balance_${user.uid}`)) || 0;
-                updateBalanceUI();
+                syncAndRenderOrders();
             } else {
                 headAvatar.style.display = 'none';
                 headIcon.style.display = 'block';
