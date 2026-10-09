@@ -563,14 +563,13 @@
             saveUserData();
             updateBalanceUI();
 
-            const key = 'DELTA-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-KEY';
             const newOrder = {
                 id: 'DH' + Date.now().toString().slice(-6),
                 name: name,
                 rawAmount: price,
                 price: price.toLocaleString('vi-VN') + 'đ',
                 date: new Date().toLocaleString('vi-VN'),
-                key: 'Key: ' + key,
+                key: 'Giao dịch thành công',
                 status: 'success',
                 type: 'purchase'
             };
@@ -579,7 +578,7 @@
             orders.unshift(newOrder);
             localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
-            alert(`Thanh toán thành công gói ${name}!\nKey của bạn: ${key}`);
+            alert("Vì bảo mật vui lòng liên hệ sdt 0348876411 để nhận key.");
             switchTab('orders');
         };
 
