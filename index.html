@@ -786,4 +786,25 @@
             const bottomNavText = document.getElementById('bottomNavUserText');
 
             if (user) {
-                headAvatar.src = user.
+                headAvatar.src = user.photoURL;
+                headAvatar.style.display = 'block';
+                headIcon.style.display = 'none';
+                bottomNavText.innerText = user.displayName.split(' ')[0];
+                loadUserData();
+            } else {
+                headAvatar.style.display = 'none';
+                headIcon.style.display = 'block';
+                bottomNavText.innerText = 'Tôi';
+                userBalance = 0;
+                updateBalanceUI();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.location.hash === '#admin') {
+                switchTab('admin');
+            }
+        });
+    </script>
+</body>
+</html>
