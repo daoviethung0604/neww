@@ -91,8 +91,8 @@
         .btn-approve { background-color: #16a34a; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; margin-top: 8px; display: inline-flex; align-items: center; gap: 4px; }
 
         /* ADMIN PANEL STYLES */
-        .admin-box { background: white; border: 2px dashed #3b52d4; border-radius: 16px; padding: 20px; margin-top: 15px; }
-        .admin-order-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+        .admin-box { background: white; border: 2px dashed #3b52d4; border-radius: 16px; padding: 20px; margin-top: 15px; text-align: center; }
+        .admin-order-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; text-align: left; }
 
         /* VIEW SWITCHING */
         .page-view { display: none; }
@@ -216,19 +216,21 @@
             <div class="order-list" id="orderContainer"></div>
         </div>
 
-        <!-- TRANG ADMIN PANEL ẨN -->
+        <!-- TRANG ADMIN PANEL BẢO MẬT BẰNG GOOGLE -->
         <div id="view-admin" class="page-view">
             <div class="section-title"><i class="fa-solid fa-shield-halved"></i> Bảng Quản Trị Admin</div>
-            <div id="adminLoginSection" class="admin-box" style="text-align: center;">
-                <p style="margin-bottom: 12px; font-weight: 600;">Nhập mã PIN Admin để truy cập</p>
-                <input type="password" id="adminPinInput" class="input-deposit" placeholder="Nhập mã PIN (vd: 0604)">
-                <button class="btn-action btn-action-primary" onclick="verifyAdminPin()">Đăng Nhập Admin</button>
+            
+            <div id="adminLoginPrompt" class="admin-box">
+                <p style="margin-bottom: 12px; font-weight: 600; color: var(--text-sub);">Khu vực giới hạn chỉ dành riêng cho Admin.</p>
+                <button class="btn-action btn-action-primary" onclick="triggerAdminLogin()">
+                    <i class="fa-brands fa-google"></i> Đăng nhập bằng Google Admin
+                </button>
             </div>
 
             <div id="adminDashboardSection" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <span style="font-weight: 700; color: #16a34a;"><i class="fa-solid fa-circle-check"></i> Đã xác thực Admin</span>
-                    <button onclick="logoutAdmin()" style="background: none; border: none; color: #ef4444; font-weight: 700; cursor: pointer;">Đăng xuất</button>
+                    <span style="font-weight: 700; color: #16a34a;"><i class="fa-solid fa-circle-check"></i> Xin chào Admin: <span id="adminEmailDisplay"></span></span>
+                    <button onclick="switchTab('home')" style="background: none; border: none; color: #3b52d4; font-weight: 700; cursor: pointer;">Thoát</button>
                 </div>
                 <div class="section-title" style="font-size: 1.1rem; margin-top: 15px;">Danh sách đơn nạp tiền của khách</div>
                 <div id="adminOrdersList"></div>
@@ -319,6 +321,9 @@
         let currentUser = null;
         let userBalance = 0;
 
+        // ĐẶT EMAIL ADMIN CHÍNH XÁC CỦA BẠN Ở ĐÂY
+        const ADMIN_EMAIL = "daoh8602@gmail.com"; 
+
         const TELEGRAM_TOKEN = "8572193249:AAFSnoEWhC3eVrcSfGQsRS6XEds-DKFpdko";
         const TELEGRAM_CHAT_ID = "8697704932";
 
@@ -340,7 +345,7 @@
                 document.getElementById(`nav-${tabName}`).classList.add('active');
             }
             if (tabName === 'orders') renderOrders();
-            if (tabName === 'admin') checkAdminSession();
+            if (tabName === 'admin') checkAdminAccess();
         };
 
         window.openDepositModal = function() {
@@ -378,17 +383,14 @@
                 status: 'pending'
             };
 
-            // Lưu vào kho đơn hàng cá nhân
             let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
             orders.unshift(newOrder);
             localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
-            // Lưu chung vào danh sách admin để quản lý toàn hệ thống
             let allAdminOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
             allAdminOrders.unshift(newOrder);
             localStorage.setItem('admin_all_orders', JSON.stringify(allAdminOrders));
 
-            // Gửi thông báo về Telegram
             const message = `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n` +
                             `👤 *Khách:* ${currentUser.displayName}\n` +
                             `💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n` +
@@ -405,41 +407,42 @@
                 })
             }).catch(err => console.error("Lỗi gửi Telegram:", err));
 
-            alert(`Đã gửi yêu cầu nạp ${amount.toLocaleString('vi-VN')}đ thành công!\nHệ thống đang chờ admin duyệt.`);
+            alert(`Đã gửi yêu cầu nạp ${amount.toLocaleString('vi-VN')}đ thành công! Hệ thống đang chờ duyệt.`);
             closeModal('depositModal');
             switchTab('orders');
         };
 
-        // ADMIN FUNCTIONS
-        window.verifyAdminPin = function() {
-            const pin = document.getElementById('adminPinInput').value;
-            if (pin === '0604') { // Mã PIN của bạn
-                localStorage.setItem('delta_admin_logged', 'true');
-                checkAdminSession();
-            } else {
-                alert("Mã PIN không chính xác!");
-            }
+        // BẢO MẬT ADMIN BẰNG GOOGLE ACCOUNT
+        window.triggerAdminLogin = function() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const loggedUser = result.user;
+                    if (loggedUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                        alert("Đăng nhập quyền Admin thành công!");
+                        checkAdminAccess();
+                    } else {
+                        alert("Tài khoản Google này không có quyền truy cập trang quản trị!");
+                        signOut(auth);
+                    }
+                })
+                .catch((error) => {
+                    alert("Đăng nhập thất bại: " + error.message);
+                });
         };
 
-        window.logoutAdmin = function() {
-            localStorage.removeItem('delta_admin_logged');
-            checkAdminSession();
-        };
-
-        function checkAdminSession() {
-            const isLogged = localStorage.getItem('delta_admin_logged') === 'true';
-            if (isLogged) {
-                document.getElementById('adminLoginSection').style.display = 'none';
+        function checkAdminAccess() {
+            if (currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                document.getElementById('adminLoginPrompt').style.display = 'none';
                 document.getElementById('adminDashboardSection').style.display = 'block';
+                document.getElementById('adminEmailDisplay').innerText = currentUser.email;
                 renderAdminOrders();
             } else {
-                document.getElementById('adminLoginSection').style.display = 'block';
+                document.getElementById('adminLoginPrompt').style.display = 'block';
                 document.getElementById('adminDashboardSection').style.display = 'none';
             }
         }
 
         window.adminApproveOrder = function(orderId, targetUid, rawAmount) {
-            // Duyệt trong kho đơn hàng của user
             let userOrders = JSON.parse(localStorage.getItem(`orders_${targetUid}`) || '[]');
             const uIndex = userOrders.findIndex(o => o.id === orderId);
             if (uIndex !== -1) {
@@ -448,12 +451,10 @@
                 localStorage.setItem(`orders_${targetUid}`, JSON.stringify(userOrders));
             }
 
-            // Cộng tiền vào số dư của user đó
             let currentBal = parseInt(localStorage.getItem(`balance_${targetUid}`)) || 0;
             currentBal += rawAmount;
             localStorage.setItem(`balance_${targetUid}`, currentBal);
 
-            // Cập nhật trong danh sách admin chung
             let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
             const aIndex = allOrders.findIndex(o => o.id === orderId);
             if (aIndex !== -1) {
@@ -609,7 +610,6 @@
             }
         });
 
-        // Tự động kiểm tra nếu URL có #admin thì mở tab quản trị luôn
         window.addEventListener('DOMContentLoaded', () => {
             if (window.location.hash === '#admin') {
                 switchTab('admin');
