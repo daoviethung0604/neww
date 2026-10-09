@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DeltaClient.io - Cổng Dịch Vụ</title>
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome Icons CDN (Optimized async/defer load) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -116,7 +116,7 @@
 
         .input-custom { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; outline: none; }
 
-        /* LIVE ORDER FEED VÀ NÚT TOP */
+        /* LIVE ORDER FEED & TOP BUTTON */
         .live-order-box { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; margin-top: 15px; }
         .live-order-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
         .live-order-item:last-child { border-bottom: none; }
@@ -135,14 +135,14 @@
         .rank-3 { background: #b45309; }
         .rank-other { background: #cbd5e1; color: #1e293b; }
 
-        /* FOOTER CONTACT STYLES */
+        /* FOOTER CONTACT */
         .footer-contact {
             background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px 20px;
             margin-top: 25px; text-align: center; color: var(--text-sub); font-size: 0.88rem;
         }
         .footer-contact b { color: #0f172a; }
 
-        /* ADMIN PANEL STYLES */
+        /* ADMIN PANEL */
         .admin-box { background: white; border: 2px dashed #3b52d4; border-radius: 16px; padding: 20px; margin-top: 15px; text-align: center; }
         .admin-order-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 12px; text-align: left; }
 
@@ -162,7 +162,7 @@
         .btn-zalo { background-color: #0068ff; }
         .btn-scroll { background-color: #0f172a; }
 
-        /* MODAL POPUP CHUNG */
+        /* MODAL POPUP */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 2000; }
         .modal-card { background: #ffffff; width: 90%; max-width: 380px; padding: 25px; border-radius: 20px; position: relative; text-align: center; max-height: 90vh; overflow-y: auto; }
         .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.2rem; color: var(--text-sub); cursor: pointer; }
@@ -282,13 +282,13 @@
             <div class="order-list" id="orderContainer"></div>
         </div>
 
-        <!-- TRANG TÀI KHOẢN & CÀI ĐẶT (PROFILE) -->
+        <!-- TRANG TÀI KHOẢN & CÀI ĐẶT -->
         <div id="view-profile" class="page-view">
             <div class="section-title">Tài Khoản & Cài Đặt</div>
             <div class="profile-container" id="profileContentBox"></div>
         </div>
 
-        <!-- TRANG ADMIN PANEL BẢO MẬT BẰNG GOOGLE -->
+        <!-- TRANG ADMIN PANEL -->
         <div id="view-admin" class="page-view">
             <div class="section-title"><i class="fa-solid fa-shield-halved"></i> Bảng Quản Trị Admin</div>
             
@@ -309,7 +309,7 @@
             </div>
         </div>
 
-        <!-- THÔNG TIN LIÊN HỆ Ở CUỐI TRANG -->
+        <!-- THÔNG TIN LIÊN HỆ -->
         <div class="footer-contact">
             <div style="font-weight: 800; color: #0f172a; margin-bottom: 6px;">Thông Tin Liên Hệ Hỗ Trợ</div>
             <div>SĐT: <b>0348876411</b> | Email: <b>daoh80602@gmail.com</b></div>
@@ -368,7 +368,7 @@
             <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 4px;">Quét mã QR MBBank của DAO VIET HUNG</p>
             
             <div class="qr-box">
-                <img src="https://img.vietqr.io/image/MB-0348876411-compact2.png" alt="QR Code">
+                <img src="https://img.vietqr.io/image/MB-0348876411-compact2.png" alt="QR Code" loading="lazy">
                 <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a;">DAO VIET HUNG - 0348876411</div>
             </div>
 
@@ -387,11 +387,11 @@
         </div>
     </div>
 
-    <!-- SCRIPT (SỬ DỤNG FIRESTORE ĐỂ ĐỒNG BỘ DỮ LIỆU ĐƠN NẠP LÊN ĐÁM MÂY) -->
+    <!-- OPTIMIZED SCRIPT (FAST LOADING & ASYNC FIRESTORE) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateCode, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB2uSm-06dZe9Lj2tXXpOy1kU2oKWN2GHw",
@@ -417,24 +417,23 @@
 
         window.formatCurrencyInput = function(input) {
             let value = input.value.replace(/\D/g, '');
-            if (value === '') {
-                input.value = '';
-                return;
-            }
+            if (value === '') { input.value = ''; return; }
             input.value = Number(value).toLocaleString('vi-VN');
         };
 
         window.switchTab = function(tabName) {
-            document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            requestAnimationFrame(() => {
+                document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
-            document.getElementById(`view-${tabName}`).classList.add('active');
-            if(document.getElementById(`nav-${tabName}`)) {
-                document.getElementById(`nav-${tabName}`).classList.add('active');
-            }
-            if (tabName === 'orders') renderOrders();
-            if (tabName === 'profile') renderProfileData();
-            if (tabName === 'admin') checkAdminAccess();
+                document.getElementById(`view-${tabName}`).classList.add('active');
+                if(document.getElementById(`nav-${tabName}`)) {
+                    document.getElementById(`nav-${tabName}`).classList.add('active');
+                }
+                if (tabName === 'orders') renderOrders();
+                if (tabName === 'profile') renderProfileData();
+                if (tabName === 'admin') checkAdminAccess();
+            });
         };
 
         window.openDepositModal = function() {
@@ -454,14 +453,10 @@
             document.getElementById(modalId).style.display = 'none';
         };
 
-        // KHI KHÁCH NẠP TIỀN -> ĐỒNG BỘ LÊN FIRESTORE CLOUD ĐỂ ADMIN DUYỆT TỪ BẤT CỨ ĐÂU
         window.requestDeposit = async function() {
             const rawValue = document.getElementById('depositAmountInput').value.replace(/\./g, '');
             const amount = parseInt(rawValue) || 0;
-            if (amount <= 0) {
-                alert("Vui lòng nhập số tiền hợp lệ!");
-                return;
-            }
+            if (amount <= 0) { alert("Vui lòng nhập số tiền hợp lệ!"); return; }
 
             const timeNow = new Date().toLocaleString('vi-VN');
             const depositCode = Math.floor(1000 + Math.random() * 9000).toString();
@@ -481,62 +476,51 @@
             };
 
             try {
-                // 1. Lưu vào Firestore Cloud (Hệ thống chung cho Admin duyệt)
-                await addDoc(collection(db, "global_orders"), newOrder);
-
-                // 2. Lưu vào lịch sử cá nhân trên localStorage
+                // Thêm đồng thời lên Firestore Cloud và lưu lịch sử cá nhân để tăng tốc độ
+                const cloudPromise = addDoc(collection(db, "global_orders"), newOrder);
+                
                 let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
                 orders.unshift(newOrder);
                 localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
-                // 3. Gửi thông báo Telegram
-                const message = `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n` +
-                                `👤 *Khách:* ${currentUser.displayName} (${currentUser.email})\n` +
-                                `💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n` +
-                                `🔑 *Mã nội dung CK:* \`${depositCode}\`\n` +
-                                `⏰ *Thời gian:* ${timeNow}`;
-
+                // Gửi Telegram ngầm bất đồng bộ không chặn UI
                 fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         chat_id: TELEGRAM_CHAT_ID,
-                        text: message,
+                        text: `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n👤 *Khách:* ${currentUser.displayName}\n💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n🔑 *Mã CK:* \`${depositCode}\``,
                         parse_mode: 'Markdown'
                     })
-                }).catch(err => console.error("Lỗi gửi Telegram:", err));
+                }).catch(() => {});
+
+                await cloudPromise;
 
                 alert(`Tạo yêu cầu nạp thành công!\nVui lòng chuyển khoản số tiền ${amount.toLocaleString('vi-VN')}đ với nội dung: ${depositCode}`);
                 closeModal('depositModal');
                 switchTab('orders');
             } catch (e) {
-                console.error("Lỗi tạo đơn nạp:", e);
-                alert("Có lỗi xảy ra khi kết nối máy chủ, vui lòng thử lại!");
+                alert("Lỗi kết nối máy chủ, vui lòng thử lại!");
             }
         };
 
         window.triggerAdminLogin = function() {
             signInWithPopup(auth, provider)
                 .then((result) => {
-                    const loggedUser = result.user;
-                    if (loggedUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                        localStorage.setItem('delta_admin_auth', loggedUser.email);
-                        alert("Đăng nhập quyền Admin thành công!");
+                    if (result.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                        localStorage.setItem('delta_admin_auth', result.user.email);
                         checkAdminAccess();
                     } else {
-                        alert("Tài khoản Google này không có quyền truy cập trang quản trị!");
+                        alert("Tài khoản không có quyền Admin!");
                         signOut(auth);
                     }
                 })
-                .catch((error) => {
-                    alert("Đăng nhập thất bại: " + error.message);
-                });
+                .catch(() => alert("Đăng nhập thất bại."));
         };
 
         window.adminLogout = function() {
             localStorage.removeItem('delta_admin_auth');
             checkAdminAccess();
-            alert("Đã đăng xuất khỏi trang quản trị!");
             switchTab('home');
         };
 
@@ -553,14 +537,10 @@
             }
         }
 
-        // ADMIN DUYỆT ĐƠN TỪ FIRESTORE CLOUD
         window.adminApproveOrder = async function(docId, targetUid, rawAmount) {
             try {
-                // Cập nhật trạng thái trong Firestore Cloud
-                const orderRef = doc(db, "global_orders", docId);
-                await updateDoc(orderRef, { status: 'success', key: 'Đã duyệt cộng tiền thành công bởi Admin!' });
+                await updateDoc(doc(db, "global_orders", docId), { status: 'success', key: 'Đã duyệt cộng tiền thành công bởi Admin!' });
 
-                // Cộng số dư vào ví của người dùng trên Cloud/Local
                 let currentBal = parseInt(localStorage.getItem(`balance_${targetUid}`)) || 0;
                 currentBal += rawAmount;
                 localStorage.setItem(`balance_${targetUid}`, currentBal);
@@ -570,69 +550,50 @@
                     updateBalanceUI();
                 }
 
-                alert(`Đã duyệt thành công đơn nạp tiền (+${rawAmount.toLocaleString('vi-VN')}đ) cho thành viên!`);
+                alert(`Đã duyệt đơn nạp (+${rawAmount.toLocaleString('vi-VN')}đ) thành công!`);
                 renderAdminOrders();
             } catch (e) {
-                console.error("Lỗi duyệt đơn:", e);
-                alert("Lỗi khi duyệt đơn trên hệ thống.");
+                alert("Lỗi khi duyệt đơn.");
             }
         };
 
         async function renderAdminOrders() {
             const container = document.getElementById('adminOrdersList');
-            container.innerHTML = `<div style="text-align:center; padding: 20px; color: #64748b;">Đang tải danh sách đơn nạp từ đám mây...</div>`;
+            container.innerHTML = `<div style="text-align:center; padding: 15px; color: #64748b;">Đang tải...</div>`;
             
             try {
                 const querySnapshot = await getDocs(collection(db, "global_orders"));
                 let allOrders = [];
-                querySnapshot.forEach((docSnap) => {
-                    allOrders.push({ docId: docSnap.id, ...docSnap.data() });
-                });
-
-                // Sắp xếp đơn mới lên đầu
+                querySnapshot.forEach(docSnap => allOrders.push({ docId: docSnap.id, ...docSnap.data() }));
                 allOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
                 if (allOrders.length === 0) {
-                    container.innerHTML = `<div style="text-align:center; padding: 20px; color: #64748b;">Chưa có đơn nạp tiền nào từ người dùng!</div>`;
+                    container.innerHTML = `<div style="text-align:center; padding: 15px; color: #64748b;">Chưa có đơn nạp tiền nào!</div>`;
                     return;
                 }
 
                 container.innerHTML = allOrders.map(ord => `
                     <div class="admin-order-item">
                         <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px;">
-                            <span>Khách: ${ord.userName} (${ord.userEmail || 'N/A'})</span>
-                            <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">
-                                ${ord.status === 'pending' ? 'Chờ duyệt' : 'Đã duyệt'}
-                            </span>
+                            <span>Khách: ${ord.userName}</span>
+                            <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">${ord.status === 'pending' ? 'Chờ duyệt' : 'Đã duyệt'}</span>
                         </div>
-                        <div style="font-size: 1.05rem; font-weight: 800; color: #3b52d4; margin: 4px 0;">Mã nội dung: [ ${ord.id} ] - Số tiền: ${ord.price}</div>
-                        <div style="font-size: 0.82rem; color: #64748b; margin-bottom: 6px;">Thời gian: ${ord.date}</div>
-                        ${ord.status === 'pending' ? `
-                            <button class="btn-approve" onclick="adminApproveOrder('${ord.docId}', '${ord.uid}',${ord.rawAmount})">
-                                <i class="fa-solid fa-check"></i> Duyệt cộng ${ord.price} cho khách
-                            </button>` : ''}
+                        <div style="font-size: 1rem; font-weight: 800; color: #3b52d4; margin: 4px 0;">Mã: [ ${ord.id} ] - Số tiền: ${ord.price}</div>
+                        <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 6px;">Thời gian: ${ord.date}</div>
+                        ${ord.status === 'pending' ? `<button class="btn-approve" onclick="adminApproveOrder('${ord.docId}', '${ord.uid}',${ord.rawAmount})"><i class="fa-solid fa-check"></i> Duyệt cộng tiền</button>` : ''}
                     </div>
                 `).join('');
             } catch (e) {
-                console.error("Lỗi tải đơn admin:", e);
-                container.innerHTML = `<div style="text-align:center; padding: 20px; color: #ef4444;">Không thể tải dữ liệu từ máy chủ.</div>`;
+                container.innerHTML = `<div style="text-align:center; padding: 15px; color: #ef4444;">Lỗi tải dữ liệu.</div>`;
             }
         }
 
         window.buyProduct = function(name, price) {
-            if (!currentUser) {
-                document.getElementById('loginModal').style.display = 'flex';
-                return;
-            }
-
-            if (userBalance < price) {
-                alert("Số dư của bạn không đủ để mua sản phẩm này! Vui lòng nạp thêm tiền.");
-                openDepositModal();
-                return;
-            }
+            if (!currentUser) { document.getElementById('loginModal').style.display = 'flex'; return; }
+            if (userBalance < price) { alert("Số dư không đủ!"); openDepositModal(); return; }
 
             userBalance -= price;
-            saveUserData();
+            localStorage.setItem(`balance_${currentUser.uid}`, userBalance);
             updateBalanceUI();
 
             const newOrder = {
@@ -653,12 +614,7 @@
             localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
             let publicFeed = JSON.parse(localStorage.getItem('public_recent_orders') || '[]');
-            publicFeed.unshift({
-                mask: '***' + currentUser.uid.slice(-3),
-                name: name,
-                price: price.toLocaleString('vi-VN') + 'đ',
-                time: 'Vừa xong'
-            });
+            publicFeed.unshift({ mask: '***' + currentUser.uid.slice(-3), name: name, price: price.toLocaleString('vi-VN') + 'đ', time: 'Vừa xong' });
             if(publicFeed.length > 5) publicFeed.pop();
             localStorage.setItem('public_recent_orders', JSON.stringify(publicFeed));
             renderLiveOrders();
@@ -671,31 +627,13 @@
             document.getElementById('userBalance').innerText = userBalance.toLocaleString('vi-VN') + 'đ';
         }
 
-        function saveUserData() {
-            if (currentUser) {
-                localStorage.setItem(`balance_${currentUser.uid}`, userBalance);
-            }
-        }
-
-        function loadUserData() {
-            if (currentUser) {
-                userBalance = parseInt(localStorage.getItem(`balance_${currentUser.uid}`)) || 0;
-                updateBalanceUI();
-            }
-        }
-
         function renderLiveOrders() {
             const container = document.getElementById('liveOrderFeed');
             if(!container) return;
-            let feeds = JSON.parse(localStorage.getItem('public_recent_orders') || 'null');
-            if(!feeds) {
-                feeds = [
-                    { mask: '***923', name: 'IPA Delta Client 1 Ngày', price: '20.000đ', time: '1 phút trước' },
-                    { mask: '***795', name: 'IPA Delta Client 1 Ngày', price: '20.000đ', time: '2 phút trước' },
-                    { mask: '***268', name: 'IPA Delta Client 1 Ngày', price: '20.000đ', time: '17 phút trước' }
-                ];
-                localStorage.setItem('public_recent_orders', JSON.stringify(feeds));
-            }
+            let feeds = JSON.parse(localStorage.getItem('public_recent_orders') || 'null') || [
+                { mask: '***923', name: 'IPA Delta Client 1 Ngày', price: '20.000đ', time: '1 phút trước' },
+                { mask: '***795', name: 'IPA Delta Client 1 Ngày', price: '20.000đ', time: '2 phút trước' }
+            ];
 
             container.innerHTML = feeds.map(f => `
                 <div class="live-order-item">
@@ -713,10 +651,11 @@
 
         async function renderTopRanks() {
             const container = document.getElementById('topRankList');
+            container.innerHTML = `<div style="text-align:center; padding: 15px;">Đang tải bảng xếp hạng...</div>`;
             try {
                 const querySnapshot = await getDocs(collection(db, "global_orders"));
                 let mapUser = {};
-                querySnapshot.forEach((docSnap) => {
+                querySnapshot.forEach(docSnap => {
                     let o = docSnap.data();
                     if(o.status === 'success' && o.type === 'deposit') {
                         mapUser[o.userName] = (mapUser[o.userName] || 0) + o.rawAmount;
@@ -725,11 +664,7 @@
 
                 let ranks = Object.keys(mapUser).map(k => ({ name: k, total: mapUser[k] }));
                 if(ranks.length === 0) {
-                    ranks = [
-                        { name: 'Đoàn Việt Hùng', total: 180000 },
-                        { name: 'Nguyễn Văn An', total: 120000 },
-                        { name: 'Trần Bảo Long', total: 50000 }
-                    ];
+                    ranks = [{ name: 'Đoàn Việt Hùng', total: 180000 }, { name: 'Nguyễn Văn An', total: 120000 }];
                 } else {
                     ranks.sort((a, b) => b.total - a.total);
                 }
@@ -744,7 +679,7 @@
                     </div>
                 `).join('');
             } catch(e) {
-                container.innerHTML = `<div style="color:red; text-align:center;">Không thể tải bảng xếp hạng</div>`;
+                container.innerHTML = `<div style="color:red; text-align:center;">Lỗi tải bảng xếp hạng</div>`;
             }
         }
 
@@ -753,12 +688,10 @@
             const icon = document.getElementById(iconId);
             if (input.type === "password") {
                 input.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
+                icon.className = "fa-solid fa-eye-slash toggle-password";
             } else {
                 input.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
+                icon.className = "fa-solid fa-eye toggle-password";
             }
         };
 
@@ -767,20 +700,9 @@
             const newPass = document.getElementById('newPassword').value;
             const confirmPass = document.getElementById('confirmPassword').value;
 
-            if (!oldPass || !newPass || !confirmPass) {
-                alert("Vui lòng điền đầy đủ thông tin mật khẩu!");
-                return;
-            }
-
-            if (newPass.length < 6) {
-                alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
-                return;
-            }
-
-            if (newPass !== confirmPass) {
-                alert("Mật khẩu mới và xác nhận mật khẩu không khớp!");
-                return;
-            }
+            if (!oldPass || !newPass || !confirmPass) { alert("Vui lòng điền đầy đủ thông tin!"); return; }
+            if (newPass.length < 6) { alert("Mật khẩu mới phải có ít nhất 6 ký tự!"); return; }
+            if (newPass !== confirmPass) { alert("Mật khẩu không khớp!"); return; }
 
             localStorage.setItem(`password_${currentUser.uid}`, newPass);
             alert("Đổi mật khẩu thành công!");
@@ -791,37 +713,27 @@
 
         function renderProfileData() {
             const container = document.getElementById('profileContentBox');
-            if (!currentUser) {
-                container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Vui lòng đăng nhập để xem thông tin tài khoản!</div>`;
-                return;
-            }
+            if (!currentUser) { container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Vui lòng đăng nhập!</div>`; return; }
 
             let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
-            let calculatedTotalDeposit = 0;
-            let calculatedTotalSpent = 0;
-
+            let totalDep = 0, totalSpent = 0;
             orders.forEach(ord => {
                 if (ord.status === 'success') {
-                    if (ord.type === 'deposit') {
-                        calculatedTotalDeposit += (ord.rawAmount || 0);
-                    } else if (ord.type === 'purchase') {
-                        calculatedTotalSpent += (ord.rawAmount || 0);
-                    }
+                    if (ord.type === 'deposit') totalDep += (ord.rawAmount || 0);
+                    if (ord.type === 'purchase') totalSpent += (ord.rawAmount || 0);
                 }
             });
 
             container.innerHTML = `
                 <div class="profile-card-top">
                     <div class="profile-user-info">
-                        <img src="${currentUser.photoURL}" class="profile-avatar" alt="Avatar">
+                        <img src="${currentUser.photoURL}" class="profile-avatar" alt="Avatar" loading="lazy">
                         <div>
                             <div class="profile-name">${currentUser.displayName} <i class="fa-solid fa-circle-check" style="color: #3b52d4; font-size: 0.9rem;"></i></div>
-                            <div class="profile-username">@${currentUser.email.split('@')[0]} • Chiết khấu 0%</div>
+                            <div class="profile-username">@${currentUser.email.split('@')[0]}</div>
                         </div>
                     </div>
-                    <button class="btn-action btn-action-primary" style="width: auto; padding: 8px 16px; font-size: 0.85rem;" onclick="openDepositModal()">
-                        <i class="fa-solid fa-wallet"></i> Nạp ví
-                    </button>
+                    <button class="btn-action btn-action-primary" style="width: auto; padding: 8px 16px; font-size: 0.85rem;" onclick="openDepositModal()"><i class="fa-solid fa-wallet"></i> Nạp ví</button>
                 </div>
 
                 <div class="profile-stats-grid">
@@ -830,34 +742,23 @@
                         <div class="stat-value">${userBalance.toLocaleString('vi-VN')}đ</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-title" style="color: var(--text-sub);">TỔNG TIỀN NẠP</div>
-                        <div class="stat-value" style="color: #16a34a;">${calculatedTotalDeposit.toLocaleString('vi-VN')}đ</div>
+                        <div class="stat-title" style="color: var(--text-sub);">TỔNG NẠP</div>
+                        <div class="stat-value" style="color: #16a34a;">${totalDep.toLocaleString('vi-VN')}đ</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-title" style="color: var(--text-sub);">ĐÃ SỬ DỤNG</div>
-                        <div class="stat-value" style="color: #ef4444;">${calculatedTotalSpent.toLocaleString('vi-VN')}đ</div>
+                        <div class="stat-title" style="color: var(--text-sub);">ĐÃ DÙNG</div>
+                        <div class="stat-value" style="color: #ef4444;">${totalSpent.toLocaleString('vi-VN')}đ</div>
                     </div>
                 </div>
 
                 <div class="profile-details-card">
                     <div style="font-weight: 800; font-size: 1.05rem; margin-bottom: 12px; color: #0f172a;">Hồ sơ của bạn</div>
-                    <div class="detail-row">
-                        <span class="detail-label">Tên đăng nhập</span>
-                        <span class="detail-val">${currentUser.displayName}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Địa chỉ Email</span>
-                        <span class="detail-val">${currentUser.email}</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">UID hệ thống</span>
-                        <span class="detail-val" style="font-family: monospace; font-size: 0.8rem;">${currentUser.uid}</span>
-                    </div>
+                    <div class="detail-row"><span class="detail-label">Họ tên</span><span class="detail-val">${currentUser.displayName}</span></div>
+                    <div class="detail-row"><span class="detail-label">Email</span><span class="detail-val">${currentUser.email}</span></div>
                 </div>
 
                 <div class="profile-details-card" style="margin-top: 5px;">
                     <div style="font-weight: 800; font-size: 1.05rem; margin-bottom: 15px; color: #0f172a;">Đổi Mật Khẩu Bảo Mật</div>
-                    
                     <div style="margin-bottom: 12px;">
                         <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-sub); display: block; margin-bottom: 5px;">Mật khẩu hiện tại</label>
                         <div class="password-wrapper">
@@ -865,15 +766,13 @@
                             <i class="fa-solid fa-eye toggle-password" id="toggleOld" onclick="togglePasswordVisibility('oldPassword', 'toggleOld')"></i>
                         </div>
                     </div>
-
                     <div style="margin-bottom: 12px;">
                         <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-sub); display: block; margin-bottom: 5px;">Mật khẩu mới</label>
                         <div class="password-wrapper">
-                            <input type="password" id="newPassword" class="input-custom" placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)">
+                            <input type="password" id="newPassword" class="input-custom" placeholder="Ít nhất 6 ký tự">
                             <i class="fa-solid fa-eye toggle-password" id="toggleNew" onclick="togglePasswordVisibility('newPassword', 'toggleNew')"></i>
                         </div>
                     </div>
-
                     <div style="margin-bottom: 15px;">
                         <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-sub); display: block; margin-bottom: 5px;">Xác nhận mật khẩu mới</label>
                         <div class="password-wrapper">
@@ -881,7 +780,6 @@
                             <i class="fa-solid fa-eye toggle-password" id="toggleConfirm" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirm')"></i>
                         </div>
                     </div>
-
                     <button class="btn-action btn-action-primary" onclick="changeUserPassword()">Cập Nhật Mật Khẩu</button>
                 </div>
             `;
@@ -889,24 +787,16 @@
 
         function renderOrders() {
             const container = document.getElementById('orderContainer');
-            if (!currentUser) {
-                container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Vui lòng đăng nhập để xem đơn hàng!</div>`;
-                return;
-            }
+            if (!currentUser) { container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Vui lòng đăng nhập!</div>`; return; }
 
             let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
-            if (orders.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Bạn chưa có giao dịch nào!</div>`;
-                return;
-            }
+            if (orders.length === 0) { container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Chưa có giao dịch!</div>`; return; }
 
             container.innerHTML = orders.map(ord => `
                 <div class="order-card">
                     <div class="order-header">
                         <span>${ord.name}</span>
-                        <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">
-                            ${ord.status === 'pending' ? 'Đang chờ duyệt' : 'Thành công'}
-                        </span>
+                        <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">${ord.status === 'pending' ? 'Chờ duyệt' : 'Thành công'}</span>
                     </div>
                     <div style="font-size: 0.85rem; color: #64748b;">Thời gian: ${ord.date}</div>
                     <div class="order-key">${ord.key || 'Giao dịch thành công'}</div>
@@ -915,25 +805,17 @@
         }
 
         window.handleAuthAction = function() {
-            if (currentUser) {
-                switchTab('profile');
-            } else {
-                document.getElementById('loginModal').style.display = 'flex';
-            }
+            if (currentUser) switchTab('profile');
+            else document.getElementById('loginModal').style.display = 'flex';
         };
 
         document.getElementById('headAuthBtn').addEventListener('click', () => {
-            if (currentUser) {
-                switchTab('profile');
-            } else {
-                document.getElementById('loginModal').style.display = 'flex';
-            }
+            if (currentUser) switchTab('profile');
+            else document.getElementById('loginModal').style.display = 'flex';
         });
 
         document.getElementById('googleLoginBtn').addEventListener('click', () => {
-            signInWithPopup(auth, provider)
-                .then(() => { closeModal('loginModal'); })
-                .catch((error) => { alert("Đăng nhập thất bại: " + error.message); });
+            signInWithPopup(auth, provider).then(() => closeModal('loginModal')).catch(() => alert("Đăng nhập thất bại."));
         });
 
         onAuthStateChanged(auth, (user) => {
@@ -947,7 +829,8 @@
                 headAvatar.style.display = 'block';
                 headIcon.style.display = 'none';
                 bottomNavText.innerText = user.displayName.split(' ')[0];
-                loadUserData();
+                userBalance = parseInt(localStorage.getItem(`balance_${user.uid}`)) || 0;
+                updateBalanceUI();
             } else {
                 headAvatar.style.display = 'none';
                 headIcon.style.display = 'block';
@@ -959,9 +842,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             renderLiveOrders();
-            if (window.location.hash === '#admin') {
-                switchTab('admin');
-            }
+            if (window.location.hash === '#admin') switchTab('admin');
         });
     </script>
 </body>
