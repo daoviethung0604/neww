@@ -49,6 +49,7 @@
             background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
             border: 1px solid #e0f2fe; border-radius: 20px; padding: 24px 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            margin-bottom: 15px;
         }
         .badge-tag { display: inline-block; background-color: #e0e7ff; color: #3730a3; font-size: 0.72rem; font-weight: 800; padding: 6px 14px; border-radius: 20px; letter-spacing: 0.5px; margin-bottom: 16px; text-transform: uppercase; }
         .hero-card h1 { font-size: 1.65rem; font-weight: 800; line-height: 1.25; color: #0f172a; margin-bottom: 14px; }
@@ -115,6 +116,25 @@
 
         .input-custom { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; outline: none; }
 
+        /* THÊM GIAO DIỆN MỚI CHO ĐƠN HÀNG GẦN ĐÂY VÀ TOP ĐẠI GIA */
+        .live-order-box { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; margin-top: 15px; }
+        .live-order-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+        .live-order-item:last-child { border-bottom: none; }
+        
+        .btn-top-ranking {
+            background-color: #ffffff; color: var(--primary-blue); border: 2px solid var(--primary-blue); padding: 12px; border-radius: 14px;
+            font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; width: 100%; margin-top: 15px;
+        }
+
+        /* TOP RANK LIST MODAL */
+        .top-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+        .top-item:last-child { border-bottom: none; }
+        .rank-badge { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; color: white; }
+        .rank-1 { background: #eab308; }
+        .rank-2 { background: #94a3b8; }
+        .rank-3 { background: #b45309; }
+        .rank-other { background: #cbd5e1; color: #1e293b; }
+
         /* FOOTER CONTACT STYLES */
         .footer-contact {
             background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px 20px;
@@ -144,7 +164,7 @@
 
         /* MODAL POPUP CHUNG */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 2000; }
-        .modal-card { background: #ffffff; width: 90%; max-width: 360px; padding: 25px; border-radius: 20px; position: relative; text-align: center; }
+        .modal-card { background: #ffffff; width: 90%; max-width: 380px; padding: 25px; border-radius: 20px; position: relative; text-align: center; max-height: 90vh; overflow-y: auto; }
         .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.2rem; color: var(--text-sub); cursor: pointer; }
         .btn-google-login { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: #ffffff; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; margin-top: 20px; }
         
@@ -193,6 +213,22 @@
                     <div class="btn-action btn-action-pill"><i class="fa-solid fa-globe"></i> Uptime ổn định</div>
                 </div>
             </div>
+
+            <!-- THÊM: BẢNG ĐƠN HÀNG GẦN ĐÂY NGOÀI TRANG CHỦ -->
+            <div class="live-order-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 800;">
+                    <span><i class="fa-solid fa-circle" style="color: #22c55e; font-size: 0.6rem;"></i> Đơn hàng gần đây</span>
+                    <span style="font-size: 0.8rem; color: var(--primary-blue); cursor: pointer;" onclick="switchTab('orders')">Xem tất cả</span>
+                </div>
+                <div id="liveOrderFeed">
+                    <!-- Render tự động -->
+                </div>
+            </div>
+
+            <!-- THÊM: NÚT XEM TOP NẠP ĐẠI GIA -->
+            <button class="btn-top-ranking" onclick="openTopModal()">
+                <i class="fa-solid fa-trophy" style="color: #eab308;"></i> XEM TOP NẠP ĐẠI GIA
+            </button>
         </div>
 
         <!-- TRANG SẢN PHẨM -->
@@ -345,6 +381,16 @@
         </div>
     </div>
 
+    <!-- MODAL TOP NẠP ĐẠI GIA -->
+    <div class="modal-overlay" id="topModal">
+        <div class="modal-card">
+            <button class="close-modal" onclick="closeModal('topModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2><i class="fa-solid fa-trophy" style="color: #eab308;"></i> Top Nạp Đại Gia</h2>
+            <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 4px; margin-bottom: 15px;">Bảng vinh danh các nhà đầu tư hào phóng nhất hệ thống</p>
+            <div id="topRankList" style="text-align: left;"></div>
+        </div>
+    </div>
+
     <!-- SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -401,6 +447,11 @@
             document.getElementById('depositModal').style.display = 'flex';
         };
 
+        window.openTopModal = function() {
+            renderTopRanks();
+            document.getElementById('topModal').style.display = 'flex';
+        };
+
         window.closeModal = function(modalId) {
             document.getElementById(modalId).style.display = 'none';
         };
@@ -424,7 +475,6 @@
                 rawAmount: amount,
                 price: amount.toLocaleString('vi-VN') + 'đ',
                 date: timeNow,
-                key: `Mã nội dung CK: ${depositCode} | Số tiền: ${amount.toLocaleString('vi-VN')}đ`,
                 status: 'pending',
                 type: 'deposit'
             };
@@ -565,6 +615,8 @@
 
             const newOrder = {
                 id: 'DH' + Date.now().toString().slice(-6),
+                uid: currentUser.uid,
+                userName: currentUser.displayName || 'Khách',
                 name: name,
                 rawAmount: price,
                 price: price.toLocaleString('vi-VN') + 'đ',
@@ -577,6 +629,18 @@
             let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
             orders.unshift(newOrder);
             localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
+
+            // Thêm vào đơn hàng gần đây công khai (dạng ẩn danh)
+            let publicFeed = JSON.parse(localStorage.getItem('public_recent_orders') || '[]');
+            publicFeed.unshift({
+                mask: '***' + currentUser.uid.slice(-3),
+                name: name,
+                price: price.toLocaleString('vi-VN') + 'đ',
+                time: 'Vừa xong'
+            });
+            if(publicFeed.length > 5) publicFeed.pop();
+            localStorage.setItem('public_recent_orders', JSON.stringify(publicFeed));
+            renderLiveOrders();
 
             alert("Vì bảo mật vui lòng liên hệ sdt 0348876411 để nhận key.");
             switchTab('orders');
@@ -597,6 +661,67 @@
                 userBalance = parseInt(localStorage.getItem(`balance_${currentUser.uid}`)) || 0;
                 updateBalanceUI();
             }
+        }
+
+        // Render danh sách đơn hàng gần đây ngoài trang chủ
+        function renderLiveOrders() {
+            const container = document.getElementById('liveOrderFeed');
+            if(!container) return;
+            let feeds = JSON.parse(localStorage.getItem('public_recent_orders') || 'null');
+            if(!feeds) {
+                feeds = [
+                    { mask: '***923', name: 'IPA Delta Client 1 Ngày', price: '20.000đ', time: '1 phút trước' },
+                    { mask: '***795', name: 'IPA Delta Client 1 Ngày', price: '20.000đ', time: '2 phút trước' },
+                    { mask: '***268', name: 'IPA Delta Client 1 Ngày', price: '20.000đ', time: '17 phút trước' }
+                ];
+                localStorage.setItem('public_recent_orders', JSON.stringify(feeds));
+            }
+
+            container.innerHTML = feeds.map(f => `
+                <div class="live-order-item">
+                    <div>
+                        <div style="font-weight: 700; color: #0f172a;">${f.mask}</div>
+                        <div style="font-size: 0.78rem; color: var(--text-sub);">${f.name}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 800; color: var(--primary-blue);">${f.price}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-sub);">${f.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render bảng Top nạp đại gia
+        function renderTopRanks() {
+            const container = document.getElementById('topRankList');
+            let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
+            let mapUser = {};
+            allOrders.forEach(o => {
+                if(o.status === 'success' && o.type === 'deposit') {
+                    mapUser[o.userName] = (mapUser[o.userName] || 0) + o.rawAmount;
+                }
+            });
+
+            let ranks = Object.keys(mapUser).map(k => ({ name: k, total: mapUser[k] }));
+            if(ranks.length === 0) {
+                ranks = [
+                    { name: 'Đoàn Việt Hùng', total: 180000 },
+                    { name: 'Nguyễn Văn An', total: 120000 },
+                    { name: 'Trần Bảo Long', total: 50000 }
+                ];
+            } else {
+                ranks.sort((a, b) => b.total - a.total);
+            }
+
+            container.innerHTML = ranks.map((r, idx) => `
+                <div class="top-item">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="rank-badge ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':'rank-other'}">${idx+1}</div>
+                        <span style="font-weight: 700; color: #0f172a;">${r.name}</span>
+                    </div>
+                    <span style="font-weight: 800; color: #16a34a;">${r.total.toLocaleString('vi-VN')}đ</span>
+                </div>
+            `).join('');
         }
 
         window.togglePasswordVisibility = function(inputId, iconId) {
@@ -760,7 +885,7 @@
                         </span>
                     </div>
                     <div style="font-size: 0.85rem; color: #64748b;">Thời gian: ${ord.date}</div>
-                    <div class="order-key">${ord.key}</div>
+                    <div class="order-key">${ord.key || 'Giao dịch thành công'}</div>
                 </div>
             `).join('');
         }
@@ -809,6 +934,7 @@
         });
 
         window.addEventListener('DOMContentLoaded', () => {
+            renderLiveOrders();
             if (window.location.hash === '#admin') {
                 switchTab('admin');
             }
