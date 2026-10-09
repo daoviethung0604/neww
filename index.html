@@ -387,10 +387,11 @@
         </div>
     </div>
 
-    <!-- SCRIPT -->
+    <!-- SCRIPT (SỬ DỤNG FIRESTORE ĐỂ ĐỒNG BỘ DỮ LIỆU ĐƠN NẠP LÊN ĐÁM MÂY) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateCode, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB2uSm-06dZe9Lj2tXXpOy1kU2oKWN2GHw",
@@ -404,6 +405,7 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
         let currentUser = null;
@@ -452,8 +454,8 @@
             document.getElementById(modalId).style.display = 'none';
         };
 
-        // KHI KHÁCH NẠP TIỀN -> ĐƯA LÊN TRANG ADMIN TẤT CẢ NGƯỜI DÙNG CHUNG
-        window.requestDeposit = function() {
+        // KHI KHÁCH NẠP TIỀN -> ĐỒNG BỘ LÊN FIRESTORE CLOUD ĐỂ ADMIN DUYỆT TỪ BẤT CỨ ĐÂU
+        window.requestDeposit = async function() {
             const rawValue = document.getElementById('depositAmountInput').value.replace(/\./g, '');
             const amount = parseInt(rawValue) || 0;
             if (amount <= 0) {
@@ -474,39 +476,43 @@
                 price: amount.toLocaleString('vi-VN') + 'đ',
                 date: timeNow,
                 status: 'pending',
-                type: 'deposit'
+                type: 'deposit',
+                timestamp: Date.now()
             };
 
-            // Lưu vào đơn hàng cá nhân của user
-            let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
-            orders.unshift(newOrder);
-            localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
+            try {
+                // 1. Lưu vào Firestore Cloud (Hệ thống chung cho Admin duyệt)
+                await addDoc(collection(db, "global_orders"), newOrder);
 
-            // Đưa vào danh sách chung cho Admin duyệt
-            let allAdminOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
-            allAdminOrders.unshift(newOrder);
-            localStorage.setItem('admin_all_orders', JSON.stringify(allAdminOrders));
+                // 2. Lưu vào lịch sử cá nhân trên localStorage
+                let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
+                orders.unshift(newOrder);
+                localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
-            // Gửi thông báo Telegram
-            const message = `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n` +
-                            `👤 *Khách:* ${currentUser.displayName} (${currentUser.email})\n` +
-                            `💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n` +
-                            `🔑 *Mã nội dung CK:* \`${depositCode}\`\n` +
-                            `⏰ *Thời gian:* ${timeNow}`;
+                // 3. Gửi thông báo Telegram
+                const message = `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n` +
+                                `👤 *Khách:* ${currentUser.displayName} (${currentUser.email})\n` +
+                                `💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n` +
+                                `🔑 *Mã nội dung CK:* \`${depositCode}\`\n` +
+                                `⏰ *Thời gian:* ${timeNow}`;
 
-            fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: TELEGRAM_CHAT_ID,
-                    text: message,
-                    parse_mode: 'Markdown'
-                })
-            }).catch(err => console.error("Lỗi gửi Telegram:", err));
+                fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                }).catch(err => console.error("Lỗi gửi Telegram:", err));
 
-            alert(`Tạo yêu cầu nạp thành công!\nVui lòng chuyển khoản số tiền ${amount.toLocaleString('vi-VN')}đ với nội dung: ${depositCode}`);
-            closeModal('depositModal');
-            switchTab('orders');
+                alert(`Tạo yêu cầu nạp thành công!\nVui lòng chuyển khoản số tiền ${amount.toLocaleString('vi-VN')}đ với nội dung: ${depositCode}`);
+                closeModal('depositModal');
+                switchTab('orders');
+            } catch (e) {
+                console.error("Lỗi tạo đơn nạp:", e);
+                alert("Có lỗi xảy ra khi kết nối máy chủ, vui lòng thử lại!");
+            }
         };
 
         window.triggerAdminLogin = function() {
@@ -547,59 +553,70 @@
             }
         }
 
-        // ADMIN DUYỆT ĐƠN CHO TẤT CẢ USER
-        window.adminApproveOrder = function(orderId, targetUid, rawAmount) {
-            // Cập nhật đơn hàng trong giỏ của user đó
-            let userOrders = JSON.parse(localStorage.getItem(`orders_${targetUid}`) || '[]');
-            const uIndex = userOrders.findIndex(o => o.id === orderId && o.status === 'pending');
-            if (uIndex !== -1) {
-                userOrders[uIndex].status = 'success';
-                userOrders[uIndex].key = 'Đã duyệt cộng tiền thành công bởi Admin!';
-                localStorage.setItem(`orders_${targetUid}`, JSON.stringify(userOrders));
+        // ADMIN DUYỆT ĐƠN TỪ FIRESTORE CLOUD
+        window.adminApproveOrder = async function(docId, targetUid, rawAmount) {
+            try {
+                // Cập nhật trạng thái trong Firestore Cloud
+                const orderRef = doc(db, "global_orders", docId);
+                await updateDoc(orderRef, { status: 'success', key: 'Đã duyệt cộng tiền thành công bởi Admin!' });
+
+                // Cộng số dư vào ví của người dùng trên Cloud/Local
+                let currentBal = parseInt(localStorage.getItem(`balance_${targetUid}`)) || 0;
+                currentBal += rawAmount;
+                localStorage.setItem(`balance_${targetUid}`, currentBal);
+
+                if (currentUser && currentUser.uid === targetUid) {
+                    userBalance = currentBal;
+                    updateBalanceUI();
+                }
+
+                alert(`Đã duyệt thành công đơn nạp tiền (+${rawAmount.toLocaleString('vi-VN')}đ) cho thành viên!`);
+                renderAdminOrders();
+            } catch (e) {
+                console.error("Lỗi duyệt đơn:", e);
+                alert("Lỗi khi duyệt đơn trên hệ thống.");
             }
-
-            // Cộng tiền vào số dư của user đó
-            let currentBal = parseInt(localStorage.getItem(`balance_${targetUid}`)) || 0;
-            currentBal += rawAmount;
-            localStorage.setItem(`balance_${targetUid}`, currentBal);
-
-            // Cập nhật trong danh sách quản trị chung của admin
-            let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
-            const aIndex = allOrders.findIndex(o => o.id === orderId && o.status === 'pending');
-            if (aIndex !== -1) {
-                allOrders[aIndex].status = 'success';
-                localStorage.setItem('admin_all_orders', JSON.stringify(allOrders));
-            }
-
-            alert(`Đã duyệt thành công đơn nạp tiền (${rawAmount.toLocaleString('vi-VN')}đ) cho thành viên!`);
-            renderAdminOrders();
         };
 
-        function renderAdminOrders() {
+        async function renderAdminOrders() {
             const container = document.getElementById('adminOrdersList');
-            let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
+            container.innerHTML = `<div style="text-align:center; padding: 20px; color: #64748b;">Đang tải danh sách đơn nạp từ đám mây...</div>`;
             
-            if (allOrders.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 20px; color: #64748b;">Chưa có đơn nạp tiền nào từ người dùng!</div>`;
-                return;
-            }
+            try {
+                const querySnapshot = await getDocs(collection(db, "global_orders"));
+                let allOrders = [];
+                querySnapshot.forEach((docSnap) => {
+                    allOrders.push({ docId: docSnap.id, ...docSnap.data() });
+                });
 
-            container.innerHTML = allOrders.map(ord => `
-                <div class="admin-order-item">
-                    <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px;">
-                        <span>Khách: ${ord.userName} (${ord.userEmail || 'N/A'})</span>
-                        <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">
-                            ${ord.status === 'pending' ? 'Chờ duyệt' : 'Đã duyệt'}
-                        </span>
+                // Sắp xếp đơn mới lên đầu
+                allOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                if (allOrders.length === 0) {
+                    container.innerHTML = `<div style="text-align:center; padding: 20px; color: #64748b;">Chưa có đơn nạp tiền nào từ người dùng!</div>`;
+                    return;
+                }
+
+                container.innerHTML = allOrders.map(ord => `
+                    <div class="admin-order-item">
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px;">
+                            <span>Khách: ${ord.userName} (${ord.userEmail || 'N/A'})</span>
+                            <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">
+                                ${ord.status === 'pending' ? 'Chờ duyệt' : 'Đã duyệt'}
+                            </span>
+                        </div>
+                        <div style="font-size: 1.05rem; font-weight: 800; color: #3b52d4; margin: 4px 0;">Mã nội dung: [ ${ord.id} ] - Số tiền: ${ord.price}</div>
+                        <div style="font-size: 0.82rem; color: #64748b; margin-bottom: 6px;">Thời gian: ${ord.date}</div>
+                        ${ord.status === 'pending' ? `
+                            <button class="btn-approve" onclick="adminApproveOrder('${ord.docId}', '${ord.uid}',${ord.rawAmount})">
+                                <i class="fa-solid fa-check"></i> Duyệt cộng ${ord.price} cho khách
+                            </button>` : ''}
                     </div>
-                    <div style="font-size: 1.05rem; font-weight: 800; color: #3b52d4; margin: 4px 0;">Mã nội dung: [ ${ord.id} ] - Số tiền: ${ord.price}</div>
-                    <div style="font-size: 0.82rem; color: #64748b; margin-bottom: 6px;">Thời gian: ${ord.date}</div>
-                    ${ord.status === 'pending' ? `
-                        <button class="btn-approve" onclick="adminApproveOrder('${ord.id}', '${ord.uid}',${ord.rawAmount})">
-                            <i class="fa-solid fa-check"></i> Duyệt cộng ${ord.price} cho khách
-                        </button>` : ''}
-                </div>
-            `).join('');
+                `).join('');
+            } catch (e) {
+                console.error("Lỗi tải đơn admin:", e);
+                container.innerHTML = `<div style="text-align:center; padding: 20px; color: #ef4444;">Không thể tải dữ liệu từ máy chủ.</div>`;
+            }
         }
 
         window.buyProduct = function(name, price) {
@@ -694,36 +711,41 @@
             `).join('');
         }
 
-        function renderTopRanks() {
+        async function renderTopRanks() {
             const container = document.getElementById('topRankList');
-            let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
-            let mapUser = {};
-            allOrders.forEach(o => {
-                if(o.status === 'success' && o.type === 'deposit') {
-                    mapUser[o.userName] = (mapUser[o.userName] || 0) + o.rawAmount;
+            try {
+                const querySnapshot = await getDocs(collection(db, "global_orders"));
+                let mapUser = {};
+                querySnapshot.forEach((docSnap) => {
+                    let o = docSnap.data();
+                    if(o.status === 'success' && o.type === 'deposit') {
+                        mapUser[o.userName] = (mapUser[o.userName] || 0) + o.rawAmount;
+                    }
+                });
+
+                let ranks = Object.keys(mapUser).map(k => ({ name: k, total: mapUser[k] }));
+                if(ranks.length === 0) {
+                    ranks = [
+                        { name: 'Đoàn Việt Hùng', total: 180000 },
+                        { name: 'Nguyễn Văn An', total: 120000 },
+                        { name: 'Trần Bảo Long', total: 50000 }
+                    ];
+                } else {
+                    ranks.sort((a, b) => b.total - a.total);
                 }
-            });
 
-            let ranks = Object.keys(mapUser).map(k => ({ name: k, total: mapUser[k] }));
-            if(ranks.length === 0) {
-                ranks = [
-                    { name: 'Đoàn Việt Hùng', total: 180000 },
-                    { name: 'Nguyễn Văn An', total: 120000 },
-                    { name: 'Trần Bảo Long', total: 50000 }
-                ];
-            } else {
-                ranks.sort((a, b) => b.total - a.total);
-            }
-
-            container.innerHTML = ranks.map((r, idx) => `
-                <div class="top-item">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="rank-badge ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':'rank-other'}">${idx+1}</div>
-                        <span style="font-weight: 700; color: #0f172a;">${r.name}</span>
+                container.innerHTML = ranks.map((r, idx) => `
+                    <div class="top-item">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="rank-badge ${idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':'rank-other'}">${idx+1}</div>
+                            <span style="font-weight: 700; color: #0f172a;">${r.name}</span>
+                        </div>
+                        <span style="font-weight: 800; color: #16a34a;">${r.total.toLocaleString('vi-VN')}đ</span>
                     </div>
-                    <span style="font-weight: 800; color: #16a34a;">${r.total.toLocaleString('vi-VN')}đ</span>
-                </div>
-            `).join('');
+                `).join('');
+            } catch(e) {
+                container.innerHTML = `<div style="color:red; text-align:center;">Không thể tải bảng xếp hạng</div>`;
+            }
         }
 
         window.togglePasswordVisibility = function(inputId, iconId) {
