@@ -12,7 +12,6 @@
             --main-bg: #f4f6f9;
             --card-bg: #ffffff;
             --primary-blue: #3b82f6;
-            --primary-hover: #2563eb;
             --text-main: #1e293b;
             --text-sub: #64748b;
             --border-color: #e2e8f0;
@@ -22,109 +21,28 @@
             --badge-red-text: #991b1b;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-
-        body {
-            display: flex;
-            background-color: var(--main-bg);
-            color: var(--text-main);
-            min-height: 100vh;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { display: flex; background-color: var(--main-bg); color: var(--text-main); min-height: 100vh; }
 
         /* SIDEBAR */
-        .sidebar {
-            width: 250px;
-            background-color: var(--sidebar-bg);
-            color: #94a3b8;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: fixed;
-            top: 0; bottom: 0; left: 0;
-            z-index: 100;
-        }
-
-        .sidebar-header {
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #fff;
-            font-weight: bold;
-            font-size: 1.2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
+        .sidebar { width: 250px; background-color: var(--sidebar-bg); color: #94a3b8; display: flex; flex-direction: column; justify-content: space-between; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; }
+        .sidebar-header { padding: 20px; display: flex; align-items: center; gap: 12px; color: #fff; font-weight: bold; font-size: 1.2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .sidebar-header i { color: #3b82f6; font-size: 1.5rem; }
-
         .menu-group { padding: 15px 10px; }
         .menu-title { font-size: 0.75rem; font-weight: 700; color: #475569; padding: 10px 15px 5px; text-transform: uppercase; }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 15px;
-            color: #94a3b8;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            margin-bottom: 4px;
-            transition: 0.2s;
-        }
-
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: #94a3b8; text-decoration: none; border-radius: 8px; font-size: 0.95rem; margin-bottom: 4px; }
         .menu-item:hover, .menu-item.active { background-color: rgba(255, 255, 255, 0.08); color: #fff; }
         .menu-item i { width: 20px; text-align: center; }
 
         .sidebar-footer { padding: 20px; background-color: rgba(0, 0, 0, 0.2); }
-        .user-status { font-size: 0.85rem; color: #94a3b8; margin-bottom: 10px; }
-
-        .btn-login-sidebar {
-            width: 100%;
-            padding: 10px;
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
+        .user-info-box { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; display: none; }
 
         /* MAIN WRAPPER */
-        .main-wrapper {
-            margin-left: 250px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            height: 65px;
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            position: sticky; top: 0;
-            z-index: 90;
-        }
-
+        .main-wrapper { margin-left: 250px; flex: 1; display: flex; flex-direction: column; }
+        header { height: 65px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: sticky; top: 0; z-index: 90; }
         .search-bar { position: relative; width: 350px; }
-        .search-bar input {
-            width: 100%;
-            padding: 8px 12px 8px 36px;
-            background-color: #f1f5f9;
-            border: 1px solid transparent;
-            border-radius: 8px;
-            outline: none;
-            font-size: 0.9rem;
-        }
+        .search-bar input { width: 100%; padding: 8px 12px 8px 36px; background-color: #f1f5f9; border: 1px solid transparent; border-radius: 8px; outline: none; font-size: 0.9rem; }
         .search-bar i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
 
         .header-actions { display: flex; align-items: center; gap: 15px; }
@@ -132,106 +50,34 @@
         .balance-box span { color: var(--primary-blue); }
         .btn-add { background-color: var(--primary-blue); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; }
 
-        .btn-login-header {
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
+        .btn-blue { background-color: var(--primary-blue); color: white; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .btn-red { background-color: #ef4444; color: white; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; }
 
         .content { padding: 30px; }
-
-        /* HERO & STATS */
-        .hero-banner {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            border: 1px solid #bfdbfe;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 25px;
-        }
+        .hero-banner { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; border-radius: 16px; padding: 30px; margin-bottom: 25px; }
         .hero-text h1 { font-size: 1.6rem; color: #1e3a8a; margin-bottom: 10px; }
         .hero-text p { color: #3b82f6; font-size: 0.95rem; margin-bottom: 20px; }
-        .btn-blue { background-color: var(--primary-blue); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .stat-card { background-color: var(--card-bg); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 15px; }
-        .stat-icon { width: 45px; height: 45px; background-color: #eff6ff; color: var(--primary-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        .stat-info .num { font-size: 1.3rem; font-weight: bold; }
-        .stat-info .label { font-size: 0.8rem; color: var(--text-sub); }
-
-        /* PRODUCTS */
+        /* PRODUCT GRID */
         .section-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; }
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .product-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; }
+        .product-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .tag-category { background-color: #eff6ff; color: var(--primary-blue); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+        .stock-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .stock-badge.in-stock { background-color: var(--badge-green-bg); color: var(--badge-green-text); }
+        .stock-badge.out-stock { background-color: var(--badge-red-bg); color: var(--badge-red-text); }
+        .product-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; }
+        .product-desc { font-size: 0.85rem; color: var(--text-sub); margin-bottom: 15px; }
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; }
+        .price-amount { font-size: 1.2rem; font-weight: bold; }
 
-        /* --- LOGIN MODAL (POPUP ĐĂNG NHẬP) --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-card {
-            background: #ffffff;
-            width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            position: relative;
-            text-align: center;
-            animation: modalFadeIn 0.25s ease-out;
-        }
-
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 15px; right: 15px;
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            color: var(--text-sub);
-            cursor: pointer;
-        }
-
-        .modal-header h2 { font-size: 1.5rem; margin-bottom: 8px; color: var(--text-main); }
-        .modal-header p { font-size: 0.9rem; color: var(--text-sub); margin-bottom: 25px; }
-
-        .btn-social {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background: #ffffff;
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            cursor: pointer;
-            margin-bottom: 12px;
-            transition: 0.2s;
-        }
-
-        .btn-social:hover { background-color: #f8fafc; border-color: #cbd5e1; }
-        .btn-google { color: #000; }
-        .btn-facebook { background-color: #1877f2; color: #fff; border: none; }
-        .btn-facebook:hover { background-color: #166fe5; }
-
-        .btn-social img, .btn-social i { font-size: 1.2rem; width: 20px; }
+        /* MODAL POPUP */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-card { background: #ffffff; width: 100%; max-width: 380px; padding: 30px; border-radius: 16px; position: relative; text-align: center; }
+        .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.2rem; color: var(--text-sub); cursor: pointer; }
+        .btn-google-login { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); background: #ffffff; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; margin-top: 20px; }
+        .btn-google-login:hover { background-color: #f8fafc; }
     </style>
 </head>
 <body>
@@ -251,9 +97,16 @@
                 <a href="#" class="menu-item"><i class="fa-solid fa-receipt"></i> Đơn hàng</a>
             </div>
         </div>
+
         <div class="sidebar-footer">
-            <div class="user-status" id="sidebarUserStatus">Trạng thái: <b>Khách</b></div>
-            <button class="btn-login-sidebar" onclick="openLoginModal()">Đăng Nhập</button>
+            <div class="user-info-box">
+                <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
+                <div>
+                    <div id="sidebarUserStatus" style="font-size: 0.85rem; color: #fff;">Trạng thái: <b>Khách</b></div>
+                    <div id="userEmail" style="font-size: 0.75rem; color: #94a3b8;"></div>
+                </div>
+            </div>
+            <button class="btn-blue" id="sidebarAuthBtn" onclick="handleAuthAction()" style="width: 100%;">Đăng Nhập</button>
         </div>
     </aside>
 
@@ -266,7 +119,7 @@
             </div>
             <div class="header-actions">
                 <div class="balance-box">Số dư: <span>0đ</span> <button class="btn-add">+</button></div>
-                <button class="btn-login-header" id="headerLoginBtn" onclick="openLoginModal()">Đăng Nhập</button>
+                <button class="btn-blue" id="headerAuthBtn" onclick="handleAuthAction()">Đăng Nhập</button>
             </div>
         </header>
 
@@ -281,71 +134,42 @@
             <div class="section-title">Danh mục sản phẩm</div>
             <div class="product-grid">
                 <div class="product-card">
-                    <h3>IPA Delta Client 1 Ngày</h3>
-                    <p style="color: var(--text-sub); margin: 10px 0;">Hỗ trợ từ iOS 16 đến iOS 18+</p>
-                    <button class="btn-blue" style="width: 100%; justify-content: center;" onclick="openLoginModal()">20.000đ - MUA NGAY</button>
+                    <div>
+                        <div class="card-top">
+                            <span class="tag-category">IPA Delta Client</span>
+                            <span class="stock-badge in-stock">Kho: 30</span>
+                        </div>
+                        <div class="product-name">IPA Delta Client 1 Ngày</div>
+                        <div class="product-desc">Hỗ Trợ Các Dòng Máy Từ iOS 16 Đến iOS 18+</div>
+                    </div>
+                    <div class="card-bottom">
+                        <div class="price-amount">20.000đ</div>
+                        <button class="btn-blue" onclick="handleAuthAction()"><i class="fa-solid fa-cart-shopping"></i> MUA NGAY</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- POPUP / MODAL ĐĂNG NHẬP -->
+    <!-- MODAL POPUP -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-card">
             <button class="close-modal" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h2>Đăng Nhập</h2>
+            <p style="color: var(--text-sub); font-size: 0.9rem; margin-top: 5px;">Sử dụng tài khoản Google để truy cập</p>
             
-            <div class="modal-header">
-                <h2>Đăng Nhập</h2>
-                <p>Chọn phương thức đăng nhập để tiếp tục</p>
-            </div>
-
-            <!-- Nút Đăng nhập bằng Google -->
-            <button class="btn-social btn-google" onclick="loginWithGoogle()">
+            <button class="btn-google-login" id="googleLoginBtn">
                 <svg width="18" height="18" viewBox="0 0 18 18">
                     <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.259h2.908c1.702-1.567 2.684-3.874 2.684-6.617z"/>
                     <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
                     <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
                     <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
                 </svg>
-                Tiếp tục với Google
-            </button>
-
-            <!-- Nút Đăng nhập bằng Facebook -->
-            <button class="btn-social btn-facebook" onclick="loginWithFacebook()">
-                <i class="fa-brands fa-facebook-f"></i>
-                Tiếp tục với Facebook
+                Đăng nhập với Google
             </button>
         </div>
     </div>
 
-    <!-- JAVASCRIPT ĐIỀU KHIỂN -->
-    <script>
-        function openLoginModal() {
-            document.getElementById('loginModal').style.display = 'flex';
-        }
-
-        function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
-
-        // Đóng modal khi bấm ra ngoài khung
-        window.onclick = function(event) {
-            const modal = document.getElementById('loginModal');
-            if (event.target === modal) {
-                closeLoginModal();
-            }
-        }
-
-        // Xử lý sự kiện đăng nhập
-        function loginWithGoogle() {
-            alert("Đang chuyển hướng đăng nhập bằng Google...");
-            // Thêm mã kết nối Google OAuth tại đây
-        }
-
-        function loginWithFacebook() {
-            alert("Đang chuyển hướng đăng nhập bằng Facebook...");
-            // Thêm mã kết nối Facebook SDK tại đây
-        }
-    </script>
-</body>
-</html>
+    <!-- FIREBASE AUTH SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "
