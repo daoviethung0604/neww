@@ -9,198 +9,272 @@
     <style>
         :root {
             --sidebar-bg: #0b1329;
-            --main-bg: #f4f6f9;
+            --main-bg: #f4f7fe;
             --card-bg: #ffffff;
             --primary-blue: #3b82f6;
+            --primary-hover: #2563eb;
             --text-main: #1e293b;
             --text-sub: #64748b;
             --border-color: #e2e8f0;
-            --badge-green-bg: #dcfce7;
-            --badge-green-text: #166534;
-            --badge-red-bg: #fee2e2;
-            --badge-red-text: #991b1b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { display: flex; background-color: var(--main-bg); color: var(--text-main); min-height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--main-bg); color: var(--text-main); min-height: 100vh; padding-bottom: 70px; }
 
-        /* SIDEBAR */
-        .sidebar { width: 250px; background-color: var(--sidebar-bg); color: #94a3b8; display: flex; flex-direction: column; justify-content: space-between; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; }
-        .sidebar-header { padding: 20px; display: flex; align-items: center; gap: 12px; color: #fff; font-weight: bold; font-size: 1.2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        .sidebar-header i { color: #3b82f6; font-size: 1.5rem; }
-        .menu-group { padding: 15px 10px; }
-        .menu-title { font-size: 0.75rem; font-weight: 700; color: #475569; padding: 10px 15px 5px; text-transform: uppercase; }
-        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: #94a3b8; text-decoration: none; border-radius: 8px; font-size: 0.95rem; margin-bottom: 4px; }
-        .menu-item:hover, .menu-item.active { background-color: rgba(255, 255, 255, 0.08); color: #fff; }
-        .menu-item i { width: 20px; text-align: center; }
+        /* HEADER TRÊN CÙNG (MOBILE + DESKTOP) */
+        header {
+            height: 60px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-        .sidebar-footer { padding: 20px; background-color: rgba(0, 0, 0, 0.2); }
-        .user-info-box { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-        .user-avatar { width: 36px; height: 36px; border-radius: 50%; display: none; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .menu-toggle { font-size: 1.2rem; cursor: pointer; color: var(--text-main); }
+        .logo-text { font-size: 1.2rem; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; }
 
-        /* MAIN WRAPPER */
-        .main-wrapper { margin-left: 250px; flex: 1; display: flex; flex-direction: column; }
-        header { height: 65px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: sticky; top: 0; z-index: 90; }
-        .search-bar { position: relative; width: 350px; }
-        .search-bar input { width: 100%; padding: 8px 12px 8px 36px; background-color: #f1f5f9; border: 1px solid transparent; border-radius: 8px; outline: none; font-size: 0.9rem; }
-        .search-bar i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .icon-btn {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background-color: #f1f5f9;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-main);
+            position: relative;
+            cursor: pointer;
+            border: none;
+        }
+        .icon-btn .badge-dot {
+            position: absolute; top: 6px; right: 6px;
+            width: 8px; height: 8px;
+            background-color: #ef4444;
+            border-radius: 50%;
+        }
 
-        .header-actions { display: flex; align-items: center; gap: 15px; }
-        .balance-box { background-color: #f1f5f9; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-        .balance-box span { color: var(--primary-blue); }
-        .btn-add { background-color: var(--primary-blue); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; }
+        .user-avatar-head { width: 32px; height: 32px; border-radius: 50%; display: none; object-fit: cover; }
 
-        .btn-blue { background-color: var(--primary-blue); color: white; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        .btn-red { background-color: #ef4444; color: white; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        /* HERO BANNER THEO ẢNH MAU */
+        .content-container { padding: 16px; max-width: 600px; margin: 0 auto; }
 
-        .content { padding: 30px; }
-        .hero-banner { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; border-radius: 16px; padding: 30px; margin-bottom: 25px; }
-        .hero-text h1 { font-size: 1.6rem; color: #1e3a8a; margin-bottom: 10px; }
-        .hero-text p { color: #3b82f6; font-size: 0.95rem; margin-bottom: 20px; }
+        .hero-card {
+            background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
+            border: 1px solid #e0f2fe;
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
 
-        /* PRODUCT GRID */
-        .section-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; }
-        .category-tabs { display: flex; gap: 10px; margin-bottom: 25px; }
-        .tab-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border-color); background-color: white; cursor: pointer; font-weight: 500; font-size: 0.9rem; }
-        .tab-btn.active { background-color: var(--primary-blue); color: white; border-color: var(--primary-blue); }
+        .badge-tag {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: #3730a3;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
 
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .product-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; }
-        .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .tag-category { background-color: #eff6ff; color: var(--primary-blue); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
-        .stock-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-        .stock-badge.in-stock { background-color: var(--badge-green-bg); color: var(--badge-green-text); }
-        .product-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 8px; }
-        .product-desc { font-size: 0.85rem; color: var(--text-sub); margin-bottom: 15px; }
-        .card-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; }
-        .price-amount { font-size: 1.2rem; font-weight: bold; }
+        .hero-card h1 {
+            font-size: 1.65rem;
+            font-weight: 800;
+            line-height: 1.25;
+            color: #0f172a;
+            margin-bottom: 14px;
+        }
+
+        .hero-card p {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        /* NÚT BẤM XẾP DỌC */
+        .btn-stack { display: flex; flex-direction: column; gap: 10px; }
+
+        .btn-action {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-action-primary {
+            background-color: #3b52d4;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(59, 82, 212, 0.25);
+        }
+
+        .btn-action-secondary {
+            background-color: #ffffff;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .btn-action-pill {
+            background-color: #ffffff;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+            font-weight: 600;
+            font-size: 0.88rem;
+            justify-content: flex-start;
+            padding-left: 16px;
+        }
+
+        .btn-action-pill i {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background-color: #f1f5f9;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+            color: #3b82f6;
+        }
+
+        /* BOTTOM NAVBAR (THANH ĐIỀU HƯỚNG DƯỚI DÀNH CHO MOBILE) */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            height: 60px;
+            background-color: #ffffff;
+            border-top: 1px solid var(--border-color);
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            color: #64748b; font-size: 0.7rem; font-weight: 600;
+            text-decoration: none; gap: 4px;
+        }
+
+        .nav-item i { font-size: 1.1rem; }
+        .nav-item.active { color: #3b52d4; }
+
+        /* FLOATING BUTTONS (ZALO + SCROLL TOP) */
+        .floating-btns {
+            position: fixed; right: 16px; bottom: 80px;
+            display: flex; flex-direction: column; gap: 10px;
+            z-index: 99;
+        }
+
+        .float-btn {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            cursor: pointer; border: none;
+        }
+        .btn-zalo { background-color: #0068ff; }
+        .btn-scroll { background-color: #0f172a; }
 
         /* MODAL POPUP */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-card { background: #ffffff; width: 100%; max-width: 380px; padding: 30px; border-radius: 16px; position: relative; text-align: center; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .modal-card { background: #ffffff; width: 90%; max-width: 360px; padding: 25px; border-radius: 20px; position: relative; text-align: center; }
         .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.2rem; color: var(--text-sub); cursor: pointer; }
-        .btn-google-login { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); background: #ffffff; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; margin-top: 20px; }
-        .btn-google-login:hover { background-color: #f8fafc; }
+        .btn-google-login { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: #ffffff; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div>
-            <div class="sidebar-header">
-                <i class="fa-solid fa-cube"></i>
-                <span>Delta Client</span>
-            </div>
-            <div class="menu-group">
-                <div class="menu-title">Dịch Vụ Chính</div>
-                <a href="#" class="menu-item active"><i class="fa-solid fa-house"></i> Trang chủ</a>
-                <a href="#" class="menu-item"><i class="fa-solid fa-box"></i> Sản phẩm</a>
-                <a href="#" class="menu-item"><i class="fa-solid fa-wallet"></i> Nạp tiền</a>
-                <a href="#" class="menu-item"><i class="fa-solid fa-receipt"></i> Đơn hàng</a>
-            </div>
+    <!-- HEADER TRÊN CÙNG -->
+    <header>
+        <div class="header-left">
+            <i class="fa-solid fa-bars menu-toggle"></i>
+            <span class="logo-text">DeltaClient.LOL</span>
         </div>
-
-        <div class="sidebar-footer">
-            <div class="user-info-box">
-                <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
-                <div>
-                    <div id="sidebarUserStatus" style="font-size: 0.85rem; color: #fff;">Trạng thái: <b>Khách</b></div>
-                    <div id="userEmail" style="font-size: 0.75rem; color: #94a3b8;"></div>
-                </div>
-            </div>
-            <button class="btn-blue" id="sidebarAuthBtn" style="width: 100%;">Đăng Nhập</button>
+        <div class="header-right">
+            <button class="icon-btn">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge-dot"></span>
+            </button>
+            <button class="icon-btn" id="headAuthBtn">
+                <img id="userHeadAvatar" class="user-avatar-head" src="" alt="Avatar">
+                <i class="fa-regular fa-user" id="userHeadIcon"></i>
+            </button>
         </div>
-    </aside>
+    </header>
 
-    <!-- MAIN WRAPPER -->
-    <div class="main-wrapper">
-        <header>
-            <div class="search-bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Tìm kiếm sản phẩm...">
-            </div>
-            <div class="header-actions">
-                <div class="balance-box">Số dư: <span>0đ</span> <button class="btn-add">+</button></div>
-                <button class="btn-blue" id="headerAuthBtn">Đăng Nhập</button>
-            </div>
-        </header>
-
-        <div class="content">
-            <div class="hero-banner">
-                <div class="hero-text">
-                    <h1>Hệ thống Delta Client & Key Bản Quyền</h1>
-                    <p>Cung cấp IPA Delta Client độc quyền, Key tốc độ cao, tự động giao key tức thì 100%.</p>
-                </div>
-            </div>
-
-            <div class="section-title">Danh mục sản phẩm</div>
+    <!-- CONTENT CHÍNH BANNER TƯƠNG TỰ ẢNH MAU -->
+    <div class="content-container">
+        <div class="hero-card">
+            <span class="badge-tag">● HẠ TẦNG PROXY FREE FIRE</span>
+            <h1>Hệ thống Proxy Free Fire & Digital Keys Doanh Nghiệp</h1>
+            <p>Cung cấp IPA Proxy Delta độc quyền, key tốc độ cao, tự động giao key tức thì 100%. Tối ưu ping cho game thủ chuyên nghiệp.</p>
             
-            <div class="category-tabs">
-                <button class="tab-btn active">Tất cả sản phẩm</button>
-                <button class="tab-btn">IPA Delta Client</button>
-            </div>
-
-            <div class="product-grid">
+            <div class="btn-stack">
+                <button class="btn-action btn-action-primary" id="btnExplore">
+                    Xem sản phẩm <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <button class="btn-action btn-action-secondary" id="btnDeposit">
+                    <i class="fa-regular fa-credit-card"></i> Nạp tiền ngay
+                </button>
                 
-                <!-- SẢN PHẨM 1: 1 NGÀY -->
-                <div class="product-card">
-                    <div>
-                        <div class="card-top">
-                            <span class="tag-category">IPA Delta Client</span>
-                            <span class="stock-badge in-stock">Kho: 30</span>
-                        </div>
-                        <div class="product-name">IPA Delta Client 1 Ngày</div>
-                        <div class="product-desc">Hỗ Trợ Các Dòng Máy Từ iOS 16 Đến iOS 18+ (Sử dụng 24 giờ)</div>
-                    </div>
-                    <div class="card-bottom">
-                        <div class="price-amount">20.000đ</div>
-                        <button class="btn-blue buy-btn" data-name="IPA Delta Client 1 Ngày"><i class="fa-solid fa-cart-shopping"></i> MUA NGAY</button>
-                    </div>
+                <div class="btn-action btn-action-pill">
+                    <i class="fa-solid fa-bolt"></i> Kích hoạt trong 3s
                 </div>
-
-                <!-- SẢN PHẨM 2: 1 TUẦN -->
-                <div class="product-card">
-                    <div>
-                        <div class="card-top">
-                            <span class="tag-category">IPA Delta Client</span>
-                            <span class="stock-badge in-stock">Kho: 50</span>
-                        </div>
-                        <div class="product-name">IPA Delta Client 1 Tuần</div>
-                        <div class="product-desc">Hỗ Trợ Các Dòng Máy Từ iOS 16  (Sử dụng 7 ngày)</div>
-                    </div>
-                    <div class="card-bottom">
-                        <div class="price-amount">50.000đ</div>
-                        <button class="btn-blue buy-btn" data-name="IPA Delta Client 1 Tuần"><i class="fa-solid fa-cart-shopping"></i> MUA NGAY</button>
-                    </div>
+                <div class="btn-action btn-action-pill">
+                    <i class="fa-regular fa-shield-check"></i> Bảo hành uy tín
                 </div>
-
-                <!-- SẢN PHẨM 3: 1 THÁNG -->
-                <div class="product-card">
-                    <div>
-                        <div class="card-top">
-                            <span class="tag-category">IPA Delta Client</span>
-                            <span class="stock-badge in-stock">Kho: 100</span>
-                        </div>
-                        <div class="product-name">IPA Delta Client 1 Tháng</div>
-                        <div class="product-desc">Hỗ Trợ Các Dòng Máy Từ iOS 16  (Sử dụng 30 ngày)</div>
-                    </div>
-                    <div class="card-bottom">
-                        <div class="price-amount">120.000đ</div>
-                        <button class="btn-blue buy-btn" data-name="IPA Delta Client 1 Tháng"><i class="fa-solid fa-cart-shopping"></i> MUA NGAY</button>
-                    </div>
+                <div class="btn-action btn-action-pill">
+                    <i class="fa-solid fa-globe"></i> Uptime ổn định
                 </div>
-
             </div>
         </div>
     </div>
 
-    <!-- MODAL POPUP -->
+    <!-- FLOATING BUTTONS (NÚT NỔI ZALO & CUỘN LÊN) -->
+    <div class="floating-btns">
+        <button class="float-btn btn-zalo"><i class="fa-solid fa-comment-dots"></i></button>
+        <button class="float-btn btn-scroll" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
+    </div>
+
+    <!-- BOTTOM NAVBAR -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>Trang chủ</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-cubes"></i>
+            <span>Sản phẩm</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Nạp tiền</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Đơn hàng</span>
+        </a>
+        <a href="#" class="nav-item" id="bottomNavAuth">
+            <i class="fa-regular fa-user"></i>
+            <span id="bottomNavUserText">Tôi</span>
+        </a>
+    </nav>
+
+    <!-- MODAL ĐĂNG NHẬP POPUP -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-card">
             <button class="close-modal" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
             <h2>Đăng Nhập</h2>
-            <p style="color: var(--text-sub); font-size: 0.9rem; margin-top: 5px;">Sử dụng tài khoản Google để truy cập</p>
+            <p style="color: var(--text-sub); font-size: 0.88rem; margin-top: 5px;">Sử dụng tài khoản Google để truy cập</p>
             
             <button class="btn-google-login" id="googleLoginBtn">
                 <svg width="18" height="18" viewBox="0 0 18 18">
@@ -214,12 +288,11 @@
         </div>
     </div>
 
-    <!-- FIREBASE AUTH SCRIPT -->
+    <!-- FIREBASE AUTHENTICATION -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // CẤU HÌNH FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyB2uSm-06dZe9Lj2tXXpOy1kU2oKWN2GHw",
             authDomain: "delta-client-ce1cc.firebaseapp.com",
@@ -243,26 +316,27 @@
         document.getElementById('closeModalBtn').addEventListener('click', closeModal);
         window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-        const handleAuthClick = () => {
+        const handleAuthAction = () => {
             if (currentUser) {
-                signOut(auth).then(() => { alert("Đã đăng xuất thành công!"); });
+                if (confirm(`Bạn có muốn đăng xuất khỏi tài khoản ${currentUser.displayName}?`)) {
+                    signOut(auth).then(() => { alert("Đã đăng xuất!"); });
+                }
             } else {
                 openModal();
             }
         };
 
-        document.getElementById('sidebarAuthBtn').addEventListener('click', handleAuthClick);
-        document.getElementById('headerAuthBtn').addEventListener('click', handleAuthClick);
+        document.getElementById('headAuthBtn').addEventListener('click', handleAuthAction);
+        document.getElementById('bottomNavAuth').addEventListener('click', handleAuthAction);
 
-        document.querySelectorAll('.buy-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (!currentUser) {
-                    openModal();
-                } else {
-                    const prodName = btn.getAttribute('data-name');
-                    alert(`Bạn đã chọn mua: ${prodName}.\nVui lòng nạp tiền để hoàn tất thanh toán!`);
-                }
-            });
+        document.getElementById('btnExplore').addEventListener('click', () => {
+            if (!currentUser) openModal();
+            else alert("Chức năng xem sản phẩm đang được cập nhật!");
+        });
+
+        document.getElementById('btnDeposit').addEventListener('click', () => {
+            if (!currentUser) openModal();
+            else alert("Vui lòng liên hệ Admin để nạp tiền!");
         });
 
         document.getElementById('googleLoginBtn').addEventListener('click', () => {
@@ -276,31 +350,19 @@
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
-            const sidebarStatus = document.getElementById('sidebarUserStatus');
-            const userEmail = document.getElementById('userEmail');
-            const avatar = document.getElementById('userAvatar');
-            const sidebarBtn = document.getElementById('sidebarAuthBtn');
-            const headerBtn = document.getElementById('headerAuthBtn');
+            const headAvatar = document.getElementById('userHeadAvatar');
+            const headIcon = document.getElementById('userHeadIcon');
+            const bottomNavText = document.getElementById('bottomNavUserText');
 
             if (user) {
-                sidebarStatus.innerHTML = `<b>${user.displayName}</b>`;
-                userEmail.innerText = user.email;
-                avatar.src = user.photoURL;
-                avatar.style.display = 'block';
-
-                sidebarBtn.innerText = 'Đăng Xuất';
-                sidebarBtn.className = 'btn-red';
-                headerBtn.innerText = 'Đăng Xuất';
-                headerBtn.className = 'btn-red';
+                headAvatar.src = user.photoURL;
+                headAvatar.style.display = 'block';
+                headIcon.style.display = 'none';
+                bottomNavText.innerText = user.displayName.split(' ')[0];
             } else {
-                sidebarStatus.innerHTML = 'Trạng thái: <b>Khách</b>';
-                userEmail.innerText = '';
-                avatar.style.display = 'none';
-
-                sidebarBtn.innerText = 'Đăng Nhập';
-                sidebarBtn.className = 'btn-blue';
-                headerBtn.innerText = 'Đăng Nhập';
-                headerBtn.className = 'btn-blue';
+                headAvatar.style.display = 'none';
+                headIcon.style.display = 'block';
+                bottomNavText.innerText = 'Tôi';
             }
         });
     </script>
