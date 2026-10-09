@@ -11,176 +11,92 @@
             --sidebar-bg: #0b1329;
             --main-bg: #f4f7fe;
             --card-bg: #ffffff;
-            --primary-blue: #3b82f6;
+            --primary-blue: #3b52d4;
             --primary-hover: #2563eb;
             --text-main: #1e293b;
             --text-sub: #64748b;
             --border-color: #e2e8f0;
+            --badge-green-bg: #dcfce7;
+            --badge-green-text: #166534;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--main-bg); color: var(--text-main); min-height: 100vh; padding-bottom: 70px; }
 
-        /* HEADER TRÊN CÙNG (MOBILE + DESKTOP) */
+        /* HEADER TRÊN CÙNG */
         header {
-            height: 60px;
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            height: 60px; background-color: var(--card-bg); border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
+            position: sticky; top: 0; z-index: 100;
         }
-
         .header-left { display: flex; align-items: center; gap: 12px; }
         .menu-toggle { font-size: 1.2rem; cursor: pointer; color: var(--text-main); }
         .logo-text { font-size: 1.2rem; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; }
 
         .header-right { display: flex; align-items: center; gap: 12px; }
         .icon-btn {
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            background-color: #f1f5f9;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--text-main);
-            position: relative;
-            cursor: pointer;
-            border: none;
+            width: 36px; height: 36px; border-radius: 50%; background-color: #f1f5f9;
+            display: flex; align-items: center; justify-content: center; color: var(--text-main);
+            position: relative; cursor: pointer; border: none;
         }
-        .icon-btn .badge-dot {
-            position: absolute; top: 6px; right: 6px;
-            width: 8px; height: 8px;
-            background-color: #ef4444;
-            border-radius: 50%;
-        }
-
+        .icon-btn .badge-dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%; }
         .user-avatar-head { width: 32px; height: 32px; border-radius: 50%; display: none; object-fit: cover; }
 
-        /* HERO BANNER THEO ẢNH MAU */
         .content-container { padding: 16px; max-width: 600px; margin: 0 auto; }
 
+        /* HERO BANNER TRANG CHỦ */
         .hero-card {
             background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
-            border: 1px solid #e0f2fe;
-            border-radius: 20px;
-            padding: 24px 20px;
+            border: 1px solid #e0f2fe; border-radius: 20px; padding: 24px 20px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         }
+        .badge-tag { display: inline-block; background-color: #e0e7ff; color: #3730a3; font-size: 0.72rem; font-weight: 800; padding: 6px 14px; border-radius: 20px; letter-spacing: 0.5px; margin-bottom: 16px; text-transform: uppercase; }
+        .hero-card h1 { font-size: 1.65rem; font-weight: 800; line-height: 1.25; color: #0f172a; margin-bottom: 14px; }
+        .hero-card p { color: #64748b; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px; }
 
-        .badge-tag {
-            display: inline-block;
-            background-color: #e0e7ff;
-            color: #3730a3;
-            font-size: 0.72rem;
-            font-weight: 800;
-            padding: 6px 14px;
-            border-radius: 20px;
-            letter-spacing: 0.5px;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-        }
-
-        .hero-card h1 {
-            font-size: 1.65rem;
-            font-weight: 800;
-            line-height: 1.25;
-            color: #0f172a;
-            margin-bottom: 14px;
-        }
-
-        .hero-card p {
-            color: #64748b;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 24px;
-        }
-
-        /* NÚT BẤM XẾP DỌC */
         .btn-stack { display: flex; flex-direction: column; gap: 10px; }
-
         .btn-action {
-            width: 100%;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            display: flex; align-items: center; justify-content: center;
-            gap: 8px;
-            cursor: pointer;
-            border: none;
-            transition: 0.2s;
-            text-decoration: none;
+            width: 100%; padding: 12px 20px; border-radius: 25px; font-weight: 700; font-size: 0.95rem;
+            display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; border: none; transition: 0.2s;
         }
+        .btn-action-primary { background-color: #3b52d4; color: #ffffff; box-shadow: 0 4px 12px rgba(59, 82, 212, 0.25); }
+        .btn-action-secondary { background-color: #ffffff; color: #0f172a; border: 1px solid #e2e8f0; }
+        .btn-action-pill { background-color: #ffffff; color: #1e293b; border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.88rem; justify-content: flex-start; padding-left: 16px; }
+        .btn-action-pill i { width: 28px; height: 28px; border-radius: 50%; background-color: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #3b82f6; }
 
-        .btn-action-primary {
-            background-color: #3b52d4;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(59, 82, 212, 0.25);
-        }
+        /* DANH MỤC SẢN PHẨM (PRODUCT GRID) */
+        .section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 15px; }
+        .product-grid { display: flex; flex-direction: column; gap: 15px; }
+        .product-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+        .card-top { display: flex; justify-content: space-between; align-items: center; }
+        .tag-category { background-color: #eff6ff; color: var(--primary-blue); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .stock-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background-color: var(--badge-green-bg); color: var(--badge-green-text); }
+        .product-name { font-size: 1.1rem; font-weight: 800; color: #0f172a; }
+        .product-desc { font-size: 0.85rem; color: var(--text-sub); }
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 4px; }
+        .price-amount { font-size: 1.2rem; font-weight: 800; color: #3b52d4; }
+        .btn-buy { background-color: #3b52d4; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; cursor: pointer; }
 
-        .btn-action-secondary {
-            background-color: #ffffff;
-            color: #0f172a;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-        }
+        /* ĐƠN HÀNG */
+        .order-list { display: flex; flex-direction: column; gap: 12px; }
+        .order-card { background: white; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; }
+        .order-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
+        .order-status { color: #166534; background: #dcfce7; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; }
+        .order-key { background: #f1f5f9; padding: 8px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 8px; word-break: break-all; }
 
-        .btn-action-pill {
-            background-color: #ffffff;
-            color: #1e293b;
-            border: 1px solid #e2e8f0;
-            font-weight: 600;
-            font-size: 0.88rem;
-            justify-content: flex-start;
-            padding-left: 16px;
-        }
+        /* VIEW SWITCHING */
+        .page-view { display: none; }
+        .page-view.active { display: block; }
 
-        .btn-action-pill i {
-            width: 28px; height: 28px;
-            border-radius: 50%;
-            background-color: #f1f5f9;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.8rem;
-            color: #3b82f6;
-        }
-
-        /* BOTTOM NAVBAR (THANH ĐIỀU HƯỚNG DƯỚI DÀNH CHO MOBILE) */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            height: 60px;
-            background-color: #ffffff;
-            border-top: 1px solid var(--border-color);
-            display: flex; justify-content: space-around; align-items: center;
-            z-index: 1000;
-        }
-
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            color: #64748b; font-size: 0.7rem; font-weight: 600;
-            text-decoration: none; gap: 4px;
-        }
-
+        /* BOTTOM NAVBAR */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background-color: #ffffff; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; font-size: 0.7rem; font-weight: 600; text-decoration: none; gap: 4px; cursor: pointer; }
         .nav-item i { font-size: 1.1rem; }
         .nav-item.active { color: #3b52d4; }
 
-        /* FLOATING BUTTONS (ZALO + SCROLL TOP) */
-        .floating-btns {
-            position: fixed; right: 16px; bottom: 80px;
-            display: flex; flex-direction: column; gap: 10px;
-            z-index: 99;
-        }
-
-        .float-btn {
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.1rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            cursor: pointer; border: none;
-        }
+        /* FLOATING BUTTONS */
+        .floating-btns { position: fixed; right: 16px; bottom: 80px; display: flex; flex-direction: column; gap: 10px; z-index: 99; }
+        .float-btn { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; border: none; }
         .btn-zalo { background-color: #0068ff; }
         .btn-scroll { background-color: #0f172a; }
 
@@ -193,17 +109,14 @@
 </head>
 <body>
 
-    <!-- HEADER TRÊN CÙNG -->
+    <!-- HEADER -->
     <header>
         <div class="header-left">
-            <i class="fa-solid fa-bars menu-toggle"></i>
-            <span class="logo-text">DeltaClient.LOL</span>
+            <i class="fa-solid fa-bars menu-toggle" onclick="switchTab('products')"></i>
+            <span class="logo-text" onclick="switchTab('home')" style="cursor:pointer;">DeltaClient.LOL</span>
         </div>
         <div class="header-right">
-            <button class="icon-btn">
-                <i class="fa-regular fa-bell"></i>
-                <span class="badge-dot"></span>
-            </button>
+            <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge-dot"></span></button>
             <button class="icon-btn" id="headAuthBtn">
                 <img id="userHeadAvatar" class="user-avatar-head" src="" alt="Avatar">
                 <i class="fa-regular fa-user" id="userHeadIcon"></i>
@@ -211,35 +124,88 @@
         </div>
     </header>
 
-    <!-- CONTENT CHÍNH BANNER TƯƠNG TỰ ẢNH MAU -->
     <div class="content-container">
-        <div class="hero-card">
-            <span class="badge-tag">● HẠ TẦNG PROXY FREE FIRE</span>
-            <h1>Hệ thống Proxy Free Fire & Digital Keys Doanh Nghiệp</h1>
-            <p>Cung cấp IPA Proxy Delta độc quyền, key tốc độ cao, tự động giao key tức thì 100%. Tối ưu ping cho game thủ chuyên nghiệp.</p>
-            
-            <div class="btn-stack">
-                <button class="btn-action btn-action-primary" id="btnExplore">
-                    Xem sản phẩm <i class="fa-solid fa-arrow-right"></i>
-                </button>
-                <button class="btn-action btn-action-secondary" id="btnDeposit">
-                    <i class="fa-regular fa-credit-card"></i> Nạp tiền ngay
-                </button>
+        
+        <!-- TRANG CHỦ (HOME) -->
+        <div id="view-home" class="page-view active">
+            <div class="hero-card">
+                <span class="badge-tag">● HẠ TẦNG PROXY FREE FIRE</span>
+                <h1>Hệ thống Proxy Free Fire & Digital Keys Doanh Nghiệp</h1>
+                <p>Cung cấp IPA Proxy Delta độc quyền, key tốc độ cao, tự động giao key tức thì 100%. Tối ưu ping cho game thủ chuyên nghiệp.</p>
                 
-                <div class="btn-action btn-action-pill">
-                    <i class="fa-solid fa-bolt"></i> Kích hoạt trong 3s
-                </div>
-                <div class="btn-action btn-action-pill">
-                    <i class="fa-regular fa-shield-check"></i> Bảo hành uy tín
-                </div>
-                <div class="btn-action btn-action-pill">
-                    <i class="fa-solid fa-globe"></i> Uptime ổn định
+                <div class="btn-stack">
+                    <button class="btn-action btn-action-primary" onclick="switchTab('products')">
+                        Xem sản phẩm <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button class="btn-action btn-action-secondary" onclick="alert('Vui lòng liên hệ Admin để nạp tiền!')">
+                        <i class="fa-regular fa-credit-card"></i> Nạp tiền ngay
+                    </button>
+                    
+                    <div class="btn-action btn-action-pill"><i class="fa-solid fa-bolt"></i> Kích hoạt trong 3s</div>
+                    <div class="btn-action btn-action-pill"><i class="fa-regular fa-shield-check"></i> Bảo hành uy tín</div>
+                    <div class="btn-action btn-action-pill"><i class="fa-solid fa-globe"></i> Uptime ổn định</div>
                 </div>
             </div>
         </div>
+
+        <!-- TRANG SẢN PHẨM (PRODUCTS) -->
+        <div id="view-products" class="page-view">
+            <div class="section-title">Danh mục IPA Delta Client</div>
+            <div class="product-grid">
+                
+                <div class="product-card">
+                    <div class="card-top">
+                        <span class="tag-category">IPA Delta Client</span>
+                        <span class="stock-badge">Kho: 30</span>
+                    </div>
+                    <div class="product-name">IPA Delta Client 1 Ngày</div>
+                    <div class="product-desc">Hỗ Trợ Các Dòng Máy Từ iOS 16 Đến iOS 18+ (24 Giờ)</div>
+                    <div class="card-bottom">
+                        <div class="price-amount">20.000đ</div>
+                        <button class="btn-buy" onclick="buyProduct('IPA Delta Client 1 Ngày', '20.000đ')">MUA NGAY</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="card-top">
+                        <span class="tag-category">IPA Delta Client</span>
+                        <span class="stock-badge">Kho: 50</span>
+                    </div>
+                    <div class="product-name">IPA Delta Client 1 Tuần</div>
+                    <div class="product-desc">Hỗ Trợ Các Dòng Máy Từ iOS 16 Đến iOS 18+ (7 Ngày)</div>
+                    <div class="card-bottom">
+                        <div class="price-amount">50.000đ</div>
+                        <button class="btn-buy" onclick="buyProduct('IPA Delta Client 1 Tuần', '50.000đ')">MUA NGAY</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="card-top">
+                        <span class="tag-category">IPA Delta Client</span>
+                        <span class="stock-badge">Kho: 100</span>
+                    </div>
+                    <div class="product-name">IPA Delta Client 1 Tháng</div>
+                    <div class="product-desc">Hỗ Trợ Các Dòng Máy Từ iOS 16 Đến iOS 18+ (30 Ngày)</div>
+                    <div class="card-bottom">
+                        <div class="price-amount">120.000đ</div>
+                        <button class="btn-buy" onclick="buyProduct('IPA Delta Client 1 Tháng', '120.000đ')">MUA NGAY</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TRANG ĐƠN HÀNG (ORDERS) -->
+        <div id="view-orders" class="page-view">
+            <div class="section-title">Lịch Sử Đơn Hàng</div>
+            <div class="order-list" id="orderContainer">
+                <!-- Đơn hàng sẽ được tự động chèn vào đây -->
+            </div>
+        </div>
+
     </div>
 
-    <!-- FLOATING BUTTONS (NÚT NỔI ZALO & CUỘN LÊN) -->
+    <!-- FLOATING BUTTONS -->
     <div class="floating-btns">
         <button class="float-btn btn-zalo"><i class="fa-solid fa-comment-dots"></i></button>
         <button class="float-btn btn-scroll" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
@@ -247,35 +213,29 @@
 
     <!-- BOTTOM NAVBAR -->
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active">
-            <i class="fa-solid fa-house"></i>
-            <span>Trang chủ</span>
-        </a>
-        <a href="#" class="nav-item">
-            <i class="fa-solid fa-cubes"></i>
-            <span>Sản phẩm</span>
-        </a>
-        <a href="#" class="nav-item">
-            <i class="fa-solid fa-wallet"></i>
-            <span>Nạp tiền</span>
-        </a>
-        <a href="#" class="nav-item">
-            <i class="fa-solid fa-receipt"></i>
-            <span>Đơn hàng</span>
-        </a>
-        <a href="#" class="nav-item" id="bottomNavAuth">
-            <i class="fa-regular fa-user"></i>
-            <span id="bottomNavUserText">Tôi</span>
-        </a>
+        <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+            <i class="fa-solid fa-house"></i><span>Trang chủ</span>
+        </div>
+        <div class="nav-item" id="nav-products" onclick="switchTab('products')">
+            <i class="fa-solid fa-cubes"></i><span>Sản phẩm</span>
+        </div>
+        <div class="nav-item" onclick="alert('Vui lòng liên hệ Admin để nạp tiền!')">
+            <i class="fa-solid fa-wallet"></i><span>Nạp tiền</span>
+        </div>
+        <div class="nav-item" id="nav-orders" onclick="switchTab('orders')">
+            <i class="fa-solid fa-receipt"></i><span>Đơn hàng</span>
+        </div>
+        <div class="nav-item" id="bottomNavAuth">
+            <i class="fa-regular fa-user"></i><span id="bottomNavUserText">Tôi</span>
+        </div>
     </nav>
 
-    <!-- MODAL ĐĂNG NHẬP POPUP -->
+    <!-- MODAL POPUP -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-card">
             <button class="close-modal" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
             <h2>Đăng Nhập</h2>
             <p style="color: var(--text-sub); font-size: 0.88rem; margin-top: 5px;">Sử dụng tài khoản Google để truy cập</p>
-            
             <button class="btn-google-login" id="googleLoginBtn">
                 <svg width="18" height="18" viewBox="0 0 18 18">
                     <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.259h2.908c1.702-1.567 2.684-3.874 2.684-6.617z"/>
@@ -288,7 +248,7 @@
         </div>
     </div>
 
-    <!-- FIREBASE AUTHENTICATION -->
+    <!-- FIREBASE AUTH & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -316,6 +276,65 @@
         document.getElementById('closeModalBtn').addEventListener('click', closeModal);
         window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
+        // CHUYỂN ĐỔI TAB GIAO DIỆN
+        window.switchTab = function(tabName) {
+            document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+            document.getElementById(`view-${tabName}`).classList.add('active');
+            if(document.getElementById(`nav-${tabName}`)) {
+                document.getElementById(`nav-${tabName}`).classList.add('active');
+            }
+            if (tabName === 'orders') renderOrders();
+        };
+
+        // MUA SẢN PHẨM VÀ TỰ ĐỘNG THÊM VÀO ĐƠN HÀNG
+        window.buyProduct = function(name, price) {
+            if (!currentUser) {
+                openModal();
+                return;
+            }
+
+            const key = 'DELTA-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-KEY';
+            const newOrder = {
+                id: 'DH' + Date.now().toString().slice(-6),
+                name: name,
+                price: price,
+                date: new Date().toLocaleString('vi-VN'),
+                key: key
+            };
+
+            let orders = JSON.parse(localStorage.getItem('my_orders') || '[]');
+            orders.unshift(newOrder);
+            localStorage.setItem('my_orders', JSON.stringify(orders));
+
+            alert(`Mua thành công: ${name}!\nKey của bạn: ${key}\nĐơn hàng đã được tự động lưu vào tab "Đơn hàng".`);
+            switchTab('orders');
+        };
+
+        // HIỂN THỊ DANH SÁCH ĐƠN HÀNG
+        function renderOrders() {
+            const container = document.getElementById('orderContainer');
+            let orders = JSON.parse(localStorage.getItem('my_orders') || '[]');
+
+            if (orders.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Bạn chưa có giao dịch nào!</div>`;
+                return;
+            }
+
+            container.innerHTML = orders.map(ord => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span>${ord.name}</span>
+                        <span class="order-status">Thành công</span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #64748b;">Giá: <b>${ord.price}</b> | Thời gian: ${ord.date}</div>
+                    <div class="order-key">Key: ${ord.key}</div>
+                </div>
+            `).join('');
+        }
+
+        // ĐĂNG NHẬP / ĐĂNG XUẤT
         const handleAuthAction = () => {
             if (currentUser) {
                 if (confirm(`Bạn có muốn đăng xuất khỏi tài khoản ${currentUser.displayName}?`)) {
@@ -329,23 +348,10 @@
         document.getElementById('headAuthBtn').addEventListener('click', handleAuthAction);
         document.getElementById('bottomNavAuth').addEventListener('click', handleAuthAction);
 
-        document.getElementById('btnExplore').addEventListener('click', () => {
-            if (!currentUser) openModal();
-            else alert("Chức năng xem sản phẩm đang được cập nhật!");
-        });
-
-        document.getElementById('btnDeposit').addEventListener('click', () => {
-            if (!currentUser) openModal();
-            else alert("Vui lòng liên hệ Admin để nạp tiền!");
-        });
-
         document.getElementById('googleLoginBtn').addEventListener('click', () => {
             signInWithPopup(auth, provider)
                 .then(() => { closeModal(); })
-                .catch((error) => {
-                    console.error("Lỗi:", error);
-                    alert("Đăng nhập thất bại: " + error.message);
-                });
+                .catch((error) => { alert("Đăng nhập thất bại: " + error.message); });
         });
 
         onAuthStateChanged(auth, (user) => {
