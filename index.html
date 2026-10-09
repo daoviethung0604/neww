@@ -82,11 +82,13 @@
         /* ĐƠN HÀNG */
         .order-list { display: flex; flex-direction: column; gap: 12px; }
         .order-card { background: white; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; }
-        .order-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
+        .order-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; align-items: center; }
         .order-status { padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
         .status-success { color: #166534; background: #dcfce7; }
         .status-pending { color: #854d0e; background: #fef9c3; }
         .order-key { background: #f1f5f9; padding: 8px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 8px; word-break: break-all; }
+        
+        .btn-approve { background-color: #16a34a; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; margin-top: 8px; display: inline-flex; align-items: center; gap: 4px; }
 
         /* VIEW SWITCHING */
         .page-view { display: none; }
@@ -294,7 +296,6 @@
         let currentUser = null;
         let userBalance = 0;
 
-        // Cấu hình Telegram Bot
         const TELEGRAM_TOKEN = "8572193249:AAFSnoEWhC3eVrcSfGQsRS6XEds-DKFpdko";
         const TELEGRAM_CHAT_ID = "8697704932";
 
@@ -330,7 +331,6 @@
             document.getElementById(modalId).style.display = 'none';
         };
 
-        // Gửi yêu cầu nạp tiền và bắn thông báo qua Telegram
         window.requestDeposit = function() {
             const rawValue = document.getElementById('depositAmountInput').value.replace(/\./g, '');
             const amount = parseInt(rawValue) || 0;
@@ -340,12 +340,15 @@
             }
 
             const timeNow = new Date().toLocaleString('vi-VN');
+            const orderId = 'NAPS' + Date.now().toString().slice(-6);
+            
             const newOrder = {
-                id: 'NAPS' + Date.now().toString().slice(-6),
+                id: orderId,
                 name: `Nạp tiền qua QR (${amount.toLocaleString('vi-VN')}đ)`,
+                rawAmount: amount,
                 price: amount.toLocaleString('vi-VN') + 'đ',
                 date: timeNow,
-                key: 'Trạng thái: Đang chờ Admin xác nhận...',
+                key: 'Trạng thái: Đang chờ xác nhận...',
                 status: 'pending'
             };
 
@@ -353,11 +356,20 @@
             orders.unshift(newOrder);
             localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
-            // Bắn tin nhắn qua Telegram Bot
+            // Tạo link duyệt trực tiếp trên Telegram kèm nút bấm
+            const currentSiteUrl = window.location.href.split('#')[0];
+            const approveLink = `${currentSiteUrl}?approve=${orderId}&uid=${currentUser.uid}`;
+
             const message = `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n` +
-                            `👤 *Khách:* ${currentUser.displayName} (${currentUser.email})\n` +
+                            `👤 *Khách:* ${currentUser.displayName}\n` +
                             `💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n` +
                             `⏰ *Thời gian:* ${timeNow}`;
+
+            const replyMarkup = {
+                inline_keyboard: [
+                    [{ text: "✅ Bấm Vào Đây Để Duyệt Tiền", url: approveLink }]
+                ]
+            };
 
             fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
                 method: 'POST',
@@ -365,13 +377,61 @@
                 body: JSON.stringify({
                     chat_id: TELEGRAM_CHAT_ID,
                     text: message,
-                    parse_mode: 'Markdown'
+                    parse_mode: 'Markdown',
+                    reply_markup: replyMarkup
                 })
             }).catch(err => console.error("Lỗi gửi Telegram:", err));
 
-            alert(`Đã gửi yêu cầu nạp ${amount.toLocaleString('vi-VN')}đ!\nHệ thống đã báo cáo về Telegram của bạn. Số dư sẽ được cộng sau khi bạn kiểm tra và xác nhận nhận tiền.`);
+            alert(`Đã gửi yêu cầu nạp ${amount.toLocaleString('vi-VN')}đ!\nKiểm tra thông báo Telegram để duyệt nhanh.`);
             closeModal('depositModal');
             switchTab('orders');
+        };
+
+        // HÀM TỰ ĐỘNG KIỂM TRA ĐỂ DUYỆT QUA LINK TELEGRAM
+        function checkAutoApproveFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const approveId = urlParams.get('approve');
+            const targetUid = urlParams.get('uid');
+
+            if (approveId && targetUid) {
+                let orders = JSON.parse(localStorage.getItem(`orders_${targetUid}`) || '[]');
+                const index = orders.findIndex(o => o.id === approveId);
+
+                if (index !== -1 && orders[index].status === 'pending') {
+                    const addAmount = orders[index].rawAmount;
+                    
+                    orders[index].status = 'success';
+                    orders[index].key = 'Đã duyệt cộng tiền thành công qua Telegram!';
+                    localStorage.setItem(`orders_${targetUid}`, JSON.stringify(orders));
+
+                    let currentBal = parseInt(localStorage.getItem(`balance_${targetUid}`)) || 0;
+                    currentBal += addAmount;
+                    localStorage.setItem(`balance_${targetUid}`, currentBal);
+
+                    alert(`🎉 ĐÃ DUYỆT THÀNH CÔNG!\nCộng thành công ${addAmount.toLocaleString('vi-VN')}đ vào tài khoản.`);
+                    window.location.href = window.location.pathname; // Xóa param trên URL
+                }
+            }
+        }
+
+        window.approveDeposit = function(orderId) {
+            let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
+            const index = orders.findIndex(o => o.id === orderId);
+            
+            if (index !== -1 && orders[index].status === 'pending') {
+                const addAmount = orders[index].rawAmount;
+                
+                orders[index].status = 'success';
+                orders[index].key = 'Đã duyệt cộng tiền thành công!';
+                localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
+
+                userBalance += addAmount;
+                saveUserData();
+                updateBalanceUI();
+
+                alert(`Đã duyệt thành công! Đã cộng ${addAmount.toLocaleString('vi-VN')}đ vào số dư.`);
+                renderOrders();
+            }
         };
 
         window.buyProduct = function(name, price) {
@@ -422,6 +482,7 @@
             if (currentUser) {
                 userBalance = parseInt(localStorage.getItem(`balance_${currentUser.uid}`)) || 0;
                 updateBalanceUI();
+                checkAutoApproveFromUrl(); // Kiểm tra duyệt tự động khi đăng nhập
             }
         }
 
@@ -448,6 +509,7 @@
                     </div>
                     <div style="font-size: 0.85rem; color: #64748b;">Thời gian: ${ord.date}</div>
                     <div class="order-key">${ord.key}</div>
+                    ${ord.status === 'pending' ? `<button class="btn-approve" onclick="approveDeposit('${ord.id}')"><i class="fa-solid fa-check"></i> Duyệt cộng tiền</button>` : ''}
                 </div>
             `).join('');
         }
@@ -490,6 +552,11 @@
                 userBalance = 0;
                 updateBalanceUI();
             }
+        });
+
+        // Kiểm tra ngay khi tải trang nếu có param approve trên URL
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(checkAutoApproveFromUrl, 500);
         });
     </script>
 </body>
