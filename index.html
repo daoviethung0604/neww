@@ -108,7 +108,7 @@
         
         /* QR STYLES */
         .qr-box { background: #f8fafc; border: 1px dashed var(--border-color); padding: 15px; border-radius: 12px; margin: 15px 0; }
-        .qr-box img { width: 180px; height: 180px; object-fit: contain; margin-bottom: 8px; }
+        .qr-box img { width: 190px; height: 190px; object-fit: contain; margin-bottom: 8px; }
         .input-deposit { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px; font-size: 0.95rem; outline: none; }
     </style>
 </head>
@@ -256,15 +256,15 @@
         <div class="modal-card">
             <button class="close-modal" onclick="closeModal('depositModal')"><i class="fa-solid fa-xmark"></i></button>
             <h2>Nạp Tiền Qua QR</h2>
-            <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 4px;">Quét mã QR MBBank bằng ứng dụng ngân hàng</p>
+            <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 4px;">Quét mã QR MBBank của DAO VIET HUNG[cite: 10]</p>
             
             <div class="qr-box">
-                <!-- QR CHÍNH XÁC CỦA BẠN: MB - 0348876411 - DAO VIET HUNG -->
-                <img id="qrImage" src="https://img.vietqr.io/image/MB-0348876411-compact2.png?amount=50000&addInfo=Nap%20tien%20DeltaClient" alt="QR Code">
-                <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a;">DAO VIET HUNG - 0348876411</div>
+                <!-- MÃ QR CỐ ĐỊNH CHUẨN MB 0348876411 -->
+                <img src="https://img.vietqr.io/image/MB-0348876411-compact2.png" alt="QR Code">
+                <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a;">DAO VIET HUNG - 0348876411[cite: 10]</div>
             </div>
 
-            <input type="number" id="depositAmountInput" class="input-deposit" placeholder="Nhập số tiền muốn nạp (VNĐ)" value="50000" oninput="updateQRCode()">
+            <input type="number" id="depositAmountInput" class="input-deposit" placeholder="Nhập số tiền đã chuyển (VNĐ)" value="50000">
             <button class="btn-action btn-action-primary" onclick="confirmDeposit()">Xác Nhận Đã Chuyển Khoản</button>
         </div>
     </div>
@@ -314,14 +314,6 @@
             document.getElementById(modalId).style.display = 'none';
         };
 
-        window.updateQRCode = function() {
-            const amount = document.getElementById('depositAmountInput').value || 0;
-            const memo = currentUser ? `Nap_${currentUser.uid.slice(-4)}` : 'Nap_Delta';
-            // VietQR chuẩn theo thông tin MBBank 0348876411 của bạn
-            const qrImg = `https://img.vietqr.io/image/MB-0348876411-compact2.png?amount=${amount}&addInfo=${memo}`;
-            document.getElementById('qrImage').src = qrImg;
-        };
-
         window.confirmDeposit = function() {
             const amount = parseInt(document.getElementById('depositAmountInput').value) || 0;
             if (amount <= 0) {
@@ -329,4 +321,128 @@
                 return;
             }
 
-            user
+            userBalance += amount;
+            saveUserData();
+            updateBalanceUI();
+
+            alert(`Nạp tiền thành công! Đã cộng ${amount.toLocaleString()}đ vào số dư của bạn.`);
+            closeModal('depositModal');
+        };
+
+        window.buyProduct = function(name, price) {
+            if (!currentUser) {
+                document.getElementById('loginModal').style.display = 'flex';
+                return;
+            }
+
+            if (userBalance < price) {
+                alert("Số dư của bạn không đủ để mua sản phẩm này! Vui lòng nạp thêm tiền.");
+                openDepositModal();
+                return;
+            }
+
+            userBalance -= price;
+            saveUserData();
+            updateBalanceUI();
+
+            const key = 'DELTA-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-KEY';
+            const newOrder = {
+                id: 'DH' + Date.now().toString().slice(-6),
+                name: name,
+                price: price.toLocaleString() + 'đ',
+                date: new Date().toLocaleString('vi-VN'),
+                key: key
+            };
+
+            let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
+            orders.unshift(newOrder);
+            localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
+
+            alert(`Thanh toán thành công gói ${name}!\nKey của bạn: ${key}`);
+            switchTab('orders');
+        };
+
+        function updateBalanceUI() {
+            document.getElementById('userBalance').innerText = userBalance.toLocaleString() + 'đ';
+        }
+
+        function saveUserData() {
+            if (currentUser) {
+                localStorage.setItem(`balance_${currentUser.uid}`, userBalance);
+            }
+        }
+
+        function loadUserData() {
+            if (currentUser) {
+                userBalance = parseInt(localStorage.getItem(`balance_${currentUser.uid}`)) || 0;
+                updateBalanceUI();
+            }
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('orderContainer');
+            if (!currentUser) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Vui lòng đăng nhập để xem đơn hàng!</div>`;
+                return;
+            }
+
+            let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
+            if (orders.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 40px 0; color: #64748b;">Bạn chưa có giao dịch nào!</div>`;
+                return;
+            }
+
+            container.innerHTML = orders.map(ord => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span>${ord.name}</span>
+                        <span class="order-status">Thành công</span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #64748b;">Giá: <b>${ord.price}</b> | Thời gian: ${ord.date}</div>
+                    <div class="order-key">Key: ${ord.key}</div>
+                </div>
+            `).join('');
+        }
+
+        const handleAuthAction = () => {
+            if (currentUser) {
+                if (confirm(`Đăng xuất khỏi tài khoản ${currentUser.displayName}?`)) {
+                    signOut(auth).then(() => { alert("Đã đăng xuất!"); });
+                }
+            } else {
+                document.getElementById('loginModal').style.display = 'flex';
+            }
+        };
+
+        document.getElementById('headAuthBtn').addEventListener('click', handleAuthAction);
+        document.getElementById('bottomNavAuth').addEventListener('click', handleAuthAction);
+
+        document.getElementById('googleLoginBtn').addEventListener('click', () => {
+            signInWithPopup(auth, provider)
+                .then(() => { closeModal('loginModal'); })
+                .catch((error) => { alert("Đăng nhập thất bại: " + error.message); });
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const headAvatar = document.getElementById('userHeadAvatar');
+            const headIcon = document.getElementById('userHeadIcon');
+            const bottomNavText = document.getElementById('bottomNavUserText');
+
+            if (user) {
+                headAvatar.src = user.photoURL;
+                headAvatar.style.display = 'block';
+                headIcon.style.display = 'none';
+                bottomNavText.innerText = user.displayName.split(' ')[0];
+                loadUserData();
+            } else {
+                headAvatar.style.display = 'none';
+                headIcon.style.display = 'block';
+                bottomNavText.innerText = 'Tôi';
+                userBalance = 0;
+                updateBalanceUI();
+            }
+        });
+    </script>
+</body>
+</html>
