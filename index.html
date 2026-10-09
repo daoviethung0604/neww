@@ -103,10 +103,17 @@
         .stat-value { font-size: 1.3rem; font-weight: 800; }
 
         .profile-details-card { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; }
-        .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+        .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; align-items: center; }
         .detail-row:last-child { border-bottom: none; }
         .detail-label { color: var(--text-sub); font-weight: 600; }
         .detail-val { font-weight: 700; color: #0f172a; }
+
+        /* PASSWORD INPUT STYLES WITH EYE ICON */
+        .password-wrapper { position: relative; display: flex; align-items: center; }
+        .password-wrapper input { padding-right: 35px; }
+        .toggle-password { position: absolute; right: 10px; cursor: pointer; color: var(--text-sub); font-size: 0.9rem; }
+
+        .input-custom { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; outline: none; }
 
         /* ADMIN PANEL STYLES */
         .admin-box { background: white; border: 2px dashed #3b52d4; border-radius: 16px; padding: 20px; margin-top: 15px; text-align: center; }
@@ -347,7 +354,6 @@
         let currentUser = null;
         let userBalance = 0;
 
-        // Cập nhật đúng email admin của bạn tại đây
         const ADMIN_EMAIL = "daoh80602@gmail.com"; 
         const TELEGRAM_TOKEN = "8572193249:AAFSnoEWhC3eVrcSfGQsRS6XEds-DKFpdko";
         const TELEGRAM_CHAT_ID = "8697704932";
@@ -581,6 +587,50 @@
             }
         }
 
+        // HÀM ẨN/HIỆN MẬT KHẨU (ICON CON MẮT)
+        window.togglePasswordVisibility = function(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        };
+
+        // HÀM XỬ LÝ ĐỔI MẬT KHẨU
+        window.changeUserPassword = function() {
+            const oldPass = document.getElementById('oldPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (!oldPass || !newPass || !confirmPass) {
+                alert("Vui lòng điền đầy đủ thông tin mật khẩu!");
+                return;
+            }
+
+            if (newPass.length < 6) {
+                alert("Mật khẩu mới phải có ít nhất 6 ký tự!");
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                alert("Mật khẩu mới và xác nhận mật khẩu không khớp!");
+                return;
+            }
+
+            // Lưu mật khẩu vào localStorage theo UID
+            localStorage.setItem(`password_${currentUser.uid}`, newPass);
+            alert("Đổi mật khẩu thành công!");
+            document.getElementById('oldPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        };
+
         function renderProfileData() {
             const container = document.getElementById('profileContentBox');
             if (!currentUser) {
@@ -646,6 +696,37 @@
                         <span class="detail-val" style="font-family: monospace; font-size: 0.8rem;">${currentUser.uid}</span>
                     </div>
                 </div>
+
+                <!-- BẢNG ĐỔI MẬT KHẨU CÓ ICON CON MẮT -->
+                <div class="profile-details-card" style="margin-top: 5px;">
+                    <div style="font-weight: 800; font-size: 1.05rem; margin-bottom: 15px; color: #0f172a;">Đổi Mật Khẩu Bảo Mật</div>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-sub); display: block; margin-bottom: 5px;">Mật khẩu hiện tại</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="oldPassword" class="input-custom" placeholder="Nhập mật khẩu cũ">
+                            <i class="fa-solid fa-eye toggle-password" id="toggleOld" onclick="togglePasswordVisibility('oldPassword', 'toggleOld')"></i>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 12px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-sub); display: block; margin-bottom: 5px;">Mật khẩu mới</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="newPassword" class="input-custom" placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)">
+                            <i class="fa-solid fa-eye toggle-password" id="toggleNew" onclick="togglePasswordVisibility('newPassword', 'toggleNew')"></i>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-sub); display: block; margin-bottom: 5px;">Xác nhận mật khẩu mới</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="confirmPassword" class="input-custom" placeholder="Nhập lại mật khẩu mới">
+                            <i class="fa-solid fa-eye toggle-password" id="toggleConfirm" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirm')"></i>
+                        </div>
+                    </div>
+
+                    <button class="btn-action btn-action-primary" onclick="changeUserPassword()">Cập Nhật Mật Khẩu</button>
+                </div>
             `;
         }
 
@@ -705,25 +786,4 @@
             const bottomNavText = document.getElementById('bottomNavUserText');
 
             if (user) {
-                headAvatar.src = user.photoURL;
-                headAvatar.style.display = 'block';
-                headIcon.style.display = 'none';
-                bottomNavText.innerText = user.displayName.split(' ')[0];
-                loadUserData();
-            } else {
-                headAvatar.style.display = 'none';
-                headIcon.style.display = 'block';
-                bottomNavText.innerText = 'Tôi';
-                userBalance = 0;
-                updateBalanceUI();
-            }
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            if (window.location.hash === '#admin') {
-                switchTab('admin');
-            }
-        });
-    </script>
-</body>
-</html>
+                headAvatar.src = user.
