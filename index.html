@@ -132,6 +132,8 @@
 
             <div class="section-title">Danh mục sản phẩm</div>
             <div class="product-grid">
+                
+                <!-- SẢN PHẨM 1 -->
                 <div class="product-card">
                     <div>
                         <div class="card-top">
@@ -146,122 +148,25 @@
                         <button class="btn-blue buy-btn" data-name="IPA Delta Client 1 Ngày"><i class="fa-solid fa-cart-shopping"></i> MUA NGAY</button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- MODAL POPUP -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-card">
-            <button class="close-modal" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
-            <h2>Đăng Nhập</h2>
-            <p style="color: var(--text-sub); font-size: 0.9rem; margin-top: 5px;">Sử dụng tài khoản Google để truy cập</p>
-            
-            <button class="btn-google-login" id="googleLoginBtn">
-                <svg width="18" height="18" viewBox="0 0 18 18">
-                    <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.259h2.908c1.702-1.567 2.684-3.874 2.684-6.617z"/>
-                    <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
-                    <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
-                    <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
-                </svg>
-                Đăng nhập với Google
-            </button>
-        </div>
-    </div>
+                <!-- SẢN PHẨM 2 (MỚI) -->
+                <div class="product-card">
+                    <div>
+                        <div class="card-top">
+                            <span class="tag-category">IPA Delta Client</span>
+                            <span class="stock-badge in-stock">Kho: 50</span>
+                        </div>
+                        <div class="product-name">IPA Delta Client 1 Tuần</div>
+                        <div class="product-desc">Hỗ Trợ Các Dòng Máy Từ iOS 16 Đến iOS 18+ (Sử dụng 7 ngày)</div>
+                    </div>
+                    <div class="card-bottom">
+                        <div class="price-amount">50.000đ</div>
+                        <button class="btn-blue buy-btn" data-name="IPA Delta Client 1 Tuần"><i class="fa-solid fa-cart-shopping"></i> MUA NGAY</button>
+                    </div>
+                </div>
 
-    <!-- FIREBASE AUTH SCRIPT -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        // CẤU HÌNH FIREBASE CỦA BẠN
-        const firebaseConfig = {
-            apiKey: "AIzaSyB2uSm-06dZe9Lj2tXXpOy1kU2oKWN2GHw",
-            authDomain: "delta-client-ce1cc.firebaseapp.com",
-            projectId: "delta-client-ce1cc",
-            storageBucket: "delta-client-ce1cc.firebasestorage.app",
-            messagingSenderId: "308243265700",
-            appId: "1:308243265700:web:b4a697b39e5e18cffe8e31",
-            measurementId: "G-D7MF810537"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-
-        let currentUser = null;
-        const modal = document.getElementById('loginModal');
-
-        function openModal() { modal.style.display = 'flex'; }
-        function closeModal() { modal.style.display = 'none'; }
-
-        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-        window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-
-        // Xử lý nút Đăng nhập / Đăng xuất riêng biệt
-        const handleAuthClick = () => {
-            if (currentUser) {
-                signOut(auth).then(() => { alert("Đã đăng xuất thành công!"); });
-            } else {
-                openModal();
-            }
-        };
-
-        document.getElementById('sidebarAuthBtn').addEventListener('click', handleAuthClick);
-        document.getElementById('headerAuthBtn').addEventListener('click', handleAuthClick);
-
-        // Xử lý riêng khi khách bấm nút MUA NGAY
-        document.querySelectorAll('.buy-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (!currentUser) {
-                    openModal();
-                } else {
-                    const prodName = btn.getAttribute('data-name');
-                    alert(`Bạn đã chọn mua: ${prodName}.\nVui lòng nạp tiền để hoàn tất thanh toán!`);
-                }
-            });
-        });
-
-        // Đăng nhập bằng Google
-        document.getElementById('googleLoginBtn').addEventListener('click', () => {
-            signInWithPopup(auth, provider)
-                .then(() => { closeModal(); })
-                .catch((error) => {
-                    console.error("Lỗi:", error);
-                    alert("Đăng nhập thất bại: " + error.message);
-                });
-        });
-
-        // Theo dõi trạng thái tài khoản
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            const sidebarStatus = document.getElementById('sidebarUserStatus');
-            const userEmail = document.getElementById('userEmail');
-            const avatar = document.getElementById('userAvatar');
-            const sidebarBtn = document.getElementById('sidebarAuthBtn');
-            const headerBtn = document.getElementById('headerAuthBtn');
-
-            if (user) {
-                sidebarStatus.innerHTML = `<b>${user.displayName}</b>`;
-                userEmail.innerText = user.email;
-                avatar.src = user.photoURL;
-                avatar.style.display = 'block';
-
-                sidebarBtn.innerText = 'Đăng Xuất';
-                sidebarBtn.className = 'btn-red';
-                headerBtn.innerText = 'Đăng Xuất';
-                headerBtn.className = 'btn-red';
-            } else {
-                sidebarStatus.innerHTML = 'Trạng thái: <b>Khách</b>';
-                userEmail.innerText = '';
-                avatar.style.display = 'none';
-
-                sidebarBtn.innerText = 'Đăng Nhập';
-                sidebarBtn.className = 'btn-blue';
-                headerBtn.innerText = 'Đăng Nhập';
-                headerBtn.className = 'btn-blue';
-            }
-        });
-    </script>
-</body>
-</html>
+                <!-- SẢN PHẨM 3 (MỚI) -->
+                <div class="product-card">
+                    <div>
+                        <div class="card-top">
+                            <span class
