@@ -18,6 +18,8 @@
             --border-color: #e2e8f0;
             --badge-green-bg: #dcfce7;
             --badge-green-text: #166534;
+            --badge-yellow-bg: #fef9c3;
+            --badge-yellow-text: #854d0e;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -81,7 +83,9 @@
         .order-list { display: flex; flex-direction: column; gap: 12px; }
         .order-card { background: white; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; }
         .order-header { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem; }
-        .order-status { color: #166534; background: #dcfce7; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; }
+        .order-status { padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .status-success { color: #166534; background: #dcfce7; }
+        .status-pending { color: #854d0e; background: #fef9c3; }
         .order-key { background: #f1f5f9; padding: 8px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-top: 8px; word-break: break-all; }
 
         /* VIEW SWITCHING */
@@ -202,7 +206,7 @@
 
         <!-- TRANG ĐƠN HÀNG -->
         <div id="view-orders" class="page-view">
-            <div class="section-title">Lịch Sử Đơn Hàng</div>
+            <div class="section-title">Lịch Sử Giao Dịch & Đơn Hàng</div>
             <div class="order-list" id="orderContainer"></div>
         </div>
 
@@ -259,14 +263,12 @@
             <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 4px;">Quét mã QR MBBank của DAO VIET HUNG</p>
             
             <div class="qr-box">
-                <!-- MÃ QR CỐ ĐỊNH CHUẨN MB 0348876411 -->
                 <img src="https://img.vietqr.io/image/MB-0348876411-compact2.png" alt="QR Code">
                 <div style="font-size: 0.85rem; font-weight: 800; color: #0f172a;">DAO VIET HUNG - 0348876411</div>
             </div>
 
-            <!-- Ô NHẬP TIỀN CÓ ĐỊNH DẠNG DẤU CHẤM -->
             <input type="text" id="depositAmountInput" class="input-deposit" placeholder="Nhập số tiền (VNĐ)" value="50.000" oninput="formatCurrencyInput(this)">
-            <button class="btn-action btn-action-primary" onclick="confirmDeposit()">Xác Nhận Đã Chuyển Khoản</button>
+            <button class="btn-action btn-action-primary" onclick="requestDeposit()">Xác Nhận Đã Chuyển Khoản</button>
         </div>
     </div>
 
@@ -279,7 +281,7 @@
             apiKey: "AIzaSyB2uSm-06dZe9Lj2tXXpOy1kU2oKWN2GHw",
             authDomain: "delta-client-ce1cc.firebaseapp.com",
             projectId: "delta-client-ce1cc",
-            storageBucket: "delta-client-ce1cc.firebasestorage.app",
+            storageBucket: "delta-client-ce1cc.appspot.com",
             messagingSenderId: "308243265700",
             appId: "1:308243265700:web:b4a697b39e5e18cffe8e31",
             measurementId: "G-D7MF810537"
@@ -292,7 +294,10 @@
         let currentUser = null;
         let userBalance = 0;
 
-        // Định dạng số tiền tự động thêm dấu chấm (.) khi nhập
+        // Cấu hình Telegram Bot
+        const TELEGRAM_TOKEN = "8572193249:AAFSnoEWhC3eVrcSfGQsRS6XEds-DKFpdko";
+        const TELEGRAM_CHAT_ID = "8697704932";
+
         window.formatCurrencyInput = function(input) {
             let value = input.value.replace(/\D/g, '');
             if (value === '') {
@@ -325,7 +330,8 @@
             document.getElementById(modalId).style.display = 'none';
         };
 
-        window.confirmDeposit = function() {
+        // Gửi yêu cầu nạp tiền và bắn thông báo qua Telegram
+        window.requestDeposit = function() {
             const rawValue = document.getElementById('depositAmountInput').value.replace(/\./g, '');
             const amount = parseInt(rawValue) || 0;
             if (amount <= 0) {
@@ -333,12 +339,39 @@
                 return;
             }
 
-            userBalance += amount;
-            saveUserData();
-            updateBalanceUI();
+            const timeNow = new Date().toLocaleString('vi-VN');
+            const newOrder = {
+                id: 'NAPS' + Date.now().toString().slice(-6),
+                name: `Nạp tiền qua QR (${amount.toLocaleString('vi-VN')}đ)`,
+                price: amount.toLocaleString('vi-VN') + 'đ',
+                date: timeNow,
+                key: 'Trạng thái: Đang chờ Admin xác nhận...',
+                status: 'pending'
+            };
 
-            alert(`Nạp tiền thành công! Đã cộng ${amount.toLocaleString('vi-VN')}đ vào số dư của bạn.`);
+            let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
+            orders.unshift(newOrder);
+            localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
+
+            // Bắn tin nhắn qua Telegram Bot
+            const message = `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n` +
+                            `👤 *Khách:* ${currentUser.displayName} (${currentUser.email})\n` +
+                            `💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n` +
+                            `⏰ *Thời gian:* ${timeNow}`;
+
+            fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            }).catch(err => console.error("Lỗi gửi Telegram:", err));
+
+            alert(`Đã gửi yêu cầu nạp ${amount.toLocaleString('vi-VN')}đ!\nHệ thống đã báo cáo về Telegram của bạn. Số dư sẽ được cộng sau khi bạn kiểm tra và xác nhận nhận tiền.`);
             closeModal('depositModal');
+            switchTab('orders');
         };
 
         window.buyProduct = function(name, price) {
@@ -363,7 +396,8 @@
                 name: name,
                 price: price.toLocaleString('vi-VN') + 'đ',
                 date: new Date().toLocaleString('vi-VN'),
-                key: key
+                key: 'Key: ' + key,
+                status: 'success'
             };
 
             let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
@@ -408,10 +442,12 @@
                 <div class="order-card">
                     <div class="order-header">
                         <span>${ord.name}</span>
-                        <span class="order-status">Thành công</span>
+                        <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">
+                            ${ord.status === 'pending' ? 'Đang chờ duyệt' : 'Thành công'}
+                        </span>
                     </div>
-                    <div style="font-size: 0.85rem; color: #64748b;">Giá: <b>${ord.price}</b> | Thời gian: ${ord.date}</div>
-                    <div class="order-key">Key: ${ord.key}</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">Thời gian: ${ord.date}</div>
+                    <div class="order-key">${ord.key}</div>
                 </div>
             `).join('');
         }
