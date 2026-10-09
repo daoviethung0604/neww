@@ -229,10 +229,10 @@
 
             <div id="adminDashboardSection" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <span style="font-weight: 700; color: #16a34a;"><i class="fa-solid fa-circle-check"></i> Xin chào Admin: <span id="adminEmailDisplay"></span></span>
+                    <span style="font-weight: 700; color: #16a34a;"><i class="fa-solid fa-circle-check"></i> Admin: <span id="adminEmailDisplay"></span></span>
                     <button onclick="switchTab('home')" style="background: none; border: none; color: #3b52d4; font-weight: 700; cursor: pointer;">Thoát</button>
                 </div>
-                <div class="section-title" style="font-size: 1.1rem; margin-top: 15px;">Danh sách đơn nạp tiền của khách</div>
+                <div class="section-title" style="font-size: 1.1rem; margin-top: 15px;">Danh sách đơn nạp tiền (Khớp Mã Nạp & Số Tiền)</div>
                 <div id="adminOrdersList"></div>
             </div>
         </div>
@@ -321,9 +321,7 @@
         let currentUser = null;
         let userBalance = 0;
 
-        // ĐẶT EMAIL ADMIN CHÍNH XÁC CỦA BẠN Ở ĐÂY
-        const ADMIN_EMAIL = "daoh80602@gmail.com"; 
-
+        const ADMIN_EMAIL = "daoh8602@gmail.com"; 
         const TELEGRAM_TOKEN = "8572193249:AAFSnoEWhC3eVrcSfGQsRS6XEds-DKFpdko";
         const TELEGRAM_CHAT_ID = "8697704932";
 
@@ -369,17 +367,18 @@
             }
 
             const timeNow = new Date().toLocaleString('vi-VN');
-            const orderId = 'NAPS' + Date.now().toString().slice(-6);
+            // Tạo mã nạp ngẫu nhiên 4 chữ số (ví dụ: 4821) để khách ghi vào nội dung chuyển khoản
+            const depositCode = Math.floor(1000 + Math.random() * 9000).toString();
             
             const newOrder = {
-                id: orderId,
+                id: depositCode,
                 uid: currentUser.uid,
                 userName: currentUser.displayName || 'Khách hàng',
                 name: `Nạp tiền qua QR (${amount.toLocaleString('vi-VN')}đ)`,
                 rawAmount: amount,
                 price: amount.toLocaleString('vi-VN') + 'đ',
                 date: timeNow,
-                key: 'Trạng thái: Đang chờ xác nhận...',
+                key: `Mã nội dung CK: ${depositCode} | Số tiền: ${amount.toLocaleString('vi-VN')}đ`,
                 status: 'pending'
             };
 
@@ -394,7 +393,7 @@
             const message = `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n` +
                             `👤 *Khách:* ${currentUser.displayName}\n` +
                             `💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n` +
-                            `🆔 *Mã đơn:* \`${orderId}\`\n` +
+                            `🔑 *Mã nội dung CK:* \`${depositCode}\`\n` +
                             `⏰ *Thời gian:* ${timeNow}`;
 
             fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
@@ -407,12 +406,11 @@
                 })
             }).catch(err => console.error("Lỗi gửi Telegram:", err));
 
-            alert(`Đã gửi yêu cầu nạp ${amount.toLocaleString('vi-VN')}đ thành công! Hệ thống đang chờ duyệt.`);
+            alert(`Tạo yêu cầu nạp thành công!\nVui lòng chuyển khoản số tiền ${amount.toLocaleString('vi-VN')}đ với nội dung: ${depositCode}`);
             closeModal('depositModal');
             switchTab('orders');
         };
 
-        // BẢO MẬT ADMIN BẰNG GOOGLE ACCOUNT
         window.triggerAdminLogin = function() {
             signInWithPopup(auth, provider)
                 .then((result) => {
@@ -444,7 +442,7 @@
 
         window.adminApproveOrder = function(orderId, targetUid, rawAmount) {
             let userOrders = JSON.parse(localStorage.getItem(`orders_${targetUid}`) || '[]');
-            const uIndex = userOrders.findIndex(o => o.id === orderId);
+            const uIndex = userOrders.findIndex(o => o.id === orderId && o.status === 'pending');
             if (uIndex !== -1) {
                 userOrders[uIndex].status = 'success';
                 userOrders[uIndex].key = 'Đã duyệt cộng tiền thành công bởi Admin!';
@@ -456,13 +454,13 @@
             localStorage.setItem(`balance_${targetUid}`, currentBal);
 
             let allOrders = JSON.parse(localStorage.getItem('admin_all_orders') || '[]');
-            const aIndex = allOrders.findIndex(o => o.id === orderId);
+            const aIndex = allOrders.findIndex(o => o.id === orderId && o.status === 'pending');
             if (aIndex !== -1) {
                 allOrders[aIndex].status = 'success';
                 localStorage.setItem('admin_all_orders', JSON.stringify(allOrders));
             }
 
-            alert(`Đã duyệt thành công đơn ${orderId} (+${rawAmount.toLocaleString('vi-VN')}đ)!`);
+            alert(`Đã duyệt đơn hàng với mã nội dung ${orderId} (+${rawAmount.toLocaleString('vi-VN')}đ)!`);
             renderAdminOrders();
         };
 
@@ -478,15 +476,16 @@
             container.innerHTML = allOrders.map(ord => `
                 <div class="admin-order-item">
                     <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px;">
-                        <span>${ord.userName || 'Khách'} - ${ord.price}</span>
+                        <span>Khách: ${ord.userName || 'Khách'}</span>
                         <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">
                             ${ord.status === 'pending' ? 'Chờ duyệt' : 'Đã duyệt'}
                         </span>
                     </div>
-                    <div style="font-size: 0.82rem; color: #64748b;">Mã đơn: <b>${ord.id}</b> | Thời gian: ${ord.date}</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: #3b52d4; margin: 4px 0;">Mã nội dung CK: [ ${ord.id} ] - Số tiền: ${ord.price}</div>
+                    <div style="font-size: 0.82rem; color: #64748b; margin-bottom: 6px;">Thời gian: ${ord.date}</div>
                     ${ord.status === 'pending' ? `
                         <button class="btn-approve" onclick="adminApproveOrder('${ord.id}', '${ord.uid}',${ord.rawAmount})">
-                            <i class="fa-solid fa-check"></i> Duyệt cộng ${ord.price}
+                            <i class="fa-solid fa-check"></i> Khớp mã ${ord.id} & Duyệt ngay
                         </button>` : ''}
                 </div>
             `).join('');
@@ -573,7 +572,7 @@
         const handleAuthAction = () => {
             if (currentUser) {
                 if (confirm(`Đăng xuất khỏi tài khoản ${currentUser.displayName}?`)) {
-                    signOut(auth).then(() => { alert("Đã đăng xuất!"); });
+                    signOut(auth).then(() => { alert("Đăng xuất!"); });
                 }
             } else {
                 document.getElementById('loginModal').style.display = 'flex';
