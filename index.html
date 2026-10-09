@@ -105,7 +105,7 @@
                     <div id="userEmail" style="font-size: 0.75rem; color: #94a3b8;"></div>
                 </div>
             </div>
-            <button class="btn-blue auth-trigger-btn" id="sidebarAuthBtn" style="width: 100%;">Đăng Nhập</button>
+            <button class="btn-blue" id="sidebarAuthBtn" style="width: 100%;">Đăng Nhập</button>
         </div>
     </aside>
 
@@ -118,7 +118,7 @@
             </div>
             <div class="header-actions">
                 <div class="balance-box">Số dư: <span>0đ</span> <button class="btn-add">+</button></div>
-                <button class="btn-blue auth-trigger-btn" id="headerAuthBtn">Đăng Nhập</button>
+                <button class="btn-blue" id="headerAuthBtn">Đăng Nhập</button>
             </div>
         </header>
 
@@ -143,7 +143,7 @@
                     </div>
                     <div class="card-bottom">
                         <div class="price-amount">20.000đ</div>
-                        <button class="btn-blue auth-trigger-btn"><i class="fa-solid fa-cart-shopping"></i> MUA NGAY</button>
+                        <button class="btn-blue buy-btn" data-name="IPA Delta Client 1 Ngày"><i class="fa-solid fa-cart-shopping"></i> MUA NGAY</button>
                     </div>
                 </div>
             </div>
@@ -192,27 +192,37 @@
         let currentUser = null;
         const modal = document.getElementById('loginModal');
 
-        function openModal() {
-            modal.style.display = 'flex';
-        }
-
-        function closeModal() {
-            modal.style.display = 'none';
-        }
+        function openModal() { modal.style.display = 'flex'; }
+        function closeModal() { modal.style.display = 'none'; }
 
         document.getElementById('closeModalBtn').addEventListener('click', closeModal);
         window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-        document.querySelectorAll('.auth-trigger-btn').forEach(btn => {
+        // Xử lý nút Đăng nhập / Đăng xuất riêng biệt
+        const handleAuthClick = () => {
+            if (currentUser) {
+                signOut(auth).then(() => { alert("Đã đăng xuất thành công!"); });
+            } else {
+                openModal();
+            }
+        };
+
+        document.getElementById('sidebarAuthBtn').addEventListener('click', handleAuthClick);
+        document.getElementById('headerAuthBtn').addEventListener('click', handleAuthClick);
+
+        // Xử lý riêng khi khách bấm nút MUA NGAY
+        document.querySelectorAll('.buy-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                if (currentUser) {
-                    signOut(auth).then(() => { alert("Đã đăng xuất thành công!"); });
-                } else {
+                if (!currentUser) {
                     openModal();
+                } else {
+                    const prodName = btn.getAttribute('data-name');
+                    alert(`Bạn đã chọn mua: ${prodName}.\nVui lòng nạp tiền để hoàn tất thanh toán!`);
                 }
             });
         });
 
+        // Đăng nhập bằng Google
         document.getElementById('googleLoginBtn').addEventListener('click', () => {
             signInWithPopup(auth, provider)
                 .then(() => { closeModal(); })
@@ -222,6 +232,7 @@
                 });
         });
 
+        // Theo dõi trạng thái tài khoản
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             const sidebarStatus = document.getElementById('sidebarUserStatus');
@@ -237,18 +248,18 @@
                 avatar.style.display = 'block';
 
                 sidebarBtn.innerText = 'Đăng Xuất';
-                sidebarBtn.className = 'btn-red auth-trigger-btn';
+                sidebarBtn.className = 'btn-red';
                 headerBtn.innerText = 'Đăng Xuất';
-                headerBtn.className = 'btn-red auth-trigger-btn';
+                headerBtn.className = 'btn-red';
             } else {
                 sidebarStatus.innerHTML = 'Trạng thái: <b>Khách</b>';
                 userEmail.innerText = '';
                 avatar.style.display = 'none';
 
                 sidebarBtn.innerText = 'Đăng Nhập';
-                sidebarBtn.className = 'btn-blue auth-trigger-btn';
+                sidebarBtn.className = 'btn-blue';
                 headerBtn.innerText = 'Đăng Nhập';
-                headerBtn.className = 'btn-blue auth-trigger-btn';
+                headerBtn.className = 'btn-blue';
             }
         });
     </script>
