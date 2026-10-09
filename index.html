@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delta Proxy VN - Hệ Thống Proxy Việt Nam Tốc Độ Cao</title>
+    <title>Delta Client - Trang Chủ Chính Thức</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -108,7 +108,7 @@
             margin-bottom: 30px;
         }
 
-        /* Feature Cards */
+        /* Features */
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -144,123 +144,21 @@
             font-size: 0.95rem;
         }
 
-        /* Pricing Section */
-        .pricing-section {
+        /* Download Section */
+        .download-section {
             padding: 60px 8%;
             text-align: center;
         }
 
-        .pricing-section h2 {
-            font-size: 2.2rem;
-            margin-bottom: 40px;
-        }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .price-card {
+        .download-card {
             background: var(--card-bg);
             border-radius: 16px;
-            padding: 30px;
+            padding: 40px;
             border: 1px solid var(--border-color);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .price-card.popular {
-            border: 2px solid #00c6ff;
-            box-shadow: 0 0 20px rgba(0, 198, 255, 0.2);
-        }
-
-        .badge {
-            position: absolute;
-            top: -12px;
-            right: 20px;
-            background: var(--accent-gradient);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .price {
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: #00c6ff;
-            margin: 20px 0;
-        }
-
-        .price span {
-            font-size: 1rem;
-            color: var(--text-muted);
-        }
-
-        .price-features {
-            list-style: none;
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        .price-features li {
-            margin-bottom: 12px;
-            color: var(--text-muted);
-        }
-
-        .price-features li i {
-            color: #10b981;
-            margin-right: 8px;
-        }
-
-        /* Control Panel / Tool Demo */
-        .proxy-tool {
-            background: var(--card-bg);
-            margin: 40px 8%;
-            padding: 30px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: #fff;
-            outline: none;
-        }
-
-        .form-control:focus {
-            border-color: #00c6ff;
-        }
-
-        .proxy-output {
-            background: #090d16;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: monospace;
-            word-break: break-all;
-            margin-top: 15px;
-            border: 1px solid var(--border-color);
-        }
-
-        /* Footer */
         footer {
             text-align: center;
             padding: 30px;
@@ -281,144 +179,57 @@
     <!-- Header -->
     <header>
         <div class="logo">
-            <i class="fa-solid fa-shield-halved"></i>
-            DELTA<span>PROXY</span>
+            <i class="fa-solid fa-gamepad"></i>
+            DELTA<span>CLIENT</span>
         </div>
         <nav>
             <a href="#features">Tính Năng</a>
-            <a href="#pricing">Bảng Giá</a>
-            <a href="#buy">Mua Proxy</a>
+            <a href="#download">Tải Về</a>
         </nav>
-        <a href="#buy" class="btn-primary">Đăng Nhập</a>
+        <a href="#download" class="btn-primary">Tải Ngay</a>
     </header>
 
     <!-- Hero Section -->
     <section class="hero">
-        <h1>Proxy IPv4/IPv6 Việt Nam Tốc Độ Cao</h1>
-        <p>Hệ thống Proxy Private riêng biệt, đáp ứng các nhu cầu Nuôi Account, Reg Acc, Crawl Data, Gaming và Automation với băng thông không giới hạn.</p>
-        <a href="#pricing" class="btn-primary">Khám Phá Gói Dịch Vụ</a>
+        <h1>Chào mừng đến với Delta Client</h1>
+        <p>Hệ thống tối ưu hiệu năng, giao diện hiện đại, hỗ trợ nâng cao trải nghiệm của bạn.</p>
+        <a href="#download" class="btn-primary">Tải Xuống Delta Client</a>
     </section>
 
     <!-- Features -->
     <section class="features" id="features">
         <div class="feature-card">
             <i class="fa-solid fa-bolt"></i>
-            <h3>Tốc Độ Cực Nhanh</h3>
-            <p>Băng thông 1Gbps, độ trễ thấp, đảm bảo kết nối luôn ổn định 24/7.</p>
+            <h3>Tối Ưu Hiệu Năng</h3>
+            <p>Tăng FPS, giảm giật lag và tối ưu tài nguyên hệ thống mượt mà.</p>
         </div>
         <div class="feature-card">
-            <i class="fa-solid fa-user-lock"></i>
-            <h3>100% Private</h3>
-            <p>Proxy dùng riêng biệt cho mỗi khách hàng, không chia sẻ IP với bất kỳ ai.</p>
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <h3>Giao Diện Tùy Biến</h3>
+            <p>Dễ dàng tùy chỉnh giao diện và các phím tắt theo sở thích cá nhân.</p>
         </div>
         <div class="feature-card">
-            <i class="fa-solid fa-rotate"></i>
-            <h3>Đổi IP Tự Động</h3>
-            <p>Hỗ trợ xoay IP tự động qua API hoặc cấu hình thời gian tùy chọn.</p>
-        </div>
-        <div class="feature-card">
-            <i class="fa-solid fa-headset"></i>
-            <h3>Hỗ Trợ 24/7</h3>
-            <p>Đội ngũ kỹ thuật hỗ trợ kích hoạt tự động và giải đáp thắc mắc liên tục.</p>
+            <i class="fa-solid fa-shield-halved"></i>
+            <h3>An Toàn & Bảo Mật</h3>
+            <p>Được cập nhật thường xuyên, đảm bảo tính ổn định và an toàn cho người dùng.</p>
         </div>
     </section>
 
-    <!-- Pricing -->
-    <section class="pricing-section" id="pricing">
-        <h2>Bảng Giá Dịch Vụ</h2>
-        <div class="pricing-grid">
-            
-            <!-- Plan 1 -->
-            <div class="price-card">
-                <div>
-                    <h3>Proxy Dân Cư Xoay</h3>
-                    <div class="price">50.000đ <span>/ GB</span></div>
-                    <ul class="price-features">
-                        <li><i class="fa-solid fa-check"></i> IP Việt Nam Tĩnh/Xoay</li>
-                        <li><i class="fa-solid fa-check"></i> HTTP / SOCKS5 Protocol</li>
-                        <li><i class="fa-solid fa-check"></i> Đổi IP theo yêu cầu</li>
-                        <li><i class="fa-solid fa-check"></i> Kích hoạt ngay lập tức</li>
-                    </ul>
-                </div>
-                <button class="btn-primary" onclick="selectPlan('Proxy Dân Cư Xoay')">Mua Ngay</button>
-            </div>
-
-            <!-- Plan 2 (Popular) -->
-            <div class="price-card popular">
-                <div class="badge">Phổ Biến</div>
-                <div>
-                    <h3>Proxy Datacenter Tĩnh</h3>
-                    <div class="price">80.000đ <span>/ tháng</span></div>
-                    <ul class="price-features">
-                        <li><i class="fa-solid fa-check"></i> IP IPv4 Dedicated</li>
-                        <li><i class="fa-solid fa-check"></i> Băng thông Không Giới Hạn</li>
-                        <li><i class="fa-solid fa-check"></i> Tốc độ 100Mbps - 1Gbps</li>
-                        <li><i class="fa-solid fa-check"></i> Dùng riêng 100%</li>
-                    </ul>
-                </div>
-                <button class="btn-primary" onclick="selectPlan('Proxy Datacenter Tĩnh')">Mua Ngay</button>
-            </div>
-
-            <!-- Plan 3 -->
-            <div class="price-card">
-                <div>
-                    <h3>Proxy IPv6 Giá Rẻ</h3>
-                    <div class="price">10.000đ <span>/ tháng</span></div>
-                    <ul class="price-features">
-                        <li><i class="fa-solid fa-check"></i> Thích hợp nuôi Account FB/Tiktok</li>
-                        <li><i class="fa-solid fa-check"></i> Băng thông Unlimted</li>
-                        <li><i class="fa-solid fa-check"></i> Khởi tạo hàng loạt nhanh chóng</li>
-                    </ul>
-                </div>
-                <button class="btn-primary" onclick="selectPlan('Proxy IPv6 Giá Rẻ')">Mua Ngay</button>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- Interactive Proxy Tool / Dashboard Area -->
-    <section class="proxy-tool" id="buy">
-        <h2>Quản Lý / Khởi Tạo Proxy</h2>
-        <br>
-        <div class="form-group">
-            <label>Gói Dịch Vụ Đã Chọn:</label>
-            <input type="text" id="selectedPlan" class="form-control" value="Proxy Datacenter Tĩnh" readonly>
-        </div>
-        <div class="form-group">
-            <label>Số Lượng Proxy:</label>
-            <input type="number" id="proxyQuantity" class="form-control" value="1" min="1" max="100">
-        </div>
-        <button class="btn-primary" onclick="generateProxyDemo()">Tạo Proxy Mẫu (Demo)</button>
-
-        <div style="margin-top: 20px;">
-            <label style="font-weight: 500;">Kết quả Proxy (IP:Port:User:Pass):</label>
-            <div class="proxy-output" id="proxyResult">
-                103.145.2.10:8080:deltaproxy:pass123456
-            </div>
+    <!-- Download Section -->
+    <section class="download-section" id="download">
+        <div class="download-card">
+            <h2>Tải Về Delta Client</h2>
+            <p style="color: var(--text-muted); margin: 15px 0 25px;">Phiên bản mới nhất - Hỗ trợ đầy đủ các nền tảng.</p>
+            <button class="btn-primary" style="font-size: 1.1rem; padding: 12px 30px;">
+                <i class="fa-solid fa-download" style="margin-right: 8px;"></i> Download Delta Client
+            </button>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 Delta Proxy VN. All Rights Reserved.</p>
+        <p>&copy; 2026 Delta Client. All Rights Reserved.</p>
     </footer>
 
-    <script>
-        function selectPlan(planName) {
-            document.getElementById('selectedPlan').value = planName;
-            document.getElementById('buy').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function generateProxyDemo() {
-            const qty = document.getElementById('proxyQuantity').value;
-            let result = '';
-            for(let i = 0; i < qty; i++) {
-                const randomIP = `103.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
-                const randomPort = Math.floor(1000 + Math.random() * 9000);
-                result += `${randomIP}:${randomPort}:user_${i+1}:pass_${Math.random().toString(36).substring(7)}\n`;
-            }
-            document.getElementById('proxyResult').innerText = result.trim();
-        }
-    </script>
 </body>
 </html>
