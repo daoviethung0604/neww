@@ -387,7 +387,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT TỰ ĐỘNG ĐỒNG BỘ SỐ DƯ TỪ FIRESTORE VÀ DÙNG BOT MỚI -->
+    <!-- SCRIPT TỰ ĐỘNG GỬI TELEGRAM VÀ HIỂN THỊ ĐANG DUYỆT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -412,7 +412,7 @@
         let userBalance = 0;
 
         const ADMIN_EMAIL = "daoh80602@gmail.com"; 
-        const TELEGRAM_TOKEN = "8731371048:AAHqRh4twWEVbGWd_NVyxcSmsR8uu7gDzj8"; // TOKEN BOT MỚI
+        const TELEGRAM_TOKEN = "8731371048:AAHqRh4twWEVbGWd_NVyxcSmsR8uu7gDzj8"; // Bot mới `@Vh0604_bot`
         const TELEGRAM_CHAT_ID = "8697704932";
 
         window.formatCurrencyInput = function(input) {
@@ -477,29 +477,33 @@
                 rawAmount: amount,
                 price: amount.toLocaleString('vi-VN') + 'đ',
                 date: exactTime,
-                status: 'pending',
+                status: 'pending', // Trạng thái chờ duyệt
                 type: 'deposit',
                 timestamp: Date.now()
             };
 
             try {
+                // Đẩy đơn lên Firebase
                 await addDoc(collection(db, "global_orders"), newOrder);
                 
+                // Lưu vào localStorage thiết bị của khách ở trạng thái chờ duyệt
                 let orders = JSON.parse(localStorage.getItem(`orders_${currentUser.uid}`) || '[]');
                 orders.unshift(newOrder);
                 localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
+                // Gửi thông báo về Telegram bot mới `@Vh0604_bot`
                 fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         chat_id: TELEGRAM_CHAT_ID,
-                        text: `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n👤 *Khách:* ${currentUser.displayName}\n💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n🔑 *Mã CK:* \`${depositCode}\`\n⏰ *Thời gian:* ${exactTime}`,
+                        text: `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n👤 *Khách:* ${currentUser.displayName}\n💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n🔑 *Mã CK:* \`${depositCode}\`\n⏰ *Thời gian:* ${exactTime}\n\n📌 *Trạng thái:* Đang chờ duyệt. Gõ \`/duyet ${depositCode}\` để duyệt.`,
                         parse_mode: 'Markdown'
                     })
                 }).catch(() => {});
 
-                alert(`Tạo yêu cầu nạp thành công!\nVui lòng chuyển khoản số tiền ${amount.toLocaleString('vi-VN')}đ với nội dung: ${depositCode}`);
+                // Thông báo ngay trên web cho khách biết đơn đang được duyệt
+                alert(`Tạo yêu cầu nạp thành công!\n\nTrạng thái: Đang duyệt\nVui lòng chuyển khoản ${amount.toLocaleString('vi-VN')}đ với nội dung: ${depositCode}`);
                 closeModal('depositModal');
                 switchTab('orders');
             } catch (e) {
@@ -579,7 +583,7 @@
                     <div class="admin-order-item">
                         <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px;">
                             <span>Khách: ${ord.userName}</span>
-                            <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">${ord.status === 'pending' ? 'Chờ duyệt' : 'Đã duyệt'}</span>
+                            <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">${ord.status === 'pending' ? 'Đang duyệt' : 'Đã duyệt'}</span>
                         </div>
                         <div style="font-size: 1rem; font-weight: 800; color: #3b52d4; margin: 4px 0;">Mã: [ ${ord.id} ] - Số tiền: ${ord.price}</div>
                         <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 6px;">Thời gian: ${ord.date}</div>
@@ -836,7 +840,7 @@
                 <div class="order-card">
                     <div class="order-header">
                         <span>${ord.name}</span>
-                        <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">${ord.status === 'pending' ? 'Chờ duyệt' : 'Thành công'}</span>
+                        <span class="order-status ${ord.status === 'pending' ? 'status-pending' : 'status-success'}">${ord.status === 'pending' ? 'Đang duyệt' : 'Thành công'}</span>
                     </div>
                     <div style="font-size: 0.85rem; color: #64748b;">Thời gian: ${ord.date}</div>
                     <div class="order-key">${ord.key || 'Giao dịch thành công'}</div>
