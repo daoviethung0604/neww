@@ -109,11 +109,9 @@
         .detail-label { color: var(--text-sub); font-weight: 600; }
         .detail-val { font-weight: 700; color: #0f172a; }
 
-        /* PASSWORD INPUT STYLES WITH EYE ICON */
         .password-wrapper { position: relative; display: flex; align-items: center; }
         .password-wrapper input { padding-right: 35px; }
         .toggle-password { position: absolute; right: 10px; cursor: pointer; color: var(--text-sub); font-size: 0.9rem; }
-
         .input-custom { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; outline: none; }
 
         /* LIVE ORDER FEED & TOP BUTTON */
@@ -126,7 +124,6 @@
             font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; width: 100%; margin-top: 15px;
         }
 
-        /* TOP RANK LIST MODAL */
         .top-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
         .top-item:last-child { border-bottom: none; }
         .rank-badge { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; color: white; }
@@ -135,40 +132,33 @@
         .rank-3 { background: #b45309; }
         .rank-other { background: #cbd5e1; color: #1e293b; }
 
-        /* FOOTER CONTACT */
         .footer-contact {
             background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px 20px;
             margin-top: 25px; text-align: center; color: var(--text-sub); font-size: 0.88rem;
         }
         .footer-contact b { color: #0f172a; }
 
-        /* ADMIN PANEL */
         .admin-box { background: white; border: 2px dashed #3b52d4; border-radius: 16px; padding: 20px; margin-top: 15px; text-align: center; }
         .admin-order-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 12px; text-align: left; }
 
-        /* VIEW SWITCHING */
         .page-view { display: none; }
         .page-view.active { display: block; }
 
-        /* BOTTOM NAVBAR */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background-color: #ffffff; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; font-size: 0.7rem; font-weight: 600; text-decoration: none; gap: 4px; cursor: pointer; }
         .nav-item i { font-size: 1.1rem; }
         .nav-item.active { color: #3b52d4; }
 
-        /* FLOATING BUTTONS */
         .floating-btns { position: fixed; right: 16px; bottom: 80px; display: flex; flex-direction: column; gap: 10px; z-index: 99; }
         .float-btn { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; border: none; }
         .btn-zalo { background-color: #0068ff; }
         .btn-scroll { background-color: #0f172a; }
 
-        /* MODAL POPUP */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 2000; }
         .modal-card { background: #ffffff; width: 90%; max-width: 380px; padding: 25px; border-radius: 20px; position: relative; text-align: center; max-height: 90vh; overflow-y: auto; }
         .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.2rem; color: var(--text-sub); cursor: pointer; }
         .btn-google-login { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: #ffffff; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; margin-top: 20px; }
         
-        /* QR STYLES */
         .qr-box { background: #f8fafc; border: 1px dashed var(--border-color); padding: 15px; border-radius: 12px; margin: 15px 0; }
         .qr-box img { width: 190px; height: 190px; object-fit: contain; margin-bottom: 8px; }
         .input-deposit { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px; font-size: 0.95rem; outline: none; text-align: center; font-weight: 700; color: #3b52d4; }
@@ -176,7 +166,6 @@
 </head>
 <body>
 
-    <!-- HEADER -->
     <header>
         <div class="header-left">
             <i class="fa-solid fa-bars menu-toggle" onclick="switchTab('products')"></i>
@@ -193,7 +182,6 @@
 
     <div class="content-container">
         
-        <!-- TRANG CHỦ -->
         <div id="view-home" class="page-view active">
             <div class="hero-card">
                 <span class="badge-tag">● HẠ TẦNG PROXY FREE FIRE</span>
@@ -214,7 +202,6 @@
                 </div>
             </div>
 
-            <!-- BẢNG ĐƠN HÀNG GẦN ĐÂY -->
             <div class="live-order-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 800;">
                     <span><i class="fa-solid fa-circle" style="color: #22c55e; font-size: 0.6rem;"></i> Đơn hàng gần đây</span>
@@ -223,13 +210,11 @@
                 <div id="liveOrderFeed"></div>
             </div>
 
-            <!-- NÚT XEM TOP NẠP ĐẠI GIA -->
             <button class="btn-top-ranking" onclick="openTopModal()">
                 <i class="fa-solid fa-trophy" style="color: #eab308;"></i> XEM TOP NẠP ĐẠI GIA
             </button>
         </div>
 
-        <!-- TRANG SẢN PHẨM -->
         <div id="view-products" class="page-view">
             <div class="section-title">Danh mục IPA Delta Client</div>
             <div class="product-grid">
@@ -276,19 +261,16 @@
             </div>
         </div>
 
-        <!-- TRANG ĐƠN HÀNG -->
         <div id="view-orders" class="page-view">
             <div class="section-title">Lịch Sử Giao Dịch & Đơn Hàng</div>
             <div class="order-list" id="orderContainer"></div>
         </div>
 
-        <!-- TRANG TÀI KHOẢN & CÀI ĐẶT -->
         <div id="view-profile" class="page-view">
             <div class="section-title">Tài Khoản & Cài Đặt</div>
             <div class="profile-container" id="profileContentBox"></div>
         </div>
 
-        <!-- TRANG ADMIN PANEL -->
         <div id="view-admin" class="page-view">
             <div class="section-title"><i class="fa-solid fa-shield-halved"></i> Bảng Quản Trị Admin</div>
             
@@ -309,7 +291,6 @@
             </div>
         </div>
 
-        <!-- THÔNG TIN LIÊN HỆ -->
         <div class="footer-contact">
             <div style="font-weight: 800; color: #0f172a; margin-bottom: 6px;">Thông Tin Liên Hệ Hỗ Trợ</div>
             <div>SĐT: <b>0348876411</b> | Email: <b>daoh80602@gmail.com</b></div>
@@ -317,13 +298,11 @@
 
     </div>
 
-    <!-- FLOATING BUTTONS -->
     <div class="floating-btns">
         <button class="float-btn btn-zalo"><i class="fa-solid fa-comment-dots"></i></button>
         <button class="float-btn btn-scroll" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
     </div>
 
-    <!-- BOTTOM NAVBAR -->
     <nav class="bottom-nav">
         <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
             <i class="fa-solid fa-house"></i><span>Trang chủ</span>
@@ -342,7 +321,6 @@
         </div>
     </nav>
 
-    <!-- MODAL ĐĂNG NHẬP -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-card">
             <button class="close-modal" onclick="closeModal('loginModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -360,7 +338,6 @@
         </div>
     </div>
 
-    <!-- MODAL NẠP TIỀN QR -->
     <div class="modal-overlay" id="depositModal">
         <div class="modal-card">
             <button class="close-modal" onclick="closeModal('depositModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -377,7 +354,6 @@
         </div>
     </div>
 
-    <!-- MODAL TOP NẠP ĐẠI GIA -->
     <div class="modal-overlay" id="topModal">
         <div class="modal-card">
             <button class="close-modal" onclick="closeModal('topModal')"><i class="fa-solid fa-xmark"></i></button>
@@ -387,7 +363,6 @@
         </div>
     </div>
 
-    <!-- SCRIPT ĐẦY ĐỦ GIAO DIỆN VÀ GỬI TELEGRAM -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -460,6 +435,8 @@
         }
 
         window.requestDeposit = async function() {
+            if (!currentUser) { alert("Vui lòng đăng nhập!"); return; }
+            
             const rawValue = document.getElementById('depositAmountInput').value.replace(/\./g, '');
             const amount = parseInt(rawValue) || 0;
             if (amount <= 0) { alert("Vui lòng nhập số tiền hợp lệ!"); return; }
@@ -488,21 +465,25 @@
                 orders.unshift(newOrder);
                 localStorage.setItem(`orders_${currentUser.uid}`, JSON.stringify(orders));
 
-                fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+                // Gửi thông báo về Telegram qua cách an toàn (không bắt buộc chặn luồng)
+                const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+                const textMessage = `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n👤 *Khách:* ${currentUser.displayName}\n💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n🔑 *Mã CK:* \`${depositCode}\`\n⏰ *Thời gian:* ${exactTime}\n\n📌 *Trạng thái:* Đang duyệt. Gõ \`/duyet ${depositCode}\``;
+                
+                fetch(telegramUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         chat_id: TELEGRAM_CHAT_ID,
-                        text: `🔔 *CÓ YÊU CẦU NẠP TIỀN MỚI!*\n\n👤 *Khách:* ${currentUser.displayName}\n💰 *Số tiền:* ${amount.toLocaleString('vi-VN')}đ\n🔑 *Mã CK:* \`${depositCode}\`\n⏰ *Thời gian:* ${exactTime}\n\n📌 *Trạng thái:* Đang duyệt. Gõ \`/duyet ${depositCode}\``,
+                        text: textMessage,
                         parse_mode: 'Markdown'
                     })
-                }).catch(() => {});
+                }).catch(err => console.log("Telegram notice sent status:", err));
 
                 alert(`Tạo yêu cầu nạp thành công!\nTrạng thái: Đang duyệt\nVui lòng chuyển khoản ${amount.toLocaleString('vi-VN')}đ với nội dung: ${depositCode}`);
                 closeModal('depositModal');
                 switchTab('orders');
             } catch (e) {
-                alert("Lỗi kết nối máy chủ, vui lòng thử lại!");
+                alert("Lỗi kết nối máy chủ Firestore: " + e.message);
             }
         };
 
