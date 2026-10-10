@@ -174,7 +174,6 @@
             signInWithPopup(auth, provider).then(() => closeModal('loginModal')).catch(err => alert("Lỗi đăng nhập: " + err.message));
         });
 
-        // XỬ LÝ NẠP TIỀN & GỬI TELEGRAM
         document.getElementById('btnConfirmDeposit').addEventListener('click', async () => {
             if(!currentUser) { alert("Vui lòng đăng nhập!"); return; }
             
@@ -199,10 +198,8 @@
             };
 
             try {
-                // 1. Lưu lên Firestore
                 await addDoc(collection(db, "global_orders"), newOrder);
 
-                // 2. Bắn thông báo về Telegram
                 await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -222,7 +219,10 @@
         });
 
         async function loadOrders() {
-            if(!currentUser) return;
+            if(!currentUser) {
+                document.getElementById('orderContainer').innerHTML = `<div style="text-align:center; color: var(--text-sub); padding: 20px;">Vui lòng đăng nhập để xem đơn hàng</div>`;
+                return;
+            }
             try {
                 const querySnapshot = await getDocs(collection(db, "global_orders"));
                 let orders = [];
@@ -237,7 +237,7 @@
                 });
 
                 document.getElementById('userBalance').innerText = balance.toLocaleString('vi-VN') + 'đ';
-                orders.sort((a, b) => b.timestamp - a.timestamp);
+                orders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
                 const container = document.getElementById('orderContainer');
                 if(orders.length === 0) {
@@ -267,6 +267,7 @@
                 loadOrders();
             } else {
                 document.getElementById('authText').innerText = 'Đăng nhập';
+                document.getElementById('userBalance').innerText = '0đ';
             }
         });
     </script>
